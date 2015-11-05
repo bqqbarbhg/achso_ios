@@ -1,14 +1,17 @@
 import UIKit
+import MobileCoreServices
 
-class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     // Initialized in didFinishLaunch, do not use in init
     weak var categoriesViewController: CategoriesViewController!
-    
+
     var collection: Collection?
     
     var itemSize: CGSize?
     
+    // Used to pass the video URL from selection to the segue callback
+    var chosenVideoUrl: NSURL?
     
     func showCollection(collection: Collection) {
         self.title = collection.title
@@ -114,4 +117,56 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             return CGSize(width: 400, height: 300)
         }
     }
+    
+    @IBAction func cameraButton(sender: UIBarButtonItem) {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.mediaTypes = [String(kUTTypeMovie)]
+        
+        if UIImagePickerController.isSourceTypeAvailable(.Camera) {
+            
+            // Default to rear camera
+            imagePicker.sourceType = .Camera
+            imagePicker.cameraCaptureMode = .Video
+            imagePicker.cameraDevice = .Rear
+        } else {
+            
+            // Use image library when camera is not available (in emulator)
+            imagePicker.sourceType = .PhotoLibrary
+        }
+        
+        imagePicker.delegate = self
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+            
+        dismissViewControllerAnimated(true) {
+            self.chosenVideoUrl = (info[UIImagePickerControllerMediaURL]! as! NSURL)
+            self.performSegueWithIdentifier("showPlayer", sender: self)
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        func handleShowPlayer(viewController: UIViewController) {
+            guard let playerViewController = viewController as? PlayerViewController else {
+                return
+            }
+
+            if let videoUrl = self.chosenVideoUrl {
+                playerViewController.createVideo(videoUrl)
+            }
+        }
+        
+        let handlers = [
+            "showPlayer": handleShowPlayer,
+        ]
+        
+        guard let identifier = segue.identifier else { return }
+        guard let handler = handlers[identifier] else { return }
+        
+        handler(segue.destinationViewController)
+    }
+
 }

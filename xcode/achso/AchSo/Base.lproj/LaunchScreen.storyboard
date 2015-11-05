@@ -18,7 +18,9 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="rzs-9P-gSE"/>
+                    <navigationItem key="navigationItem" id="rzs-9P-gSE">
+                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="FrT-M4-zAT"/>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

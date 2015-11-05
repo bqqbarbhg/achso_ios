@@ -75,11 +75,53 @@
                             <outlet property="delegate" destination="83W-Gl-1p4" id="IjQ-w2-KdG"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="UPr-XF-tiG"/>
+                    <navigationItem key="navigationItem" id="UPr-XF-tiG">
+                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="e1x-2A-Edz">
+                            <connections>
+                                <action selector="cameraButton:" destination="83W-Gl-1p4" id="sJT-g2-QdF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="uj0-XH-hhR" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="87V-qH-EOo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1528" y="817"/>
+        </scene>
+        <!--Player View Controller-->
+        <scene sceneID="2F0-QL-T2o">
+            <objects>
+                <viewController id="uj0-XH-hhR" customClass="PlayerViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2Qw-If-lM0"/>
+                        <viewControllerLayoutGuide type="bottom" id="CJ4-iI-GtJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lSG-84-dvt">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lZ8-eS-y0K" customClass="VideoView" customModule="AchSo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="lZ8-eS-y0K" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="1iO-dj-a2j"/>
+                            <constraint firstAttribute="trailing" secondItem="lZ8-eS-y0K" secondAttribute="trailing" id="7di-zA-BTr"/>
+                            <constraint firstItem="lZ8-eS-y0K" firstAttribute="top" secondItem="lSG-84-dvt" secondAttribute="top" id="Nce-UD-WZb"/>
+                            <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="lZ8-eS-y0K" secondAttribute="bottom" id="cUk-6t-CRA"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="videoView" destination="lZ8-eS-y0K" id="6RL-ic-NYH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0Gd-G9-G3i" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2215" y="817"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="gOr-uq-4Ky">
