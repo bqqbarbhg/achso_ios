@@ -18,6 +18,9 @@
 		A94B82E61BEA5EA10017874D /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E51BEA5EA10017874D /* Section.swift */; settings = {ASSET_TAGS = (); }; };
 		A94B82E81BEA5EF70017874D /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E71BEA5EF70017874D /* Collection.swift */; settings = {ASSET_TAGS = (); }; };
 		A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E91BEA64D60017874D /* VideosViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82701BEB510800BB7263 /* VideoCellView.swift */; settings = {ASSET_TAGS = (); }; };
+		A98D82751BEB52F100BB7263 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82741BEB52F100BB7263 /* Video.swift */; settings = {ASSET_TAGS = (); }; };
+		A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82771BEB550A00BB7263 /* ArrayExtension.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +37,9 @@
 		A94B82E51BEA5EA10017874D /* Section.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		A94B82E71BEA5EF70017874D /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A94B82E91BEA64D60017874D /* VideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideosViewController.swift; sourceTree = "<group>"; };
+		A98D82701BEB510800BB7263 /* VideoCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCellView.swift; sourceTree = "<group>"; };
+		A98D82741BEB52F100BB7263 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		A98D82771BEB550A00BB7263 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +87,9 @@
 			children = (
 				A94B82DA1BEA3FB10017874D /* app */,
 				A94B82DC1BEA3FB10017874D /* browser */,
+				A98D82731BEB52F100BB7263 /* entities */,
 				A94B82DE1BEA3FB10017874D /* player */,
+				A98D82761BEB550A00BB7263 /* util */,
 			);
 			name = src;
 			path = ../../../src;
@@ -103,6 +111,7 @@
 				A94B82E51BEA5EA10017874D /* Section.swift */,
 				A94B82E71BEA5EF70017874D /* Collection.swift */,
 				A94B82E91BEA64D60017874D /* VideosViewController.swift */,
+				A98D82701BEB510800BB7263 /* VideoCellView.swift */,
 			);
 			path = browser;
 			sourceTree = "<group>";
@@ -113,6 +122,22 @@
 				A94B82DF1BEA3FB10017874D /* PlayerViewController.swift */,
 			);
 			path = player;
+			sourceTree = "<group>";
+		};
+		A98D82731BEB52F100BB7263 /* entities */ = {
+			isa = PBXGroup;
+			children = (
+				A98D82741BEB52F100BB7263 /* Video.swift */,
+			);
+			path = entities;
+			sourceTree = "<group>";
+		};
+		A98D82761BEB550A00BB7263 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				A98D82771BEB550A00BB7263 /* ArrayExtension.swift */,
+			);
+			path = util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,9 +215,12 @@
 				A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */,
 				A94B82E61BEA5EA10017874D /* Section.swift in Sources */,
 				A94B82E21BEA3FB10017874D /* PlayerViewController.swift in Sources */,
+				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
 				A94B82E81BEA5EF70017874D /* Collection.swift in Sources */,
 				A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */,
 				A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */,
+				A98D82751BEB52F100BB7263 /* Video.swift in Sources */,
+				A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

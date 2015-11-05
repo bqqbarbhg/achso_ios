@@ -13,6 +13,22 @@ class CategoriesViewController: UITableViewController {
             Collection(title: "My videos"),
         ]
         
+        func makeVideo(title: String) -> Video {
+            let video = Video()
+            video.title = title
+            return video
+        }
+        
+        general.collections[0].videos = [
+            makeVideo("Miestentie"),
+            makeVideo("Another video"),
+            makeVideo("Third video"),
+        ]
+        
+        for i in 1...10 {
+            general.collections[0].videos.append(makeVideo("Video #\(i)"))
+        }
+        
         let genres = Section(title: "Genres")
         genres.collections = [
             Collection(title: "Good work"),
