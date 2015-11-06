@@ -8,6 +8,7 @@ class VideoPlayer {
     
     var avPlayer: AVPlayer
     var videoSize: CGSize?
+    var videoDuration: Double?
     
     init() {
         self.avPlayer = AVPlayer()
@@ -34,7 +35,22 @@ class VideoPlayer {
         let playerItem = AVPlayerItem(asset: asset)
         
         self.videoSize = getVideoSizeFromAsset(asset)
+        self.videoDuration = asset.duration.seconds
+        
         self.avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
+    }
+    
+    func seekTo(time: Double) {
+        
+        // Always seek to _exactly_ where the user wants.
+        let tolerance = CMTimeMake(0, 1000)
+        
+        self.avPlayer.seekToTime(CMTimeMakeWithSeconds(Float64(time), 1000),
+            toleranceBefore: tolerance, toleranceAfter: tolerance)
+    }
+    
+    func pause() {
+        self.avPlayer.pause()
     }
     
     func play() {
