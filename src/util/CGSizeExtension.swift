@@ -12,5 +12,9 @@ extension CGSize {
             return CGSize(width: container.height * ownAspect, height: container.height)
         }
     }
+    
+    func asPositive() -> CGSize {
+        return CGSize(width: abs(self.width), height: abs(self.height))
+    }
 
 }
