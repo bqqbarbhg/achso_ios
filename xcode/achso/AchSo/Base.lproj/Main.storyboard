@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Categories-->
@@ -106,16 +107,40 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iY4-jz-dd9">
+                                <rect key="frame" x="8" y="532" width="584" height="60"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e8C-M7-w4A" customClass="PlayButtonView" customModule="AchSo" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="e8C-M7-w4A" secondAttribute="height" multiplier="1:1" id="UJ3-ZQ-59w"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wxf-op-WDe" customClass="SeekBarView" customModule="AchSo" customModuleProvider="target">
+                                        <rect key="frame" x="60" y="0.0" width="524" height="60"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="mrc-RV-Hzi"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="lZ8-eS-y0K" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="1iO-dj-a2j"/>
                             <constraint firstAttribute="trailing" secondItem="lZ8-eS-y0K" secondAttribute="trailing" id="7di-zA-BTr"/>
+                            <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="iY4-jz-dd9" secondAttribute="bottom" constant="8" id="Cqn-NI-mha"/>
+                            <constraint firstAttribute="trailing" secondItem="iY4-jz-dd9" secondAttribute="trailing" constant="8" id="GWp-zx-l0q"/>
                             <constraint firstItem="lZ8-eS-y0K" firstAttribute="top" secondItem="lSG-84-dvt" secondAttribute="top" id="Nce-UD-WZb"/>
                             <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="lZ8-eS-y0K" secondAttribute="bottom" id="cUk-6t-CRA"/>
+                            <constraint firstItem="iY4-jz-dd9" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" constant="8" id="lBD-0y-I1Y"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="playButton" destination="e8C-M7-w4A" id="U2q-ai-UT7"/>
+                        <outlet property="seekBar" destination="Wxf-op-WDe" id="sV4-AD-p5q"/>
                         <outlet property="videoView" destination="lZ8-eS-y0K" id="6RL-ic-NYH"/>
                     </connections>
                 </viewController>

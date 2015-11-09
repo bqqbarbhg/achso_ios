@@ -1,8 +1,10 @@
 import UIKit
 
-class PlayerViewController: UIViewController, VideoViewDelegate {
+class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     @IBOutlet weak var videoView: VideoView!
+    @IBOutlet weak var playButton: PlayButtonView!
+    @IBOutlet weak var seekBar: SeekBarView!
     
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
@@ -17,37 +19,59 @@ class PlayerViewController: UIViewController, VideoViewDelegate {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        // Show as pause button during segue
+        self.playButton.setModeNoAniamtion(.Pause)
+    }
+    
     override func viewDidAppear(animated: Bool) {
         self.videoView.attachPlayer(self.videoPlayer)
         self.videoPlayer.play()
         
-        // HACK TODO: Real annotations
-        let annotation = Annotation()
-        annotation.position = Vector2(x: 0.7, y: 0.3)
-        let annotations = [annotation]
+        self.videoPlayer.delegate = self
         
-        self.videoView.showAnnotations(annotations)
-        self.videoView.delegate = self
+        // No animation when setting the button mode later
+        self.playButton.buttonMode = .Initial
+        self.playButton.callback = {
+            self.playerController.userPlay()
+            self.refreshView()
+        }
+
+        self.seekBar.callback = { event in
+            switch event {
+            case .Preview(let time):
+                self.playerController.userSeek(time, final: false)
+            case .SeekTo(let time):
+                self.playerController.userSeek(time, final: true)
+            case .Cancel:
+                // Do a virtual final seek to current position when cancelled
+                if let duration = self.videoPlayer.videoDuration {
+                    let time = self.videoPlayer.avPlayer.currentTime().seconds
+                    self.playerController.userSeek(time / duration, final: true)
+                }
+            }
+        }
+        
+        self.refreshView()
+    }
+
+    func refreshView() {
+        self.playButton.buttonMode = {
+            switch self.playerController.state {
+            case .Playing: return .Pause
+            case .ManualPause: return .Play
+            }
+        }()
     }
     
     func createVideo(sourceVideoUrl: NSURL) {
         self.videoPlayer.loadVideo(sourceVideoUrl)
     }
     
-    func videoViewEvent(event: PlayerUserEvent) {
-        switch event {
-        case .SeekPreview(let time):
-            playerController.userSeek(time, final: false)
-        case .SeekTo(let time):
-            playerController.userSeek(time, final: true)
-        case .SeekCancel:
-            // HACKish: If the user cancels a seek then do a virtual seek to the curren time ending the seek mode
-            playerController.userSeek(videoPlayer.avPlayer.currentTime().seconds, final: true)
-        case .PlayPause:
-            playerController.userPlay()
-            
-            // HAAAAAACk
-            videoView.seekBarView.updatePlaying(playerController.state != .Playing)
-        }
+    func timeUpdate(time: Double) {
+        // TODO: Do this through player controller
+        guard let duration = videoPlayer.videoDuration else { return }
+        
+        self.seekBar.seekBarPositionPercentage = time / duration
     }
 }

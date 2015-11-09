@@ -4,18 +4,23 @@ import Foundation
 import AVFoundation
 import CoreGraphics
 
+protocol VideoPlayerDelegate {
+    func timeUpdate(time: Double)
+}
+
 class VideoPlayer {
     
     var avPlayer: AVPlayer
     var videoSize: CGSize?
     var videoDuration: Double?
     
+    var delegate: VideoPlayerDelegate?
+    
     init() {
         self.avPlayer = AVPlayer()
         self.avPlayer.actionAtItemEnd = .Pause
         
-        // TODO: TimeUpdate
-        // avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(1, 60), queue: nil, usingBlock: timeUpdate)
+        avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(1, 60), queue: nil, usingBlock: timeUpdate)
     }
     
     func getVideoSizeFromAsset(asset: AVURLAsset) -> CGSize? {
@@ -47,6 +52,10 @@ class VideoPlayer {
         
         self.avPlayer.seekToTime(CMTimeMakeWithSeconds(Float64(time), 1000),
             toleranceBefore: tolerance, toleranceAfter: tolerance)
+    }
+    
+    func timeUpdate(time: CMTime) {
+        self.delegate?.timeUpdate(time.seconds)
     }
     
     func pause() {
