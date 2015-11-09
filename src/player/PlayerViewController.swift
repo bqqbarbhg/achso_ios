@@ -19,6 +19,12 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        // TODO: Smarter status bar style
+        // For now expect the status bar to lay on the black background
+        return .LightContent;
+    }
+    
     override func viewWillAppear(animated: Bool) {
         // Show as pause button during segue
         self.playButton.setModeNoAniamtion(.Pause)
