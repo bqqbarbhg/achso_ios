@@ -7,7 +7,7 @@ class PlayButtonLayer: CALayer {
     var pauseMorphDelta: CGFloat = 0.0 {
         didSet { self.setNeedsDisplay() }
     }
-    var borderPadding: CGFloat = 15.0
+    var borderPadding: CGFloat = 18.0
     
     // Visual measueres
     var pauseThickness: CGFloat = 0.8
