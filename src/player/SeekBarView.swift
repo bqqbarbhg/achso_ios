@@ -21,9 +21,10 @@ class SeekBarView: UIControl {
     override func drawRect(rect: CGRect) {
         // Use SeekBarLayer for drawing
     }
-    override func layoutSubviews() {
-        self.setNeedsDisplay()
-    }
+    
+    let seekAnnotationLayer = SeekAnnotationLayer()
+    
+    var sidePadding: CGFloat = 0.0
     
     // Initialization
     
@@ -38,6 +39,16 @@ class SeekBarView: UIControl {
     func setup() {
         self.backgroundColor = nil
         self.opaque = false
+        self.seekAnnotationLayer.contentsScale = self.layer.contentsScale
+        self.layer.addSublayer(self.seekAnnotationLayer)
+        
+        // Make sure the layers have the same side padding
+        self.sidePadding = max(seekBarLayer.requiredSidePadding, seekAnnotationLayer.requiredSidePadding)
+        self.seekBarLayer.sidePadding = self.sidePadding
+        self.seekAnnotationLayer.sidePadding = self.sidePadding
+        
+        // TEMP
+        self.seekAnnotationLayer.annotationTimes = [0.0, 0.2, 0.3, 0.5, 1.0]
     }
 
     // Seek position
@@ -51,6 +62,16 @@ class SeekBarView: UIControl {
         }
     }
 
+    override func layoutSublayersOfLayer(layer: CALayer) {
+        super.layoutSublayersOfLayer(layer)
+        
+        if layer == self.seekBarLayer {
+            self.seekAnnotationLayer.frame = layer.bounds
+            self.seekAnnotationLayer.setNeedsDisplay()
+            self.seekBarLayer.setNeedsDisplay()
+        }
+    }
+    
     // Touch tracking
     
     override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
@@ -83,9 +104,9 @@ class SeekBarView: UIControl {
         
         let location = touch.locationInView(self)
         
-        // Evaluate location in bar accounting the width of the seek ball
-        let seekBarWidth = self.frame.width - seekBarLayer.seekBallDiameter
-        let seekBarStart = seekBarLayer.seekBallDiameter / 2.0
+        // Evaluate location in bar accounting the padding in the display
+        let seekBarWidth = self.frame.width - self.sidePadding * 2.0
+        let seekBarStart = self.sidePadding
         let relative = (location.x - seekBarStart) / seekBarWidth
         
         let clamped = Double(clamp(relative, minVal: 0.0, maxVal: 1.0))

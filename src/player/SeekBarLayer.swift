@@ -13,6 +13,11 @@ class SeekBarLayer: CALayer {
     // Visual measures
     var seekBarHeight: CGFloat = 3.0
     var seekBallDiameter: CGFloat = 7.0
+    var sidePadding: CGFloat = 0.0
+    
+    var requiredSidePadding: CGFloat {
+        return seekBallDiameter / 2.0 + 1.0
+    }
     
     // Visual colors
     var barBackgroundColor: CGColor = hexCgColor(0x777777, alpha: 0.5)
@@ -24,8 +29,8 @@ class SeekBarLayer: CALayer {
         let middle = frame.height / 2.0
         
         // Fit the bar so that the ball has enough space on both sides without clipping
-        let bounds = CGRect(x: self.seekBallDiameter / 2.0, y: 0.0,
-            width: self.frame.width - self.seekBallDiameter,
+        let bounds = CGRect(x: self.sidePadding, y: 0.0,
+            width: self.frame.width - self.sidePadding * 2.0,
             height: self.frame.height)
         
         // Bounds for the whole bar
