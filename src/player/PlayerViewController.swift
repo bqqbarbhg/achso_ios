@@ -8,6 +8,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
+    var activeVideo: ActiveVideo?
     
     required init?(coder aDecoder: NSCoder) {
         self.playerController = PlayerController(player: self.videoPlayer)
@@ -58,6 +59,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             }
         }
         
+        self.videoView.callback = { event in
+            self.playerController.annotationEdit(event)
+            self.refreshView()
+        }
+        
         self.refreshView()
     }
 
@@ -66,18 +72,50 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             switch self.playerController.state {
             case .Playing: return .Pause
             case .ManualPause: return .Play
+            case .AnnotationPause: return .Pause
+            case .AnnotationEdit: return .Play
             }
         }()
+        
+        // TODO: Propertyify
+        if let batch = self.playerController.batch {
+            self.videoView.showAnnotations(batch.annotations)
+        } else {
+            self.videoView.showAnnotations([])
+        }
+        
+        if let activeVideo = self.activeVideo {
+            self.seekBar.annotationTimes = activeVideo.batches.map { batch in
+                batch.time / activeVideo.duration
+            }
+        }
+        
+        if let duration = videoPlayer.videoDuration {
+            self.seekBar.seekBarPositionPercentage = self.playerController.seekBarPosition / duration
+        }
     }
     
     func createVideo(sourceVideoUrl: NSURL) {
         self.videoPlayer.loadVideo(sourceVideoUrl)
+        
+        let video = Video()
+        let activeVideo = ActiveVideo(video: video)
+        
+        if let duration = self.videoPlayer.videoDuration {
+            activeVideo.duration = duration
+        }
+        if let videoSize = self.videoPlayer.videoSize {
+            let size = Vector2.init(cgSize: videoSize)
+            let relative = size / min(size.x, size.y)
+            activeVideo.resolution = relative
+        }
+        
+        self.activeVideo = activeVideo
+        self.playerController.activeVideo = activeVideo
     }
     
     func timeUpdate(time: Double) {
-        // TODO: Do this through player controller
-        guard let duration = videoPlayer.videoDuration else { return }
-        
-        self.seekBar.seekBarPositionPercentage = time / duration
+        self.playerController.timeUpdate(time)
+        self.refreshView()
     }
 }

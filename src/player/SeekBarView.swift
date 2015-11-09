@@ -46,9 +46,6 @@ class SeekBarView: UIControl {
         self.sidePadding = max(seekBarLayer.requiredSidePadding, seekAnnotationLayer.requiredSidePadding)
         self.seekBarLayer.sidePadding = self.sidePadding
         self.seekAnnotationLayer.sidePadding = self.sidePadding
-        
-        // TEMP
-        self.seekAnnotationLayer.annotationTimes = [0.0, 0.2, 0.3, 0.5, 1.0]
     }
 
     // Seek position
@@ -62,6 +59,15 @@ class SeekBarView: UIControl {
         }
     }
 
+    var annotationTimes: [Double] {
+        get {
+            return seekAnnotationLayer.annotationTimes
+        }
+        set {
+            seekAnnotationLayer.annotationTimes = newValue
+        }
+    }
+    
     override func layoutSublayersOfLayer(layer: CALayer) {
         super.layoutSublayersOfLayer(layer)
         

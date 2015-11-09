@@ -25,6 +25,10 @@ struct Vector2 {
     var cgPoint: CGPoint {
         return CGPoint(x: CGFloat(x), y: CGFloat(y))
     }
+    
+    var lengthSquared: Float {
+        return x*x + y*y;
+    }
 }
 
 func +(a: Vector2, b: Vector2) -> Vector2 {
@@ -37,4 +41,12 @@ func -(a: Vector2, b: Vector2) -> Vector2 {
 
 func *(a: Vector2, b: Vector2) -> Vector2 {
     return Vector2(x: a.x * b.x, y: a.y * b.y)
+}
+
+func /(a: Vector2, b: Vector2) -> Vector2 {
+    return Vector2(x: a.x / b.x, y: a.y / b.y)
+}
+
+func /(a: Vector2, b: Float) -> Vector2 {
+    return Vector2(x: a.x / b, y: a.y / b)
 }

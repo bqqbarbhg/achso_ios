@@ -6,6 +6,8 @@ import CoreGraphics
 
 class VideoView: UIView {
     
+    var callback: ((AnnotationEditEvent) -> ())?
+    
     let avPlayerView: AVPlayerView
     var player: VideoPlayer?
     
@@ -42,6 +44,14 @@ class VideoView: UIView {
         self.annotationLayer.setNeedsDisplay()
     }
 
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        for touch in touches {
+            let position = Vector2(cgPoint: touch.locationInView(self.avPlayerView))
+            let normalized = position / Vector2(cgSize: self.avPlayerView.frame.size)
+            self.callback?(AnnotationEditEvent(position: normalized, state: .Begin))
+        }
+    }
+    
     func attachPlayer(player: VideoPlayer) {
         avPlayerView.attachPlayer(player)
         self.player = player
