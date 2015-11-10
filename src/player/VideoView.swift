@@ -22,6 +22,7 @@ class VideoView: UIView {
         
         self.backgroundColor = UIColor.blackColor()
         
+        self.annotationLayer.contentsScale = UIScreen.mainScreen().scale
         self.avPlayerView.layer.addSublayer(self.annotationLayer)
         
         self.addSubview(self.avPlayerView)
