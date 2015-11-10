@@ -29,6 +29,10 @@ struct Vector2 {
     var lengthSquared: Float {
         return x*x + y*y;
     }
+    
+    func clampBetween(min: Vector2, and max: Vector2) -> Vector2 {
+        return Vector2(x: clamp(self.x, minVal: min.x, maxVal: max.x), y: clamp(self.y, minVal: min.y, maxVal: max.y))
+    }
 }
 
 func +(a: Vector2, b: Vector2) -> Vector2 {

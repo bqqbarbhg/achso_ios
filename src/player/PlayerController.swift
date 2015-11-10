@@ -169,7 +169,39 @@ class AnnotationEditHandler: PlayerHandler {
         guard let batch = c.batch else { return }
         
         if event.state == .Begin {
-            activeVideo.findOrCreateAnnotationAt(event.position, inBatch: batch)
+            let result = activeVideo.findOrCreateAnnotationAt(event.position, inBatch: batch)
+            
+            c.previousSelectedAnnotation = c.selectedAnnotation
+            
+            c.dragging = result.wasCreated
+            c.selectedAnnotation = result.annotation
+            c.annotationDeadZoneBroken = false
+            c.dragOffset = result.annotation.position - event.position
+            c.dragStartPos = result.annotation.position
+
+        } else {
+            if let annotation = c.selectedAnnotation {
+                
+                // Do unselect on non-moving tap
+                if event.state == .End && !c.dragging && annotation === c.previousSelectedAnnotation {
+                    c.selectedAnnotation = nil
+                }
+                
+                let newPos = (event.position + c.dragOffset).clampBetween(Vector2(xy: 0.0), and: Vector2(xy: 1.0))
+                
+                let delta = (newPos - c.dragStartPos) * c.activeVideo.resolution
+                if delta.lengthSquared > pow(c.annotationDeadZone, 2) {
+                    if !c.annotationDeadZoneBroken {
+                        // TODO: Hide UI
+                    }
+                    c.dragging = true
+                    c.annotationDeadZoneBroken = true
+                }
+                
+                if c.dragging {
+                    annotation.position = newPos
+                }
+            }
         }
     }
 }
@@ -183,6 +215,14 @@ class PlayerController {
     
     var batch: ActiveVideo.AnnotationBatch?
     var ignoreBatch: ActiveVideo.AnnotationBatch?
+    
+    var previousSelectedAnnotation: Annotation?
+    var selectedAnnotation: Annotation?
+    var annotationDeadZoneBroken: Bool = false
+    var dragging: Bool = false
+    var dragOffset: Vector2 = Vector2()
+    var dragStartPos: Vector2 = Vector2()
+    var annotationDeadZone: Float = 0.02
     
     var time: Double = 0.0
     var seekBarPosition: Double = 0.0

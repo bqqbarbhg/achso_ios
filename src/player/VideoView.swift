@@ -53,6 +53,14 @@ class VideoView: UIView {
         }
     }
     
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        for touch in touches {
+            let position = Vector2(cgPoint: touch.locationInView(self.avPlayerView))
+            let normalized = position / Vector2(cgSize: self.avPlayerView.frame.size)
+            self.callback?(AnnotationEditEvent(position: normalized, state: .Move))
+        }
+    }
+    
     func attachPlayer(player: VideoPlayer) {
         avPlayerView.attachPlayer(player)
         self.player = player
