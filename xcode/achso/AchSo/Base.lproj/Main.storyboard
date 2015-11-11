@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
@@ -126,6 +126,36 @@
                                     <constraint firstAttribute="height" constant="60" id="mrc-RV-Hzi"/>
                                 </constraints>
                             </stackView>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FR8-nq-5Af">
+                                <rect key="frame" x="0.0" y="28" width="600" height="60"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oUU-ZY-n5J">
+                                        <rect key="frame" x="8" y="15" width="476" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <action selector="annotationTextFieldEditingChanged:" destination="uj0-XH-hhR" eventType="editingChanged" id="cQj-2h-wde"/>
+                                            <action selector="annotationTextFieldEditingDidEnd:" destination="uj0-XH-hhR" eventType="editingDidEnd" id="vM7-pg-eP5"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VPh-OM-Uzl">
+                                        <rect key="frame" x="546" y="15" width="46" height="30"/>
+                                        <state key="normal" title="Delete"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IHP-Zo-LNN">
+                                        <rect key="frame" x="492" y="15" width="46" height="30"/>
+                                        <state key="normal" title="Save"/>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="VPh-OM-Uzl" secondAttribute="trailing" constant="16" id="05K-CE-pdQ"/>
+                                    <constraint firstItem="IHP-Zo-LNN" firstAttribute="leading" secondItem="oUU-ZY-n5J" secondAttribute="trailing" constant="16" id="6Ra-VK-BgF"/>
+                                    <constraint firstAttribute="height" constant="60" id="LyD-l4-pc7"/>
+                                    <constraint firstItem="VPh-OM-Uzl" firstAttribute="leading" secondItem="IHP-Zo-LNN" secondAttribute="trailing" constant="16" id="ZEK-LU-Xz6"/>
+                                    <constraint firstItem="oUU-ZY-n5J" firstAttribute="leading" secondItem="FR8-nq-5Af" secondAttribute="leading" constant="16" id="r7L-tO-CTL"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -133,12 +163,16 @@
                             <constraint firstAttribute="trailing" secondItem="lZ8-eS-y0K" secondAttribute="trailing" id="7di-zA-BTr"/>
                             <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="iY4-jz-dd9" secondAttribute="bottom" constant="8" id="Cqn-NI-mha"/>
                             <constraint firstAttribute="trailing" secondItem="iY4-jz-dd9" secondAttribute="trailing" constant="8" id="GWp-zx-l0q"/>
+                            <constraint firstAttribute="trailing" secondItem="FR8-nq-5Af" secondAttribute="trailing" id="IaH-1t-zcI"/>
                             <constraint firstItem="lZ8-eS-y0K" firstAttribute="top" secondItem="lSG-84-dvt" secondAttribute="top" id="Nce-UD-WZb"/>
                             <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="lZ8-eS-y0K" secondAttribute="bottom" id="cUk-6t-CRA"/>
                             <constraint firstItem="iY4-jz-dd9" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" constant="8" id="lBD-0y-I1Y"/>
+                            <constraint firstItem="FR8-nq-5Af" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="sKY-zI-hsS"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="annotationTextField" destination="oUU-ZY-n5J" id="pze-Pk-sXF"/>
+                        <outlet property="annotationToolbar" destination="FR8-nq-5Af" id="AEn-3C-BYB"/>
                         <outlet property="playButton" destination="e8C-M7-w4A" id="U2q-ai-UT7"/>
                         <outlet property="seekBar" destination="Wxf-op-WDe" id="sV4-AD-p5q"/>
                         <outlet property="videoView" destination="lZ8-eS-y0K" id="6RL-ic-NYH"/>

@@ -6,26 +6,25 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBOutlet weak var playButton: PlayButtonView!
     @IBOutlet weak var seekBar: SeekBarView!
     
-    @IBOutlet weak var annotationToolbar: UIToolbar!
-
+    @IBOutlet weak var annotationToolbar: UIView!
+    @IBOutlet weak var annotationTextField: UITextField!
+    
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
     var activeVideo: ActiveVideo?
     
+    var toolbarBottomConstraint: NSLayoutConstraint!
+    
+    var activeSelectedAnnotation: Annotation?
+    
     required init?(coder aDecoder: NSCoder) {
         self.playerController = PlayerController(player: self.videoPlayer)
         super.init(coder: aDecoder)
-        self.setup()
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         self.playerController = PlayerController(player: self.videoPlayer)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.setup()
-    }
-    
-    func setup() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -34,8 +33,46 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         return .LightContent;
     }
     
-    func keyboardDidShow(notification: NSNotification) {
+    func keyboardWillChangeFrame(notification: NSNotification) {
+        let info = notification.userInfo!
+        let duration = info[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue
+        let keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         
+        UIView.animateWithDuration(duration, animations: {
+            self.toolbarBottomConstraint.constant = -keyboardFrame.size.height
+        })
+        
+        self.view.layoutIfNeeded()
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        let info = notification.userInfo!
+        let duration = info[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue
+
+        UIView.animateWithDuration(duration, animations: {
+            self.toolbarBottomConstraint.constant = 0
+        })
+        
+        self.view.layoutIfNeeded()
+    }
+    
+    override func viewDidLoad() {
+        self.toolbarBottomConstraint = NSLayoutConstraint(
+            item: self.annotationToolbar,
+            attribute: NSLayoutAttribute.Bottom,
+            relatedBy: NSLayoutRelation.Equal,
+            toItem: self.bottomLayoutGuide,
+            attribute: NSLayoutAttribute.Top,
+            multiplier: 1.0,
+            constant: 0.0)
+        
+        self.view.addConstraint(self.toolbarBottomConstraint)
+        
+        // Hidden by default
+        self.annotationToolbar.hidden = true
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -96,6 +133,18 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             self.videoView.showAnnotations([], selected: nil)
         }
         
+        if let selectedAnnotation = self.playerController.selectedAnnotation {
+            self.annotationToolbar.hidden = false
+            
+            if self.activeSelectedAnnotation !== selectedAnnotation {
+                self.activeSelectedAnnotation = selectedAnnotation
+                self.annotationTextField.text = selectedAnnotation.text
+            }
+        } else {
+            self.annotationToolbar.hidden = true
+            self.activeSelectedAnnotation = nil
+        }
+        
         if let activeVideo = self.activeVideo {
             self.seekBar.annotationTimes = activeVideo.batches.map { batch in
                 batch.time / activeVideo.duration
@@ -104,6 +153,22 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         
         if let duration = videoPlayer.videoDuration {
             self.seekBar.seekBarPositionPercentage = self.playerController.seekBarPosition / duration
+        }
+    }
+    
+    @IBAction func annotationTextFieldEditingChanged(sender: UITextField) {
+        updateAnnotationText()
+    }
+    
+    @IBAction func annotationTextFieldEditingDidEnd(sender: UITextField) {
+        updateAnnotationText()
+    }
+    
+    func updateAnnotationText() {
+        guard let text = annotationTextField.text else { return }
+        
+        if let selectedAnnotation = self.activeSelectedAnnotation {
+            selectedAnnotation.text = text
         }
     }
     
