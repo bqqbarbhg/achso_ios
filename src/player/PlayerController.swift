@@ -51,9 +51,9 @@ class PlayingHandler: PlayerHandler {
                 c.switchState(.AnnotationPause)
                 c.seekBarPosition = batch.time
             }
+        } else {
+            c.seekBarPosition = time
         }
-        
-        c.seekBarPosition = time
     }
     
     func userPlay(c: PlayerController) {
