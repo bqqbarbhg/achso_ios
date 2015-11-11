@@ -6,6 +6,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBOutlet weak var playButton: PlayButtonView!
     @IBOutlet weak var seekBar: SeekBarView!
     
+    @IBOutlet weak var annotationToolbar: UIToolbar!
+
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
     var activeVideo: ActiveVideo?
@@ -13,17 +15,27 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     required init?(coder aDecoder: NSCoder) {
         self.playerController = PlayerController(player: self.videoPlayer)
         super.init(coder: aDecoder)
+        self.setup()
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         self.playerController = PlayerController(player: self.videoPlayer)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.setup()
+    }
+    
+    func setup() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         // TODO: Smarter status bar style
         // For now expect the status bar to lay on the black background
         return .LightContent;
+    }
+    
+    func keyboardDidShow(notification: NSNotification) {
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -79,9 +91,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         
         // TODO: Propertyify
         if let batch = self.playerController.batch {
-            self.videoView.showAnnotations(batch.annotations)
+            self.videoView.showAnnotations(batch.annotations, selected: self.playerController.selectedAnnotation)
         } else {
-            self.videoView.showAnnotations([])
+            self.videoView.showAnnotations([], selected: nil)
         }
         
         if let activeVideo = self.activeVideo {

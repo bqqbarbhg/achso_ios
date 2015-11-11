@@ -199,7 +199,11 @@ class AnnotationEditHandler: PlayerHandler {
                 }
                 
                 if c.dragging {
-                    annotation.position = newPos
+                    // Don't set the position on end event, since in iOS it tends to jitter a little bit and throw
+                    // the annotations slightly off
+                    if event.state != .End {
+                        annotation.position = newPos
+                    }
                 }
             }
         }

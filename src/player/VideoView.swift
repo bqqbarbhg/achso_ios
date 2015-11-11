@@ -61,14 +61,23 @@ class VideoView: UIView {
         }
     }
     
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        for touch in touches {
+            let position = Vector2(cgPoint: touch.locationInView(self.avPlayerView))
+            let normalized = position / Vector2(cgSize: self.avPlayerView.frame.size)
+            self.callback?(AnnotationEditEvent(position: normalized, state: .End))
+        }
+    }
+    
     func attachPlayer(player: VideoPlayer) {
         avPlayerView.attachPlayer(player)
         self.player = player
         self.setNeedsLayout()
     }
     
-    func showAnnotations(annotations: [Annotation]) {
+    func showAnnotations(annotations: [Annotation], selected: Annotation?) {
         annotationLayer.annotations = annotations
+        annotationLayer.selectedAnnotation = selected
         annotationLayer.setNeedsDisplay()
     }
 }
