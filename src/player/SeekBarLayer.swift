@@ -11,7 +11,7 @@ class SeekBarLayer: CALayer {
     }
     
     // Visual measures
-    var seekBarHeight: CGFloat = 3.0
+    var seekBarHeight: CGFloat = 2.0
     var seekBallDiameter: CGFloat = 7.0
     var sidePadding: CGFloat = 0.0
     

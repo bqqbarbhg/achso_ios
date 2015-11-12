@@ -30,6 +30,8 @@ class PlayButtonLayer: CALayer {
         
         CGContextClearRect(ctx, bounds)
         
+        let pauseWidth = round(bounds.width * (self.pauseThickness / 2.0))
+        
         if pauseMorphDelta <= 0.0 {
             // Draw clean play triangle
             
@@ -47,8 +49,6 @@ class PlayButtonLayer: CALayer {
 
             CGContextBeginPath(ctx)
 
-            let pauseWidth = bounds.width * (self.pauseThickness / 2.0)
-            
             // Left rectangle
             CGContextAddRect(ctx, CGRect(x: bounds.minX, y: bounds.minY,
                 width: pauseWidth, height: bounds.height))
@@ -65,7 +65,7 @@ class PlayButtonLayer: CALayer {
             // See http://i.imgur.com/KEzqNF4.png
             
             // X-intersections on begin, end and widening gap
-            let halfGap = pauseMorphDelta * 0.5 * (1.0 - pauseThickness)
+            let halfGap = pauseMorphDelta * 0.5 * (1.0 - (pauseWidth * 2.0) / bounds.width)
             let xs = [0.0, 0.5 - halfGap, 0.5 + halfGap, 1.0]
             
             // Evaluate the line at the X-coordinates to get the Y-coordinates
