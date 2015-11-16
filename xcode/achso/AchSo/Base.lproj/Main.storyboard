@@ -141,10 +141,16 @@
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VPh-OM-Uzl">
                                         <rect key="frame" x="546" y="15" width="46" height="30"/>
                                         <state key="normal" title="Delete"/>
+                                        <connections>
+                                            <action selector="annotationDeleteButton:" destination="uj0-XH-hhR" eventType="touchUpInside" id="Zos-LR-Q3P"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IHP-Zo-LNN">
                                         <rect key="frame" x="492" y="15" width="46" height="30"/>
                                         <state key="normal" title="Save"/>
+                                        <connections>
+                                            <action selector="annotationSaveButton:" destination="uj0-XH-hhR" eventType="touchUpInside" id="3DX-YP-PjW"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

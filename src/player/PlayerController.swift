@@ -288,4 +288,19 @@ class PlayerController {
     func annotationEdit(event: AnnotationEditEvent) {
         self.currentHandler.annotationEdit(self, event: event)
     }
+    
+    func annotationDeleteButton() {
+        guard let annotation = self.selectedAnnotation else { return }
+        
+        self.activeVideo.deleteAnnotation(annotation)
+        self.selectedAnnotation = nil
+        
+        if !self.activeVideo.batches.contains({ $0 === self.batch }) {
+            self.batch = nil
+        }
+    }
+    
+    func unselectAnnotation() {
+        self.selectedAnnotation = nil
+    }
 }

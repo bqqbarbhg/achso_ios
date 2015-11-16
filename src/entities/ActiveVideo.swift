@@ -117,4 +117,17 @@ class ActiveVideo {
             return (annotation: annotation, wasCreated: true)
         }
     }
+    
+    func deleteAnnotation(annotation: Annotation) {
+        for (batchIndex, batch) in self.batches.enumerate() {
+            if let index = batch.annotations.indexOf({ $0 === annotation }) {
+                batch.annotations.removeAtIndex(index)
+                
+                if batch.annotations.count == 0 {
+                    self.batches.removeAtIndex(batchIndex)
+                }
+                return
+            }
+        }
+    }
 }

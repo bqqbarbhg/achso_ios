@@ -12,6 +12,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
     var activeVideo: ActiveVideo?
+    var keyboardVisible: Bool = false
     
     var toolbarBottomConstraint: NSLayoutConstraint!
     
@@ -33,6 +34,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         return .LightContent;
     }
     
+    func keyboardWillShow(notification: NSNotification) {
+        self.keyboardVisible = true
+    }
     func keyboardWillChangeFrame(notification: NSNotification) {
         let info = notification.userInfo!
         let duration = info[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue
@@ -44,7 +48,6 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         
         self.view.layoutIfNeeded()
     }
-    
     func keyboardWillHide(notification: NSNotification) {
         let info = notification.userInfo!
         let duration = info[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue
@@ -52,6 +55,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         UIView.animateWithDuration(duration, animations: {
             self.toolbarBottomConstraint.constant = 0
         })
+
+        self.keyboardVisible = false
         
         self.view.layoutIfNeeded()
     }
@@ -71,6 +76,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         // Hidden by default
         self.annotationToolbar.hidden = true
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
@@ -80,6 +86,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.playButton.setModeNoAniamtion(.Pause)
     }
     
+
     override func viewDidAppear(animated: Bool) {
         self.videoView.attachPlayer(self.videoPlayer)
         self.videoPlayer.play()
@@ -116,6 +123,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.refreshView()
     }
 
+
     func refreshView() {
         self.playButton.buttonMode = {
             switch self.playerController.state {
@@ -143,6 +151,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         } else {
             self.annotationToolbar.hidden = true
             self.activeSelectedAnnotation = nil
+            
+            if self.keyboardVisible {
+                self.view.endEditing(true)
+            }
         }
         
         if let activeVideo = self.activeVideo {
@@ -156,6 +168,14 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
     }
     
+    func updateAnnotationText() {
+        guard let text = annotationTextField.text else { return }
+        
+        if let selectedAnnotation = self.activeSelectedAnnotation {
+            selectedAnnotation.text = text
+        }
+    }
+    
     @IBAction func annotationTextFieldEditingChanged(sender: UITextField) {
         updateAnnotationText()
     }
@@ -164,12 +184,14 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         updateAnnotationText()
     }
     
-    func updateAnnotationText() {
-        guard let text = annotationTextField.text else { return }
-        
-        if let selectedAnnotation = self.activeSelectedAnnotation {
-            selectedAnnotation.text = text
-        }
+    @IBAction func annotationDeleteButton(sender: UIButton) {
+        playerController.annotationDeleteButton()
+        refreshView()
+    }
+    
+    @IBAction func annotationSaveButton(sender: UIButton) {
+        playerController.unselectAnnotation()
+        refreshView()
     }
     
     func createVideo(sourceVideoUrl: NSURL) {
