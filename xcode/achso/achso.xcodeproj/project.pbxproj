@@ -34,6 +34,7 @@
 		A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */; };
 		A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC981BF1022900D07B82 /* ActiveVideo.swift */; };
 		A973BC9D1BF1049900D07B82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC9C1BF1049900D07B82 /* User.swift */; };
+		A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9743B841BFA26950061E645 /* AnnotationWaitBarView.swift */; };
 		A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975F4A61BF094DF007A020C /* PlayButtonView.swift */; };
 		A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98101E91BF48F14003352FF /* AnnotationImages.swift */; };
 		A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98101EB1BF49441003352FF /* CGColorExtension.swift */; };
@@ -72,6 +73,7 @@
 		A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekAnnotationLayer.swift; sourceTree = "<group>"; };
 		A973BC981BF1022900D07B82 /* ActiveVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideo.swift; sourceTree = "<group>"; };
 		A973BC9C1BF1049900D07B82 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		A9743B841BFA26950061E645 /* AnnotationWaitBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationWaitBarView.swift; sourceTree = "<group>"; };
 		A975F4A61BF094DF007A020C /* PlayButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButtonView.swift; sourceTree = "<group>"; };
 		A98101E91BF48F14003352FF /* AnnotationImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationImages.swift; sourceTree = "<group>"; };
 		A98101EB1BF49441003352FF /* CGColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGColorExtension.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */,
 				A975F4A61BF094DF007A020C /* PlayButtonView.swift */,
 				A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */,
+				A9743B841BFA26950061E645 /* AnnotationWaitBarView.swift */,
 			);
 			path = player;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */,
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
 				A9167FBF1BEB96CE0018BEC4 /* AVPlayerView.swift in Sources */,
+				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
 				A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */,
 				A973BC9D1BF1049900D07B82 /* User.swift in Sources */,
 				A94B82E11BEA3FB10017874D /* BrowserViewController.swift in Sources */,

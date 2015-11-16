@@ -303,4 +303,10 @@ class PlayerController {
     func unselectAnnotation() {
         self.selectedAnnotation = nil
     }
+    
+    func annotationWaitDone() {
+        if self.state == .AnnotationPause {
+            self.switchState(.Playing)
+        }
+    }
 }

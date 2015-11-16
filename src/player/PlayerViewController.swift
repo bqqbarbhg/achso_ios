@@ -11,7 +11,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBOutlet weak var annotationTextField: UITextField!
 
     @IBOutlet weak var subtitlesLabel: UILabel!
-    
+    @IBOutlet weak var annotationWaitBar: AnnotationWaitBarView!
+
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
     var activeVideo: ActiveVideo?
@@ -21,6 +22,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var subtitlesBottomConstraint: NSLayoutConstraint!
     
     var activeSelectedAnnotation: Annotation?
+    
+    var isWaiting: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
         self.playerController = PlayerController(player: self.videoPlayer)
@@ -218,6 +221,26 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         
         // TODO: Move subtitles if play controls are hidden
         self.subtitlesBottomConstraint.constant = self.playControlsView.frame.minY - self.view.frame.maxY
+        
+        if self.playerController.state == .AnnotationPause {
+            if !self.isWaiting {
+                
+                // TODO
+                let waitTime = 2.0
+                
+                self.performSelector("annotationWaitDone:", withObject: nil, afterDelay: waitTime)
+                self.annotationWaitBar.animateProgress(waitTime)
+                
+                self.isWaiting = true
+            }
+        }
+        
+        if self.isWaiting && self.playerController.state != .AnnotationPause {
+            
+            self.annotationWaitBar.stopAnimation()
+            
+            self.isWaiting = false
+        }
     }
     
     func updateAnnotationText() {
@@ -228,6 +251,12 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         refreshView()
+    }
+    
+    func annotationWaitDone(object: AnyObject) {
+        self.playerController.annotationWaitDone()
+        self.annotationWaitBar.stopAnimation()
+        self.isWaiting = false
     }
     
     @IBAction func annotationTextFieldEditingChanged(sender: UITextField) {
