@@ -3,7 +3,7 @@ import UIKit
 class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     @IBOutlet weak var videoView: VideoView!
-    @IBOutlet weak var playControlsView: UIStackView!
+    @IBOutlet weak var playControlsView: UIView!
     @IBOutlet weak var playButton: PlayButtonView!
     @IBOutlet weak var seekBar: SeekBarView!
     

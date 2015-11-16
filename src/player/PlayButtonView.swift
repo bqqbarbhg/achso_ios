@@ -85,4 +85,12 @@ class PlayButtonView: UIControl {
     func pressed(sender: UIControl) {
         callback?()
     }
+    
+    // Larger hit area
+    
+    override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+        let margin: CGFloat = 40.0
+        let bounds = self.frame.insetBy(dx: -margin, dy: -margin)
+        return bounds.contains(point)
+    }
 }
