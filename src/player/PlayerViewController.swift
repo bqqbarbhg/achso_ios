@@ -3,11 +3,14 @@ import UIKit
 class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     @IBOutlet weak var videoView: VideoView!
+    @IBOutlet weak var playControlsView: UIStackView!
     @IBOutlet weak var playButton: PlayButtonView!
     @IBOutlet weak var seekBar: SeekBarView!
     
     @IBOutlet weak var annotationToolbar: UIView!
     @IBOutlet weak var annotationTextField: UITextField!
+
+    @IBOutlet weak var subtitlesLabel: UILabel!
     
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
@@ -15,6 +18,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var keyboardVisible: Bool = false
     
     var toolbarBottomConstraint: NSLayoutConstraint!
+    var subtitlesBottomConstraint: NSLayoutConstraint!
     
     var activeSelectedAnnotation: Annotation?
     
@@ -70,11 +74,27 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             attribute: NSLayoutAttribute.Top,
             multiplier: 1.0,
             constant: 0.0)
-        
         self.view.addConstraint(self.toolbarBottomConstraint)
         
         // Hidden by default
         self.annotationToolbar.hidden = true
+        
+        self.subtitlesBottomConstraint = NSLayoutConstraint(
+            item: self.subtitlesLabel,
+            attribute: NSLayoutAttribute.Bottom,
+            relatedBy: NSLayoutRelation.Equal,
+            toItem: self.bottomLayoutGuide,
+            attribute: NSLayoutAttribute.Top,
+            multiplier: 1.0,
+            constant: 0.0)
+        self.view.addConstraint(self.subtitlesBottomConstraint)
+        
+        self.subtitlesLabel.layer.shadowColor = hexCgColor(0x000000, alpha: 1.0)
+        self.subtitlesLabel.layer.shadowOffset = CGSize.zero
+        self.subtitlesLabel.layer.shadowRadius = 2.0
+        self.subtitlesLabel.layer.shadowOpacity = 0.5
+        self.subtitlesLabel.layer.masksToBounds = false
+        self.subtitlesLabel.layer.shouldRasterize = true
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
@@ -86,7 +106,6 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.playButton.setModeNoAniamtion(.Pause)
     }
     
-
     override func viewDidAppear(animated: Bool) {
         self.videoView.attachPlayer(self.videoPlayer)
         self.videoPlayer.play()
@@ -122,8 +141,21 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         
         self.refreshView()
     }
-
-
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        let fontSize: CGFloat = {
+            if self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact {
+                return 20.0
+            } else {
+                return 26.0
+            }
+        }()
+        
+        self.subtitlesLabel.font = self.subtitlesLabel.font.fontWithSize(fontSize)
+    }
+    
     func refreshView() {
         self.playButton.buttonMode = {
             switch self.playerController.state {
@@ -166,6 +198,26 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         if let duration = videoPlayer.videoDuration {
             self.seekBar.seekBarPositionPercentage = self.playerController.seekBarPosition / duration
         }
+        
+        if let batch = self.playerController.batch {
+            var texts = [String]()
+            
+            for annotation in batch.annotations {
+                let text = annotation.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                if !text.isEmpty {
+                    texts.append(text)
+                }
+            }
+            
+            subtitlesLabel.text = texts.joinWithSeparator("\n")
+            subtitlesLabel.hidden = false
+        } else {
+            subtitlesLabel.text = nil
+            subtitlesLabel.hidden = true
+        }
+        
+        // TODO: Move subtitles if play controls are hidden
+        self.subtitlesBottomConstraint.constant = self.playControlsView.frame.minY - self.view.frame.maxY
     }
     
     func updateAnnotationText() {
@@ -174,6 +226,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         if let selectedAnnotation = self.activeSelectedAnnotation {
             selectedAnnotation.text = text
         }
+        
+        refreshView()
     }
     
     @IBAction func annotationTextFieldEditingChanged(sender: UITextField) {

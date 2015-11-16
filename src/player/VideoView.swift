@@ -100,7 +100,14 @@ class VideoView: UIView {
     func layoutAnnotationLayers(animated animated: Bool) {
         let bounds = self.avPlayerView.bounds
         
-        let annotationSize: CGFloat = 80.0
+        let annotationSize: CGFloat = {
+            if self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact {
+                return 60.0
+            } else {
+                return 80.0
+            }
+        }()
+        
         let normalImage = AnnotationImage.getAnnotationImage(AnnotationParameters(size: annotationSize, isSelected: false))
         let selectedImage = AnnotationImage.getAnnotationImage(AnnotationParameters(size: annotationSize, isSelected: true))
         

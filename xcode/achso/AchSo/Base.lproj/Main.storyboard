@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Categories-->
@@ -107,6 +108,13 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aLW-og-Ik8">
+                                <rect key="frame" x="20" y="0.0" width="560" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="0.0"/>
+                            </label>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iY4-jz-dd9">
                                 <rect key="frame" x="8" y="532" width="584" height="60"/>
                                 <subviews>
@@ -172,15 +180,20 @@
                             <constraint firstAttribute="trailing" secondItem="FR8-nq-5Af" secondAttribute="trailing" id="IaH-1t-zcI"/>
                             <constraint firstItem="lZ8-eS-y0K" firstAttribute="top" secondItem="lSG-84-dvt" secondAttribute="top" id="Nce-UD-WZb"/>
                             <constraint firstItem="CJ4-iI-GtJ" firstAttribute="top" secondItem="lZ8-eS-y0K" secondAttribute="bottom" id="cUk-6t-CRA"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="aLW-og-Ik8" secondAttribute="trailing" id="ciL-Jr-6h2"/>
+                            <constraint firstItem="aLW-og-Ik8" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leadingMargin" id="dJt-iS-QkE"/>
                             <constraint firstItem="iY4-jz-dd9" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" constant="8" id="lBD-0y-I1Y"/>
                             <constraint firstItem="FR8-nq-5Af" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="sKY-zI-hsS"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="SubtitlesLabel" destination="aLW-og-Ik8" id="i98-sT-3NA"/>
                         <outlet property="annotationTextField" destination="oUU-ZY-n5J" id="pze-Pk-sXF"/>
                         <outlet property="annotationToolbar" destination="FR8-nq-5Af" id="AEn-3C-BYB"/>
                         <outlet property="playButton" destination="e8C-M7-w4A" id="U2q-ai-UT7"/>
+                        <outlet property="playControlsView" destination="iY4-jz-dd9" id="k0w-6d-hxw"/>
                         <outlet property="seekBar" destination="Wxf-op-WDe" id="sV4-AD-p5q"/>
+                        <outlet property="subtitlesLabel" destination="aLW-og-Ik8" id="M4K-2P-XtU"/>
                         <outlet property="videoView" destination="lZ8-eS-y0K" id="6RL-ic-NYH"/>
                     </connections>
                 </viewController>
