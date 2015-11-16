@@ -159,6 +159,32 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.subtitlesLabel.font = self.subtitlesLabel.font.fontWithSize(fontSize)
     }
     
+    func calculateAnnotationWaitTime(annotations: [Annotation]) -> Double {
+        
+        // Time constants in seconds.
+        let timeAlways = 2.0
+        let timePerAnnotation = 0.5
+        let timePerSubtitle = 1.0
+        let timePerLetter = 0.02
+        let timeMaximum = 10.0
+        
+        var waitTime = timeAlways
+        
+        for annotation in annotations {
+            waitTime += timePerAnnotation
+            
+            let text = annotation.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            
+            let length = text.characters.count
+            if length > 0 {
+                waitTime += timePerSubtitle
+                waitTime += Double(length) * timePerLetter
+            }
+        }
+        
+        return min(waitTime, timeMaximum)
+    }
+    
     func refreshView() {
         self.playButton.buttonMode = {
             switch self.playerController.state {
@@ -225,8 +251,13 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         if self.playerController.state == .AnnotationPause {
             if !self.isWaiting {
                 
-                // TODO
-                let waitTime = 2.0
+                let waitTime: Double = {
+                    if let batch = self.playerController.batch {
+                        return self.calculateAnnotationWaitTime(batch.annotations)
+                    } else {
+                        return self.calculateAnnotationWaitTime([])
+                    }
+                }()
                 
                 self.performSelector("annotationWaitDone:", withObject: nil, afterDelay: waitTime)
                 self.annotationWaitBar.animateProgress(waitTime)
