@@ -13,7 +13,7 @@ class PlayButtonLayer: CALayer {
     var pauseThickness: CGFloat = 0.8
     
     // Visual colors
-    var color: CGColor = hexCgColor(0x888888, alpha: 1.0)
+    var color: CGColor = hexCgColor(0xEEEEEE, alpha: 1.0)
     
     override class func needsDisplayForKey(key: String) -> Bool {
         switch key {
