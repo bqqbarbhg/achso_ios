@@ -51,6 +51,12 @@ class VideoView: UIView {
         for touch in touches {
             let position = Vector2(cgPoint: touch.locationInView(self.avPlayerView))
             let normalized = position / Vector2(cgSize: self.avPlayerView.frame.size)
+            
+            if normalized.x < 0.0 || normalized.y < 0.0 || normalized.x > 1.0 || normalized.y > 1.0 {
+                // Ignore touches that _begin_ outside the video
+                continue
+            }
+            
             self.callback?(AnnotationEditEvent(position: normalized, state: .Begin))
         }
     }
