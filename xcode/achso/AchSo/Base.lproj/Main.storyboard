@@ -208,14 +208,18 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="fxW-LQ-7dl">
-                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="JYM-zx-PJU"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="JYM-zx-PJU">
+                            <connections>
+                                <action selector="saveButtonPressed:" destination="uj0-XH-hhR" id="A1X-EO-OcG"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="redo" id="yHf-CE-z1E">
+                            <barButtonItem enabled="NO" systemItem="redo" id="yHf-CE-z1E">
                                 <connections>
                                     <action selector="redoButtonPressed:" destination="uj0-XH-hhR" id="e9B-RS-M7k"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem systemItem="undo" id="9KN-RR-pfL">
+                            <barButtonItem enabled="NO" systemItem="undo" id="9KN-RR-pfL">
                                 <connections>
                                     <action selector="undoButtonPressed:" destination="uj0-XH-hhR" id="5RN-rU-Ag7"/>
                                 </connections>

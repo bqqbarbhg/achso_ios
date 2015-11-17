@@ -71,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
         // Create the coordinator and store
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("SingleViewCoreData.sqlite")
+        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("AchSoCoreData.sqlite")
         var failureReason = "There was an error creating or loading the application's saved data."
         do {
             try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
@@ -116,5 +116,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    // Core data wrappers
+    
+    lazy var videoEntity: NSEntityDescription = NSEntityDescription.entityForName("Video", inManagedObjectContext: self.managedObjectContext)!
+    
+    func findVideoModel(id: NSUUID) throws -> NSManagedObject? {
+        let fetch = NSFetchRequest(entityName: "Video")
+        fetch.predicate = NSPredicate(format: "id == %@", argumentArray: [id.lowerUUIDString])
+        fetch.fetchLimit = 1
+        
+        let results = try self.managedObjectContext.executeFetchRequest(fetch)
+        return results[safe: 0] as? NSManagedObject
+    }
+    
+    func createVideoModel(id: NSUUID) throws -> NSManagedObject {
+        let videoModel = NSManagedObject(entity: self.videoEntity, insertIntoManagedObjectContext: self.managedObjectContext)
+        
+        videoModel.setValue(id.lowerUUIDString, forKey: "id")
+        
+        return videoModel
+    }
+    
+    func saveVideo(video: Video) throws {
+        let manifest: String = try stringifyJson(video.toManifest()).unwrap()
+        
+        let videoModel = try findVideoModel(video.id) ?? createVideoModel(video.id)
+        videoModel.setValue(manifest, forKey: "manifest")
+        
+        try self.managedObjectContext.save()
+    }
+    
+    enum AppDataError: ErrorType {
+        case UnexpectedResultFormat
+    }
+    
+    func getVideos() throws -> [Video] {
+        let fetch = NSFetchRequest(entityName: "Video")
+        
+        let resultsAny = try self.managedObjectContext.executeFetchRequest(fetch)
+        guard let results = resultsAny as? [NSManagedObject] else {
+            throw AppDataError.UnexpectedResultFormat
+        }
+        
+        let videos = results.map { result -> Video? in
+            guard let manifest = result.valueForKey("manifest") as? String else {
+                return nil
+            }
+            guard let json = parseJson(manifest) else {
+                return nil
+            }
+            return try? Video(manifest: json)
+        }
+        return videos.filter { $0 != nil }.map { $0! }
+    }
 }
 

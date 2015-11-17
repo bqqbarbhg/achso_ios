@@ -334,10 +334,22 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.refreshView()
     }
     
-    func createVideo(sourceVideoUrl: NSURL) {
-        self.videoPlayer.loadVideo(sourceVideoUrl)
+    @IBAction func saveButtonPressed(sender: UIBarButtonItem) {
+        guard let activeVideo = self.activeVideo else { return }
+        let video = activeVideo.toVideo()
         
-        let video = Video()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        do {
+            try appDelegate.saveVideo(video)
+        } catch {
+            // TODO
+        }
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func setVideo(video: Video) {
+        self.videoPlayer.loadVideo(video.videoUri)
         let activeVideo = ActiveVideo(video: video)
         
         if let duration = self.videoPlayer.videoDuration {
@@ -352,6 +364,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.activeVideo = activeVideo
         self.playerController.activeVideo = activeVideo
     }
+
     
     func timeUpdate(time: Double) {
         self.playerController.timeUpdate(time)

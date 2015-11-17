@@ -1,5 +1,6 @@
 import UIKit
 import MobileCoreServices
+import AssetsLibrary
 
 class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
@@ -10,8 +11,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     
     var itemSize: CGSize?
     
-    // Used to pass the video URL from selection to the segue callback
-    var chosenVideoUrl: NSURL?
+    // Used to pass the video from selection to the segue callback
+    var chosenVideo: Video?
     
     func showCollection(collection: Collection) {
         self.title = collection.title
@@ -118,6 +119,13 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         }
     }
     
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        guard let video = self.collection?.videos[safe: indexPath.item] else { return }
+        
+        self.chosenVideo = video
+        self.performSegueWithIdentifier("showPlayer", sender: self)
+    }
+    
     @IBAction func cameraButton(sender: UIBarButtonItem) {
         
         let imagePicker = UIImagePickerController()
@@ -142,8 +150,24 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
             
         dismissViewControllerAnimated(true) {
-            self.chosenVideoUrl = (info[UIImagePickerControllerMediaURL]! as! NSURL)
-            self.performSegueWithIdentifier("showPlayer", sender: self)
+            
+            let temporaryUrl = (info[UIImagePickerControllerMediaURL]! as! NSURL)
+            let library = ALAssetsLibrary()
+            
+            if !library.videoAtPathIsCompatibleWithSavedPhotosAlbum(temporaryUrl) {
+                // Panic
+                return
+            }
+            
+            library.writeVideoAtPathToSavedPhotosAlbum(temporaryUrl, completionBlock: { assetUrl, error in
+                // TODO: Create the video somewhere else
+                let title = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.FullStyle)
+                
+                let video = Video(title: title, videoUri: assetUrl)
+                
+                self.chosenVideo = video
+                self.performSegueWithIdentifier("showPlayer", sender: self)
+            })
         }
     }
     
@@ -158,8 +182,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
                 return
             }
 
-            if let videoUrl = self.chosenVideoUrl {
-                playerViewController.createVideo(videoUrl)
+            if let video = self.chosenVideo {
+                playerViewController.setVideo(video)
             }
         }
         

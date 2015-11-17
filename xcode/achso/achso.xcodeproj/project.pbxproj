@@ -31,6 +31,8 @@
 		A952EE241BECA154003B638A /* SeekBarLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE231BECA154003B638A /* SeekBarLayer.swift */; };
 		A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE251BECA354003B638A /* CGRectExtension.swift */; };
 		A952EE281BECB3C5003B638A /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE271BECB3C5003B638A /* HexColor.swift */; };
+		A96623341BFB4D3C0021A6A4 /* NSUUIDExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */; };
+		A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */; };
 		A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */; };
 		A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC981BF1022900D07B82 /* ActiveVideo.swift */; };
 		A973BC9D1BF1049900D07B82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC9C1BF1049900D07B82 /* User.swift */; };
@@ -43,6 +45,7 @@
 		A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82771BEB550A00BB7263 /* ArrayExtension.swift */; };
 		A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */; };
 		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
+		A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B41BFB27C3001C6FC9 /* MiniJson.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +75,8 @@
 		A952EE231BECA154003B638A /* SeekBarLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekBarLayer.swift; sourceTree = "<group>"; };
 		A952EE251BECA354003B638A /* CGRectExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtension.swift; sourceTree = "<group>"; };
 		A952EE271BECB3C5003B638A /* HexColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
+		A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSUUIDExtension.swift; sourceTree = "<group>"; };
+		A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalExtension.swift; sourceTree = "<group>"; };
 		A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekAnnotationLayer.swift; sourceTree = "<group>"; };
 		A973BC981BF1022900D07B82 /* ActiveVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideo.swift; sourceTree = "<group>"; };
 		A973BC9C1BF1049900D07B82 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -84,6 +89,7 @@
 		A98D82771BEB550A00BB7263 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideoState.swift; sourceTree = "<group>"; };
 		A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationBatch.swift; sourceTree = "<group>"; };
+		A99442B41BFB27C3001C6FC9 /* MiniJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniJson.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,9 +205,12 @@
 				A9167FC01BEB9C8C0018BEC4 /* CGSizeExtension.swift */,
 				A952EE251BECA354003B638A /* CGRectExtension.swift */,
 				A98101EB1BF49441003352FF /* CGColorExtension.swift */,
+				A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */,
+				A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */,
 				A9167FC41BEBA73D0018BEC4 /* Vector2.swift */,
 				A952EE271BECB3C5003B638A /* HexColor.swift */,
 				A92B72F61BECE1AF0036B60E /* MathUtil.swift */,
+				A99442B41BFB27C3001C6FC9 /* MiniJson.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -281,10 +290,12 @@
 				A9167FC51BEBA73D0018BEC4 /* Vector2.swift in Sources */,
 				A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */,
 				A94B82E01BEA3FB10017874D /* AppDelegate.swift in Sources */,
+				A96623341BFB4D3C0021A6A4 /* NSUUIDExtension.swift in Sources */,
 				A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */,
 				A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */,
 				A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */,
 				A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */,
+				A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */,
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
 				A9167FBF1BEB96CE0018BEC4 /* AVPlayerView.swift in Sources */,
 				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
@@ -305,6 +316,7 @@
 				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
 				A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */,
 				A94B82E81BEA5EF70017874D /* Collection.swift in Sources */,
+				A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */,
 				A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */,
 				A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */,
 				A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */,

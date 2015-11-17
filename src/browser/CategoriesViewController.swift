@@ -5,45 +5,26 @@ class CategoriesViewController: UITableViewController {
     // Initialized in didFinishLaunch, do not use in init
     weak var videosViewController: VideosViewController!
     
+    var tempVideos: [Video] = []
+
+    var tempAllVideos = Collection(title: "All Videos")
+    
     func tempGetSections() -> [Section] {
-        
         let general = Section(title: nil)
-        general.collections = [
-            Collection(title: "All videos"),
-            Collection(title: "My videos"),
-        ]
+        general.collections = [tempAllVideos]
+        tempAllVideos.videos = tempVideos
         
-        func makeVideo(title: String) -> Video {
-            let video = Video()
-            video.title = title
-            return video
-        }
+        return [general]
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        self.tempVideos = (try? appDelegate.getVideos()) ?? []
+        self.tableView.reloadData()
         
-        general.collections[0].videos = [
-            makeVideo("Miestentie"),
-            makeVideo("Another video"),
-            makeVideo("Third video"),
-        ]
-        
-        for i in 1...10 {
-            general.collections[0].videos.append(makeVideo("Video #\(i)"))
-        }
-        
-        let genres = Section(title: "Genres")
-        genres.collections = [
-            Collection(title: "Good work"),
-            Collection(title: "Problem"),
-            Collection(title: "Site overview"),
-            Collection(title: "Trick of trade"),
-        ]
-        
-        let groups = Section(title: "Groups")
-        groups.collections = [
-            Collection(title: "LeGroup"),
-            Collection(title: "Test group"),
-        ]
-        
-        return [general, genres, groups];
+        // HACK: Think about load order
+        // This doesn't even work on phone
+        self.videosViewController.collectionView?.reloadData()
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

@@ -128,4 +128,10 @@ class ActiveVideo {
     func restoreState(state: ActiveVideoState) {
         self.batches = state.batches
     }
+    
+    func toVideo() -> Video {
+        let video = Video(copyFrom: self.video)
+        video.annotations = self.batches.flatMap({ $0.annotations })
+        return video
+    }
 }
