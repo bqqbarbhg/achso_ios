@@ -162,19 +162,23 @@ class AnnotationEditHandler: PlayerHandler {
     func annotationEdit(c: PlayerController, event: AnnotationEditEvent) {
         guard let activeVideo = c.activeVideo else { return }
         
-        if c.batch == nil {
-            c.batch = activeVideo.findOrCreateBatch(c.time)
-        }
-        
-        guard let batch = c.batch else { return }
-        
         if event.state == .Begin {
+            let preUndoPoint = c.createUndoPoint()
+            
+            if c.batch == nil {
+                c.batch = activeVideo.findOrCreateBatch(c.time)
+            }
+            guard let batch = c.batch else { return }
+            
             let result = activeVideo.findOrCreateAnnotationAt(event.position, inBatch: batch)
             
-            c.previousSelectedAnnotation = c.selectedAnnotation
+            c.selectAnnotation(result.annotation, undoPoint: preUndoPoint)
+            
+            if result.wasCreated {
+                c.selectedAnnotationMutated()
+            }
             
             c.dragging = result.wasCreated
-            c.selectedAnnotation = result.annotation
             c.annotationDeadZoneBroken = false
             c.dragOffset = result.annotation.position - event.position
             c.dragStartPos = result.annotation.position
@@ -196,6 +200,7 @@ class AnnotationEditHandler: PlayerHandler {
                     }
                     c.dragging = true
                     c.annotationDeadZoneBroken = true
+                    c.selectedAnnotationMutated()
                 }
                 
                 if c.dragging {
@@ -210,6 +215,18 @@ class AnnotationEditHandler: PlayerHandler {
     }
 }
 
+struct UndoPoint {
+    let time: Double
+    let state: ActiveVideoState
+    let batchIndex: Int?
+    
+    init(time: Double, state: ActiveVideoState, batchIndex: Int?) {
+        self.time = time
+        self.state = state
+        self.batchIndex = batchIndex
+    }
+}
+
 class PlayerController {
     
     var state: PlayerState = .Playing
@@ -217,8 +234,8 @@ class PlayerController {
     let player: VideoPlayer
     var activeVideo: ActiveVideo!
     
-    var batch: ActiveVideo.AnnotationBatch?
-    var ignoreBatch: ActiveVideo.AnnotationBatch?
+    var batch: AnnotationBatch?
+    var ignoreBatch: AnnotationBatch?
     
     var previousSelectedAnnotation: Annotation?
     var selectedAnnotation: Annotation?
@@ -228,11 +245,17 @@ class PlayerController {
     var dragStartPos: Vector2 = Vector2()
     var annotationDeadZone: Float = 0.02
     
+    var selectedUndoPoint: UndoPoint?
+    
     var time: Double = 0.0
     var seekBarPosition: Double = 0.0
     var isSeeking: Bool = false
     var previousTime: Double = 0.0
     var batchSnapDistance: Double = 0.05
+    
+    var undoStream: [UndoPoint] = []
+    var redoStream: [UndoPoint] = []
+    var maxUndoDepth: Int = 256
     
     init(player: VideoPlayer) {
         self.player = player
@@ -292,6 +315,8 @@ class PlayerController {
     func annotationDeleteButton() {
         guard let annotation = self.selectedAnnotation else { return }
         
+        self.commitUndoPoint(self.createUndoPoint())
+        
         self.activeVideo.deleteAnnotation(annotation)
         self.selectedAnnotation = nil
         
@@ -308,5 +333,89 @@ class PlayerController {
         if self.state == .AnnotationPause {
             self.switchState(.Playing)
         }
+    }
+    
+    func selectAnnotation(annotation: Annotation, undoPoint: UndoPoint? = nil) {
+        self.selectedUndoPoint = undoPoint ?? self.createUndoPoint()
+        self.previousSelectedAnnotation = self.selectedAnnotation
+        self.selectedAnnotation = annotation
+    }
+    
+    func selectedAnnotationMutated() {
+        if let undoPoint = self.selectedUndoPoint {
+            self.commitUndoPoint(undoPoint)
+            self.selectedUndoPoint = nil
+        }
+    }
+    
+    // Undo / redo
+    
+    func createUndoPoint() -> UndoPoint {
+        let state = self.activeVideo.saveState()
+        let batchIndex = self.activeVideo.batches.indexOf({ $0 === self.batch })
+        
+        return UndoPoint(time: self.time, state: state, batchIndex: batchIndex)
+    }
+    
+    func createUndoPoint(atTime time: Double) -> UndoPoint {
+        let state = self.activeVideo.saveState()
+        
+        let batch = self.activeVideo.closestBatch(time, minimumDistance: 0.05)
+        let batchIndex = self.activeVideo.batches.indexOf({ $0 === batch })
+        
+        return UndoPoint(time: time, state: state, batchIndex: batchIndex)
+    }
+    
+    func commitUndoPoint(undoPoint: UndoPoint) {
+        self.redoStream.removeAll(keepCapacity: true)
+        
+        self.undoStream.append(undoPoint)
+        if self.undoStream.count > self.maxUndoDepth {
+            self.undoStream.removeFirst()
+        }
+    }
+    
+    func restoreStateFrom(inout stream: [UndoPoint], inout andSaveCurrentTo storeStream: [UndoPoint]) -> Bool {
+        guard let undoPoint = stream.popLast() else { return false }
+        
+        storeStream.append(self.createUndoPoint(atTime: undoPoint.time))
+        
+        self.time = undoPoint.time
+        self.activeVideo.restoreState(undoPoint.state)
+        self.batch = undoPoint.batchIndex.map({ self.activeVideo.batches[$0] })
+        
+        return true
+    }
+    
+    func commitUndo() -> Bool {
+        return self.restoreStateFrom(&self.undoStream, andSaveCurrentTo: &self.redoStream)
+    }
+    func commitRedo() -> Bool {
+        return self.restoreStateFrom(&self.redoStream, andSaveCurrentTo: &self.undoStream)
+    }
+    
+    var canUndo: Bool {
+        return !self.undoStream.isEmpty
+    }
+    var canRedo: Bool {
+        return !self.redoStream.isEmpty
+    }
+    
+    func doUndo() {
+        if self.commitUndo() {
+            self.postUndoRedo()
+        }
+    }
+    func doRedo() {
+        if self.commitRedo() {
+            self.postUndoRedo()
+        }
+    }
+    
+    func postUndoRedo() {
+        self.player.seekTo(self.time)
+        self.seekBarPosition = self.time
+        self.selectedAnnotation = nil
+        self.switchState(.AnnotationEdit)
     }
 }

@@ -13,6 +13,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBOutlet weak var subtitlesLabel: UILabel!
     @IBOutlet weak var annotationWaitBar: AnnotationWaitBarView!
 
+    @IBOutlet weak var undoButton: UIBarButtonItem!
+    @IBOutlet weak var redoButton: UIBarButtonItem!
+
     let videoPlayer = VideoPlayer()
     let playerController: PlayerController
     var activeVideo: ActiveVideo?
@@ -273,6 +276,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             self.isWaiting = false
         }
         
+        self.undoButton.enabled = self.playerController.canUndo
+        self.redoButton.enabled = self.playerController.canRedo
+        
         if let activeVideo = self.activeVideo {
             let snapDistanceInPoints = 10.0
             let barLengthInPoints = Double(seekBar.seekBarWidth)
@@ -291,6 +297,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             selectedAnnotation.text = text
         }
         
+        self.playerController.selectedAnnotationMutated()
         refreshView()
     }
     
@@ -316,6 +323,15 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBAction func annotationSaveButton(sender: UIButton) {
         playerController.unselectAnnotation()
         refreshView()
+    }
+    
+    @IBAction func undoButtonPressed(sender: UIBarButtonItem) {
+        playerController.doUndo()
+        self.refreshView()
+    }
+    @IBAction func redoButtonPressed(sender: UIBarButtonItem) {
+        playerController.doRedo()
+        self.refreshView()
     }
     
     func createVideo(sourceVideoUrl: NSURL) {

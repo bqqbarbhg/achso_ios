@@ -4,6 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Categories-->
@@ -85,7 +86,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="uj0-XH-hhR" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
+                        <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="87V-qH-EOo" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -206,6 +207,21 @@
                             <constraint firstItem="YHw-Ws-haI" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="x3d-dW-hTV"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="fxW-LQ-7dl">
+                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="JYM-zx-PJU"/>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="redo" id="yHf-CE-z1E">
+                                <connections>
+                                    <action selector="redoButtonPressed:" destination="uj0-XH-hhR" id="e9B-RS-M7k"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="undo" id="9KN-RR-pfL">
+                                <connections>
+                                    <action selector="undoButtonPressed:" destination="uj0-XH-hhR" id="5RN-rU-Ag7"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                     <connections>
                         <outlet property="SubtitlesLabel" destination="aLW-og-Ik8" id="i98-sT-3NA"/>
                         <outlet property="annotationTextField" destination="oUU-ZY-n5J" id="pze-Pk-sXF"/>
@@ -213,14 +229,16 @@
                         <outlet property="annotationWaitBar" destination="bk5-IQ-bgG" id="zjb-ho-HI8"/>
                         <outlet property="playButton" destination="HpK-U7-oo4" id="UGA-DG-RG7"/>
                         <outlet property="playControlsView" destination="YHw-Ws-haI" id="Bwq-vF-m5e"/>
+                        <outlet property="redoButton" destination="yHf-CE-z1E" id="muL-nN-RLw"/>
                         <outlet property="seekBar" destination="hrX-qo-bCh" id="HQO-13-z1O"/>
                         <outlet property="subtitlesLabel" destination="aLW-og-Ik8" id="M4K-2P-XtU"/>
+                        <outlet property="undoButton" destination="9KN-RR-pfL" id="DDL-BF-8WA"/>
                         <outlet property="videoView" destination="lZ8-eS-y0K" id="6RL-ic-NYH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Gd-G9-G3i" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2215" y="817"/>
+            <point key="canvasLocation" x="3027" y="817"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="gOr-uq-4Ky">
@@ -268,6 +286,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QsS-ls-Y9m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="716" y="817"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="gS9-hE-9Oc">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="D0G-uJ-xVA" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qae-yq-mMM">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="uj0-XH-hhR" kind="relationship" relationship="rootViewController" id="gvf-Lp-OHJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OWY-H1-WXp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2215" y="817"/>
         </scene>
     </scenes>
 </document>

@@ -150,7 +150,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         func handleShowPlayer(viewController: UIViewController) {
-            guard let playerViewController = viewController as? PlayerViewController else {
+            guard let navigationController = viewController as? UINavigationController else {
+                return
+            }
+            
+            guard let playerViewController = navigationController.topViewController as? PlayerViewController else {
                 return
             }
 

@@ -2,15 +2,6 @@ import Foundation
 
 // Video that is currently played or edited, in a better data structure
 class ActiveVideo {
-    class AnnotationBatch {
-        var time: Double
-        var annotations: [Annotation]
-        
-        init(time: Double, annotations: [Annotation] = []) {
-            self.time = time
-            self.annotations = annotations
-        }
-    }
     
     var video: Video
     var duration: Double = 0.0
@@ -129,5 +120,12 @@ class ActiveVideo {
                 return
             }
         }
+    }
+    
+    func saveState() -> ActiveVideoState {
+        return ActiveVideoState(batches: self.batches)
+    }
+    func restoreState(state: ActiveVideoState) {
+        self.batches = state.batches
     }
 }

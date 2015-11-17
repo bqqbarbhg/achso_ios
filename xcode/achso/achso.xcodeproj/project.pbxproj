@@ -41,6 +41,8 @@
 		A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82701BEB510800BB7263 /* VideoCellView.swift */; };
 		A98D82751BEB52F100BB7263 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82741BEB52F100BB7263 /* Video.swift */; };
 		A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82771BEB550A00BB7263 /* ArrayExtension.swift */; };
+		A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */; };
+		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +82,8 @@
 		A98D82701BEB510800BB7263 /* VideoCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCellView.swift; sourceTree = "<group>"; };
 		A98D82741BEB52F100BB7263 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		A98D82771BEB550A00BB7263 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
+		A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideoState.swift; sourceTree = "<group>"; };
+		A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationBatch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +185,8 @@
 				A98D82741BEB52F100BB7263 /* Video.swift */,
 				A973BC9C1BF1049900D07B82 /* User.swift */,
 				A973BC981BF1022900D07B82 /* ActiveVideo.swift */,
+				A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */,
+				A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */,
 				A9167FC21BEBA6FF0018BEC4 /* Annotation.swift */,
 			);
 			path = entities;
@@ -276,6 +282,7 @@
 				A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */,
 				A94B82E01BEA3FB10017874D /* AppDelegate.swift in Sources */,
 				A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */,
+				A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */,
 				A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */,
 				A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */,
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
@@ -296,6 +303,7 @@
 				A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */,
 				A92B72F71BECE1AF0036B60E /* MathUtil.swift in Sources */,
 				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
+				A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */,
 				A94B82E81BEA5EF70017874D /* Collection.swift in Sources */,
 				A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */,
 				A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */,
