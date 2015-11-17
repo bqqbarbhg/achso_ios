@@ -272,6 +272,16 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             
             self.isWaiting = false
         }
+        
+        if let activeVideo = self.activeVideo {
+            let snapDistanceInPoints = 10.0
+            let barLengthInPoints = Double(seekBar.seekBarWidth)
+            
+            let videoDurationInSeconds = activeVideo.duration
+            let snapDurationInSeconds = (snapDistanceInPoints / barLengthInPoints) * videoDurationInSeconds
+            
+            self.playerController.batchSnapDistance = snapDurationInSeconds
+        }
     }
     
     func updateAnnotationText() {

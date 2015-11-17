@@ -26,6 +26,10 @@ class SeekBarView: UIControl {
     
     var sidePadding: CGFloat = 0.0
     
+    var seekBarWidth: CGFloat {
+        return self.frame.width - self.sidePadding * 2.0
+    }
+    
     // Initialization
     
     init() {
@@ -111,7 +115,7 @@ class SeekBarView: UIControl {
         let location = touch.locationInView(self)
         
         // Evaluate location in bar accounting the padding in the display
-        let seekBarWidth = self.frame.width - self.sidePadding * 2.0
+        let seekBarWidth = self.seekBarWidth
         let seekBarStart = self.sidePadding
         let relative = (location.x - seekBarStart) / seekBarWidth
         
