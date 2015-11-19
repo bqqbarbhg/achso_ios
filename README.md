@@ -6,7 +6,7 @@ Ach so! for iOS
 This project uses [CocoaPods][cocoapods], but does not include the `Pods/` directory, so start with:
 
 ```bash
-cd xcode/AchSo/AchSo
+cd xcode/AchSo
 pod install
 ```
 
