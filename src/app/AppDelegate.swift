@@ -26,6 +26,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // videosViewController.showCollection(categoriesViewController.tempGetSections().first!.collections.first)
         videosViewController.showCollection(categoriesViewController.tempGetSections()[0].collections[0])
         
+        if let
+            endpointString: String = Secrets.get("LAYERS_OIDC_URL"),
+            endpoint: NSURL = NSURL(string: endpointString),
+            clientId: String = Secrets.get("LAYERS_OIDC_CLIENT_ID"),
+            clientSecret: String = Secrets.get("LAYERS_OIDC_CLIENT_SECRET") {
+        
+                HTTPClient.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
+        }
+        
         return true
     }
     

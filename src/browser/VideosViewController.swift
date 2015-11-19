@@ -197,4 +197,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         handler(segue.destinationViewController)
     }
 
+    @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
+        if !HTTPClient.authenticate(fromViewController: self) {
+            // TODO: Show error
+        }
+    }
 }

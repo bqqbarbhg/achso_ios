@@ -13,9 +13,12 @@
 		A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FC01BEB9C8C0018BEC4 /* CGSizeExtension.swift */; };
 		A9167FC31BEBA6FF0018BEC4 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FC21BEBA6FF0018BEC4 /* Annotation.swift */; };
 		A9167FC51BEBA73D0018BEC4 /* Vector2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FC41BEBA73D0018BEC4 /* Vector2.swift */; };
+		A91D67261BFDE9A200B15A66 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = A91D67251BFDE9A200B15A66 /* Secrets.plist */; };
+		A91D67281BFDEB9100B15A66 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91D67271BFDEB9100B15A66 /* Secrets.swift */; };
 		A92B72F71BECE1AF0036B60E /* MathUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72F61BECE1AF0036B60E /* MathUtil.swift */; };
 		A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FB1BECEDCB0036B60E /* PlayerController.swift */; };
 		A92B72FE1BECEE360036B60E /* PlayButtonLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */; };
+		A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A946FECB1BFDD38000F53003 /* HTTPClient.swift */; };
 		A94B82AF1BEA3DC00017874D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A94B82AD1BEA3DC00017874D /* Main.storyboard */; };
 		A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A94B82B01BEA3DC00017874D /* AchSo.xcdatamodeld */; };
 		A94B82B41BEA3DC00017874D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A94B82B31BEA3DC00017874D /* Assets.xcassets */; };
@@ -39,6 +42,7 @@
 		A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9743B841BFA26950061E645 /* AnnotationWaitBarView.swift */; };
 		A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975F4A61BF094DF007A020C /* PlayButtonView.swift */; };
 		A9767BE14423B8AAD41E5258 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AE8803CC441BE9B3C8F48B3 /* Pods.framework */; };
+		A97F3E7C1BFDC51F00B4392C /* AuthenticatedHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97F3E7B1BFDC51F00B4392C /* AuthenticatedHTTP.swift */; };
 		A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98101E91BF48F14003352FF /* AnnotationImages.swift */; };
 		A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98101EB1BF49441003352FF /* CGColorExtension.swift */; };
 		A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98D82701BEB510800BB7263 /* VideoCellView.swift */; };
@@ -47,6 +51,9 @@
 		A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */; };
 		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
 		A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B41BFB27C3001C6FC9 /* MiniJson.swift */; };
+		A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30521BFC981A00746686 /* OAuth2.swift */; };
+		A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */; };
+		A9FE305B1BFCCCC000746686 /* Alamotypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE305A1BFCCCC000746686 /* Alamotypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,9 +65,12 @@
 		A9167FC01BEB9C8C0018BEC4 /* CGSizeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSizeExtension.swift; sourceTree = "<group>"; };
 		A9167FC21BEBA6FF0018BEC4 /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		A9167FC41BEBA73D0018BEC4 /* Vector2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector2.swift; sourceTree = "<group>"; };
+		A91D67251BFDE9A200B15A66 /* Secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
+		A91D67271BFDEB9100B15A66 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		A92B72F61BECE1AF0036B60E /* MathUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtil.swift; sourceTree = "<group>"; };
 		A92B72FB1BECEDCB0036B60E /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButtonLayer.swift; sourceTree = "<group>"; };
+		A946FECB1BFDD38000F53003 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		A94B82A61BEA3DC00017874D /* AchSo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AchSo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A94B82AE1BEA3DC00017874D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A94B82B11BEA3DC00017874D /* AchSo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AchSo.xcdatamodel; sourceTree = "<group>"; };
@@ -85,6 +95,7 @@
 		A973BC9C1BF1049900D07B82 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A9743B841BFA26950061E645 /* AnnotationWaitBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationWaitBarView.swift; sourceTree = "<group>"; };
 		A975F4A61BF094DF007A020C /* PlayButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButtonView.swift; sourceTree = "<group>"; };
+		A97F3E7B1BFDC51F00B4392C /* AuthenticatedHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedHTTP.swift; sourceTree = "<group>"; };
 		A98101E91BF48F14003352FF /* AnnotationImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationImages.swift; sourceTree = "<group>"; };
 		A98101EB1BF49441003352FF /* CGColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGColorExtension.swift; sourceTree = "<group>"; };
 		A98D82701BEB510800BB7263 /* VideoCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCellView.swift; sourceTree = "<group>"; };
@@ -93,6 +104,9 @@
 		A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideoState.swift; sourceTree = "<group>"; };
 		A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationBatch.swift; sourceTree = "<group>"; };
 		A99442B41BFB27C3001C6FC9 /* MiniJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniJson.swift; sourceTree = "<group>"; };
+		A9FE30521BFC981A00746686 /* OAuth2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2.swift; sourceTree = "<group>"; };
+		A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginWebViewController.swift; sourceTree = "<group>"; };
+		A9FE305A1BFCCCC000746686 /* Alamotypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alamotypes.swift; sourceTree = "<group>"; };
 		ABC9A50BCF0F09E8DF39B446 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -142,6 +156,7 @@
 				A94B82B31BEA3DC00017874D /* Assets.xcassets */,
 				A94B82B51BEA3DC00017874D /* LaunchScreen.storyboard */,
 				A94B82B81BEA3DC00017874D /* Info.plist */,
+				A91D67251BFDE9A200B15A66 /* Secrets.plist */,
 				A94B82B01BEA3DC00017874D /* AchSo.xcdatamodeld */,
 			);
 			path = AchSo;
@@ -151,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				A94B82DA1BEA3FB10017874D /* app */,
+				A95C80F71BFC819100CFEA43 /* auth */,
 				A94B82DC1BEA3FB10017874D /* browser */,
 				A98D82731BEB52F100BB7263 /* entities */,
 				A94B82DE1BEA3FB10017874D /* player */,
@@ -200,6 +216,15 @@
 			path = player;
 			sourceTree = "<group>";
 		};
+		A95C80F71BFC819100CFEA43 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */,
+				A946FECB1BFDD38000F53003 /* HTTPClient.swift */,
+			);
+			path = auth;
+			sourceTree = "<group>";
+		};
 		A98D82731BEB52F100BB7263 /* entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +251,10 @@
 				A952EE271BECB3C5003B638A /* HexColor.swift */,
 				A92B72F61BECE1AF0036B60E /* MathUtil.swift */,
 				A99442B41BFB27C3001C6FC9 /* MiniJson.swift */,
+				A9FE30521BFC981A00746686 /* OAuth2.swift */,
+				A97F3E7B1BFDC51F00B4392C /* AuthenticatedHTTP.swift */,
+				A9FE305A1BFCCCC000746686 /* Alamotypes.swift */,
+				A91D67271BFDEB9100B15A66 /* Secrets.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -300,6 +329,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A91D67261BFDE9A200B15A66 /* Secrets.plist in Resources */,
 				A94B82B71BEA3DC00017874D /* LaunchScreen.storyboard in Resources */,
 				A94B82B41BEA3DC00017874D /* Assets.xcassets in Resources */,
 				A94B82AF1BEA3DC00017874D /* Main.storyboard in Resources */,
@@ -373,7 +403,9 @@
 				A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */,
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
 				A9167FBF1BEB96CE0018BEC4 /* AVPlayerView.swift in Sources */,
+				A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */,
 				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
+				A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */,
 				A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */,
 				A973BC9D1BF1049900D07B82 /* User.swift in Sources */,
 				A94B82E11BEA3FB10017874D /* BrowserViewController.swift in Sources */,
@@ -384,15 +416,19 @@
 				A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */,
 				A94B82E61BEA5EA10017874D /* Section.swift in Sources */,
 				A952EE281BECB3C5003B638A /* HexColor.swift in Sources */,
+				A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */,
 				A94B82E21BEA3FB10017874D /* PlayerViewController.swift in Sources */,
+				A9FE305B1BFCCCC000746686 /* Alamotypes.swift in Sources */,
 				A952EE221BECA109003B638A /* SeekBarView.swift in Sources */,
 				A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */,
 				A92B72F71BECE1AF0036B60E /* MathUtil.swift in Sources */,
 				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
+				A97F3E7C1BFDC51F00B4392C /* AuthenticatedHTTP.swift in Sources */,
 				A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */,
 				A94B82E81BEA5EF70017874D /* Collection.swift in Sources */,
 				A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */,
 				A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */,
+				A91D67281BFDEB9100B15A66 /* Secrets.swift in Sources */,
 				A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */,
 				A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */,
 				A98D82751BEB52F100BB7263 /* Video.swift in Sources */,

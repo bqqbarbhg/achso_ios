@@ -21,3 +21,6 @@ xcuserdata
 # I prefer not to bloat the repo and the lockfile should be able to recreate the pod install
 xcode/AchSo/Pods/
 
+# Secrets property list
+xcode/AchSo/AchSo/Secrets.plist
+

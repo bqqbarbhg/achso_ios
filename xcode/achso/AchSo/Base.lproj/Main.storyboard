@@ -36,6 +36,40 @@
             </objects>
             <point key="canvasLocation" x="1528" y="156"/>
         </scene>
+        <!--Login Web View Controller-->
+        <scene sceneID="V6S-Yv-M6T">
+            <objects>
+                <viewController storyboardIdentifier="LoginWebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4sn-0r-2U8" customClass="LoginWebViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hZ0-wn-V6v"/>
+                        <viewControllerLayoutGuide type="bottom" id="Mdg-tg-dJA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="d0l-M5-yIv">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N9W-BB-S6t">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Mdg-tg-dJA" firstAttribute="top" secondItem="N9W-BB-S6t" secondAttribute="bottom" id="6Sb-Fz-Tfl"/>
+                            <constraint firstItem="N9W-BB-S6t" firstAttribute="leading" secondItem="d0l-M5-yIv" secondAttribute="leading" id="8nn-Pc-22H"/>
+                            <constraint firstItem="N9W-BB-S6t" firstAttribute="top" secondItem="hZ0-wn-V6v" secondAttribute="bottom" id="TI2-OL-SfK"/>
+                            <constraint firstAttribute="trailing" secondItem="N9W-BB-S6t" secondAttribute="trailing" id="iyW-NX-XDU"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="gnr-Kz-jRb"/>
+                    <connections>
+                        <outlet property="webView" destination="N9W-BB-S6t" id="1D2-Ye-fk0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sBG-ld-5eK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2340" y="1532"/>
+        </scene>
         <!--Videos View Controller-->
         <scene sceneID="hRI-Gy-QpV">
             <objects>
@@ -79,11 +113,18 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="UPr-XF-tiG">
-                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="e1x-2A-Edz">
-                            <connections>
-                                <action selector="cameraButton:" destination="83W-Gl-1p4" id="sJT-g2-QdF"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="camera" id="e1x-2A-Edz">
+                                <connections>
+                                    <action selector="cameraButton:" destination="83W-Gl-1p4" id="sJT-g2-QdF"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Login" id="ALM-6l-nzU">
+                                <connections>
+                                    <action selector="loginButtonPressed:" destination="83W-Gl-1p4" id="aYf-oY-5uH"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
