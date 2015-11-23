@@ -2,9 +2,13 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="14F1021" minimumToolsVersion="Automatic">
     <entity name="Video" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="isLocal" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="manifest" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="revision" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="thumbnailUri" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Video" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="Video" positionX="-63" positionY="-18" width="128" height="135"/>
     </elements>
 </model>

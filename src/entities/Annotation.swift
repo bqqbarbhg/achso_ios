@@ -4,7 +4,7 @@ struct AnnotationBase {
     var position: Vector2 = Vector2()
     var text: String = ""
     var time: Double = 0.0
-    var author: User?
+    var author: User
     
     init(annotation: Annotation) {
         self.position = annotation.position
@@ -18,7 +18,7 @@ class Annotation {
     var position: Vector2 = Vector2()
     var text: String = ""
     var time: Double = 0.0
-    var author: User?
+    var author: User = User()
     
     init() {
     }
@@ -51,7 +51,7 @@ class Annotation {
             ] as JSONObject,
             "text": text,
             "time": Int(time * 1000),
-            "author": author?.toManifest() ?? JSONObject(),
+            "author": author.toManifest(),
         ]
     }
 }

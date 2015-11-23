@@ -13,39 +13,52 @@ class HTTPClient {
         self.http = AuthenticatedHTTP(oaClient: oaClient)
     }
     
-    static func authenticate(fromViewController viewController: UIViewController) -> Bool {
+    
+    
+    static func authenticate(fromViewController viewController: UIViewController, callback: AuthenticationResult -> ()) {
 
-        guard let http = self.http else { return false }
+        guard let http = self.http else {
+            callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("HTTP client not initialized")))
+            return
+        }
         
         let scopes = ["openid", "profile", "email", "offline_access"]
         let query = ["prompt": "login", "display": "touch"]
         
         guard let authUrl = http.createCodeAuthorizationUrl(scopes: scopes, extraQuery: query) else {
-            return false
+            callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("Could not create authorization URL")))
+            return
         }
         
         let loginController = viewController.storyboard!.instantiateViewControllerWithIdentifier("LoginWebViewController") as! LoginWebViewController
-        loginController.prepareForLogin(url: authUrl, trapUrlPrefix: "app://", callback: self.loginRedirected)
+        loginController.prepareForLogin(url: authUrl, trapUrlPrefix: "app://", callback: self.loginRedirected(callback: callback))
         
         viewController.presentViewController(loginController, animated: true, completion: nil)
-        return true
     }
     
-    static func loginRedirected(request: NSURLRequest) {
+    static func doAuthenticated(fromViewController viewController: UIViewController, callback: AuthenticationResult -> ()) {
+        guard let http = self.http else {
+            callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("HTTP client not initialized")))
+            return
+        }
+        
+        http.refreshIfNecessary() { result in
+            if result.isAuthenticated {
+                callback(result)
+            } else {
+                authenticate(fromViewController: viewController, callback: callback)
+            }
+        }
+    }
+    
+    static func loginRedirected(callback callback: AuthenticationResult -> ())(request: NSURLRequest) {
         
         guard let url = request.URL else { return }
         guard let code = OAuth2Client.parseCodeFromCallbackUrl(url) else { return }
         
         if let http = self.http {
-            http.authenticateWithCode(code, callback: self.httpAuthenticated)
+            http.authenticateWithCode(code, callback: callback)
         }
     }
-    
-    static func httpAuthenticated(wasSuccessful: Bool) {
-        
-        // TODO: Let everyone know
-        
-    }
-    
 }
 

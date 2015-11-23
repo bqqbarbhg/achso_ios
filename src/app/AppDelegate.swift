@@ -6,6 +6,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    static var instance: AppDelegate {
+        return UIApplication.sharedApplication().delegate as! AppDelegate
+    }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
@@ -150,6 +153,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let manifest: String = try stringifyJson(video.toManifest()).unwrap()
         
         let videoModel = try findVideoModel(video.id) ?? createVideoModel(video.id)
+        
+        let videoInfo = VideoInfo(video: video)
+        
+        videoInfo.writeToObject(videoModel)
         videoModel.setValue(manifest, forKey: "manifest")
         
         try self.managedObjectContext.save()
@@ -159,7 +166,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case UnexpectedResultFormat
     }
     
-    func getVideos() throws -> [Video] {
+    func getVideoInfos() throws -> [VideoInfo] {
         let fetch = NSFetchRequest(entityName: "Video")
         
         let resultsAny = try self.managedObjectContext.executeFetchRequest(fetch)
@@ -167,16 +174,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             throw AppDataError.UnexpectedResultFormat
         }
         
-        let videos = results.map { result -> Video? in
-            guard let manifest = result.valueForKey("manifest") as? String else {
-                return nil
-            }
-            guard let json = parseJson(manifest) else {
-                return nil
-            }
-            return try? Video(manifest: json)
+        return results.flatMap { try? VideoInfo(object: $0) }
+    }
+    
+    func getVideo(id: NSUUID) throws -> Video? {
+        guard let videoModel = try findVideoModel(id) else {
+            return nil
         }
-        return videos.filter { $0 != nil }.map { $0! }
+        
+        let manifestString = try (videoModel.valueForKey("manifest") as? String).unwrap()
+        return try Video(manifest: parseJson(manifestString).unwrap())
     }
 }
 

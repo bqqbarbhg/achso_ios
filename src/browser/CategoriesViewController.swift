@@ -5,7 +5,7 @@ class CategoriesViewController: UITableViewController {
     // Initialized in didFinishLaunch, do not use in init
     weak var videosViewController: VideosViewController!
     
-    var tempVideos: [Video] = []
+    var tempVideos: [VideoInfo] = []
 
     var tempAllVideos = Collection(title: "All Videos")
     
@@ -19,7 +19,7 @@ class CategoriesViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        self.tempVideos = (try? appDelegate.getVideos()) ?? []
+        self.tempVideos = (try? appDelegate.getVideoInfos()) ?? []
         self.tableView.reloadData()
         
         // HACK: Think about load order

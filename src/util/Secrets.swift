@@ -12,4 +12,9 @@ class Secrets {
     static func get<T>(key: String) -> T? {
         return self.secrets[key] as? T
     }
+    
+    static func getUrl(key: String) -> NSURL? {
+        let urlString: String? = get(key)
+        return urlString.flatMap { NSURL(string: $0) }
+    }
 }

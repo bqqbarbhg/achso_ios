@@ -8,10 +8,11 @@ class ActiveVideo {
     var batches: [AnnotationBatch] = []
     var resolution: Vector2 = Vector2()
     var annotationRadius: Float = 0.15
-    var user: User?
+    var user: User
     
-    init(video: Video) {
+    init(video: Video, user: User) {
         self.video = video
+        self.user = user
         
         let importEpsilon = 0.001
         for annotation in video.annotations {

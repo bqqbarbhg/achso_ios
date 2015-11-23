@@ -349,8 +349,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     func setVideo(video: Video) {
+        let user = User()
+        user.name = "test"
+        
         self.videoPlayer.loadVideo(video.videoUri)
-        let activeVideo = ActiveVideo(video: video)
+        let activeVideo = ActiveVideo(video: video, user: user)
         
         if let duration = self.videoPlayer.videoDuration {
             activeVideo.duration = duration

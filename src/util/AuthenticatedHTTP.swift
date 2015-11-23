@@ -20,6 +20,22 @@ struct HTTPRequest {
     }
 }
 
+enum AuthenticationResult {
+    case OldSession
+    case NewSession
+    case Unauthenticated
+    case Error(ErrorType)
+    
+    var isAuthenticated: Bool {
+        switch self {
+        case .OldSession: return true
+        case .NewSession: return true
+        case .Unauthenticated: return false
+        case .Error: return false
+        }
+    }
+}
+
 // HTTP client that manages OAuth2 tokens
 class AuthenticatedHTTP {
     
@@ -27,6 +43,7 @@ class AuthenticatedHTTP {
     
     var accessToken: String?
     var refreshToken: String?
+    var tokenExpiryDate: NSDate?
     
     init(oaClient: OAuth2Client) {
         self.oaClient = oaClient
@@ -36,10 +53,10 @@ class AuthenticatedHTTP {
         Alamofire.request(.POST, request.url, parameters: request.body).responseJSON(completionHandler: callback)
     }
     
-    func executeOAuth2TokenRequest(request: OAuth2Request, callback: Bool -> ()) {
+    func executeOAuth2TokenRequest(request: OAuth2Request, createSession: Bool, callback: AuthenticationResult -> ()) {
         executeOAuth2Request(request) { response in
             guard let data = response.result.value else {
-                callback(false)
+                callback(.Error(AssertionError("Response is JSON")))
                 return
             }
             
@@ -48,27 +65,46 @@ class AuthenticatedHTTP {
             self.accessToken = tokens.accessToken ?? self.accessToken
             self.refreshToken = tokens.refreshToken ?? self.refreshToken
             
-            callback(tokens.accessToken != nil)
+            let expiryTimePadding = 5 // seconds
+            self.tokenExpiryDate = tokens.expiresIn.map { expiresIn in
+                NSDate(timeIntervalSinceNow: Double(expiresIn - expiryTimePadding))
+            }
+            
+            if tokens.accessToken == nil {
+                callback(.Error(UserError.failedToAuthenticate.withDebugError("No response token found")))
+            } else {
+                callback(createSession ? .NewSession : .OldSession)
+            }
         }
+    }
+    
+    func refreshIfNecessary(callback: AuthenticationResult -> ()) {
+        // If the access token is still valid no need to refresh
+        if self.accessToken != nil && (self.tokenExpiryDate.map({ $0 < NSDate() }) ?? false) {
+            callback(.OldSession)
+            return
+        }
+        
+        self.refreshTokens(callback)
     }
     
     func createCodeAuthorizationUrl(scopes scopes: [String], extraQuery: [String: String] = [:]) -> NSURL? {
         return self.oaClient.createAuthorizationUrlFor(.AuthorizationCode, scopes: scopes, extraQuery: extraQuery)
     }
     
-    func authenticateWithCode(code: String, callback: Bool -> ()) {
+    func authenticateWithCode(code: String, callback: AuthenticationResult -> ()) {
         let tokensRequest = self.oaClient.requestForTokensFromAuthorizationCode(code)
-        executeOAuth2TokenRequest(tokensRequest, callback: callback)
+        executeOAuth2TokenRequest(tokensRequest, createSession: true, callback: callback)
     }
     
-    func refreshTokens(callback: Bool -> ()) {
+    func refreshTokens(callback: AuthenticationResult -> ()) {
         guard let refreshToken = self.refreshToken else {
-            callback(false)
+            callback(.Unauthenticated)
             return
         }
         
         let tokensRequest = self.oaClient.requestForTokensFromRefreshToken(refreshToken)
-        executeOAuth2TokenRequest(tokensRequest, callback: callback)
+        executeOAuth2TokenRequest(tokensRequest, createSession: false, callback: callback)
     }
     
     func unauthorizedRequestJSON(request: HTTPRequest, callback: ACallback) {
@@ -113,8 +149,8 @@ class AuthenticatedHTTP {
             }
             
             // Refresh the tokens and retry if got new ones
-            self.refreshTokens() { gotNewTokens in
-                if gotNewTokens {
+            self.refreshTokens() { result in
+                if result.isAuthenticated {
                     self.unauthorizedRequestJSON(authorizedRequest, callback: callback)
                 } else {
                     callback(response)

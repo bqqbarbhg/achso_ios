@@ -4,7 +4,7 @@ class Collection {
     
     var title: String
     
-    var videos: [Video] = []
+    var videos: [VideoInfo] = []
 
     init(title: String) {
         self.title = title

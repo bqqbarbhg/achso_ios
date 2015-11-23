@@ -92,17 +92,34 @@
                                     <rect key="frame" x="0.0" y="0.0" width="267" height="178"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yNK-4S-INQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="267" height="178"/>
+                                        </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R2D-1x-7Ua">
                                             <rect key="frame" x="8" y="8" width="259" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="p5L-yq-lRa">
+                                            <rect key="frame" x="18" y="152" width="231" height="2"/>
+                                        </progressView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="yNK-4S-INQ" secondAttribute="trailing" id="JpK-1F-ylL"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="p5L-yq-lRa" secondAttribute="bottom" constant="16" id="LcD-C8-zcF"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="p5L-yq-lRa" secondAttribute="trailing" constant="10" id="PQI-RS-0yw"/>
+                                    <constraint firstItem="yNK-4S-INQ" firstAttribute="top" secondItem="VcV-dc-4N0" secondAttribute="top" id="SMw-f1-Wm1"/>
+                                    <constraint firstAttribute="bottom" secondItem="yNK-4S-INQ" secondAttribute="bottom" id="bG2-lm-KPi"/>
+                                    <constraint firstItem="yNK-4S-INQ" firstAttribute="leading" secondItem="VcV-dc-4N0" secondAttribute="leading" id="cO8-5A-aK8"/>
+                                    <constraint firstItem="p5L-yq-lRa" firstAttribute="leading" secondItem="VcV-dc-4N0" secondAttribute="leadingMargin" constant="10" id="kn1-6z-3WG"/>
+                                </constraints>
                                 <connections>
+                                    <outlet property="progressView" destination="p5L-yq-lRa" id="jkE-Hk-SRI"/>
+                                    <outlet property="thumbnailImageView" destination="yNK-4S-INQ" id="Hc6-Vv-4WD"/>
                                     <outlet property="titleLabel" destination="R2D-1x-7Ua" id="ECn-wV-Vb6"/>
                                 </connections>
                             </collectionViewCell>
@@ -112,6 +129,19 @@
                             <outlet property="delegate" destination="83W-Gl-1p4" id="IjQ-w2-KdG"/>
                         </connections>
                     </collectionView>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="mH1-sT-W9v"/>
+                        <barButtonItem title="Upload" id="x9A-lX-pvy">
+                            <connections>
+                                <action selector="uploadButtonPressed:" destination="83W-Gl-1p4" id="Hgw-Ga-Xfj"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Select" id="2pi-dw-o1p">
+                            <connections>
+                                <action selector="selectButtonPressed:" destination="83W-Gl-1p4" id="s3m-zQ-SbI"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="UPr-XF-tiG">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="camera" id="e1x-2A-Edz">
@@ -127,6 +157,9 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="selectButton" destination="2pi-dw-o1p" id="but-8W-gm7"/>
+                        <outlet property="toolbarSpace" destination="mH1-sT-W9v" id="yH3-FF-DQH"/>
+                        <outlet property="uploadButton" destination="x9A-lX-pvy" id="F4j-ac-szZ"/>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
                     </connections>
                 </collectionViewController>
@@ -317,13 +350,17 @@
         <!--Navigation Controller-->
         <scene sceneID="ybF-WR-bNn">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Aew-wV-J9K" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="Aew-wV-J9K" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EB3-bK-0gd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="fN2-td-4FI">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="83W-Gl-1p4" kind="relationship" relationship="rootViewController" id="o0e-sd-52o"/>
                     </connections>
