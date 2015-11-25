@@ -40,4 +40,8 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
             return true
         }
     }
+    
+    @IBAction func cancelButtonPressed(sender: UIBarButtonItem) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
 }

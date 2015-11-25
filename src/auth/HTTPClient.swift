@@ -30,10 +30,11 @@ class HTTPClient {
             return
         }
         
-        let loginController = viewController.storyboard!.instantiateViewControllerWithIdentifier("LoginWebViewController") as! LoginWebViewController
+        let loginNav = viewController.storyboard!.instantiateViewControllerWithIdentifier("LoginWebViewController") as! UINavigationController
+        let loginController = loginNav.topViewController as! LoginWebViewController
         loginController.prepareForLogin(url: authUrl, trapUrlPrefix: "app://", callback: self.loginRedirected(callback: callback))
         
-        viewController.presentViewController(loginController, animated: true, completion: nil)
+        viewController.presentViewController(loginNav, animated: true, completion: nil)
     }
     
     static func doAuthenticated(fromViewController viewController: UIViewController, callback: AuthenticationResult -> ()) {
