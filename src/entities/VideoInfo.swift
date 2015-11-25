@@ -7,6 +7,7 @@ class VideoInfo {
     var title: String
     var thumbnailUri: NSURL
     var isLocal: Bool
+    var creationDate: NSDate
 
     init(video: Video) {
         self.id = video.id
@@ -14,6 +15,7 @@ class VideoInfo {
         self.title = video.title
         self.thumbnailUri = video.thumbnailUri
         self.isLocal = video.videoUri.scheme == "file"
+        self.creationDate = video.creationDate
     }
     
     init(object: NSManagedObject) throws {
@@ -23,6 +25,7 @@ class VideoInfo {
             self.title = try (object.valueForKey("title") as? String).unwrap()
             self.thumbnailUri = try NSURL(string: (object.valueForKey("thumbnailUri") as? String).unwrap()).unwrap()
             self.isLocal = try (object.valueForKey("isLocal") as? Bool).unwrap()
+            self.creationDate = try (object.valueForKey("creationDate") as? NSDate).unwrap()
         } catch {
             // Swift-bug: Classes need to be initialized even if thrown
             self.id = NSUUID(UUIDBytes: [UInt8](count: 16, repeatedValue: 0x00))
@@ -30,6 +33,7 @@ class VideoInfo {
             self.title = ""
             self.thumbnailUri = NSURL()
             self.isLocal = false
+            self.creationDate = NSDate(timeIntervalSince1970: 0)
             
             throw error
         }
@@ -41,5 +45,6 @@ class VideoInfo {
         object.setValue(self.title, forKey: "title")
         object.setValue(self.thumbnailUri.absoluteString, forKey: "thumbnailUri")
         object.setValue(self.isLocal, forKey: "isLocal")
+        object.setValue(self.creationDate, forKey: "creationDate")
     }
 }

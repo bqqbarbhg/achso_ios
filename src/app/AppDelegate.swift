@@ -168,6 +168,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func getVideoInfos() throws -> [VideoInfo] {
         let fetch = NSFetchRequest(entityName: "Video")
+        fetch.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let resultsAny = try self.managedObjectContext.executeFetchRequest(fetch)
         guard let results = resultsAny as? [NSManagedObject] else {
