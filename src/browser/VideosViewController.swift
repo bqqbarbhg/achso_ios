@@ -1,7 +1,7 @@
 import UIKit
 import MobileCoreServices
 
-class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
     
     @IBOutlet var toolbarSpace: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
@@ -10,11 +10,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     // Initialized in didFinishLaunch, do not use in init
     weak var categoriesViewController: CategoriesViewController!
 
+    var collectionIndex: Int?
     var collection: Collection?
     
     var itemSize: CGSize?
     
-   
     // Used to pass the video from selection to the segue callback
     var chosenVideo: Video?
     
@@ -22,7 +22,31 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         refreshToolbarView(animated: false)
     }
     
-    func showCollection(collection: Collection) {
+    override func viewWillAppear(animated: Bool) {
+        videoRepository.addListener(self)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        videoRepository.removeListener(self)
+    }
+    
+    func showCollection(collectionIndex: Int) {
+        self.collectionIndex = collectionIndex
+        self.collection = videoRepository.collections[safe: collectionIndex]
+        if let collection = self.collection {
+            updateCollection(collection)
+        }
+    }
+    
+    func videoRepositoryUpdated() {
+        guard let collectionIndex = self.collectionIndex else { return }
+        self.collection = videoRepository.collections[safe: collectionIndex]
+        if let collection = self.collection {
+            updateCollection(collection)
+        }
+    }
+    
+    func updateCollection(collection: Collection) {
         self.title = collection.title
         self.collection = collection
         
@@ -210,6 +234,10 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         guard let collectionView = self.collectionView else { return }
         guard let video = videoForIndexPath(indexPath) else { return }
         
+        if video.videoUri.scheme != "file" {
+            return
+        }
+        
         videoRepository.uploadVideo(video, progressCallback: { value, animated in
             if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? VideoViewCell {
                 cell.setProgress(value, animated: animated)
@@ -312,7 +340,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
                 let filename = "\(id.lowerUUIDString).jpg"
                 video.thumbnailUri = try saveThumbnailFromVideo(temporaryUrl, filename: filename)
                 
-                try AppDelegate.instance.saveVideo(video)
+                try videoRepository.saveVideo(video)
                 
                 dismissViewControllerAnimated(true) {
                     callback(nil)

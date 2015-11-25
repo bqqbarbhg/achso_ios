@@ -338,9 +338,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         guard let activeVideo = self.activeVideo else { return }
         let video = activeVideo.toVideo()
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         do {
-            try appDelegate.saveVideo(video)
+            try videoRepository.saveVideo(video)
         } catch {
             // TODO
         }

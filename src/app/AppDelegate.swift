@@ -24,10 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         categoriesViewController.videosViewController = videosViewController
         videosViewController.categoriesViewController = categoriesViewController
         
+        videoRepository.refresh()
+        
         // HACK: Extract video collections out of CategoriesViewController
         // Compiled crash: /usr/bin/swift -frontend -c
         // videosViewController.showCollection(categoriesViewController.tempGetSections().first!.collections.first)
-        videosViewController.showCollection(categoriesViewController.tempGetSections()[0].collections[0])
+        videosViewController.showCollection(0)
         
         if let
             endpointString: String = Secrets.get("LAYERS_OIDC_URL"),

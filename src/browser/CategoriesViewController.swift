@@ -1,57 +1,61 @@
 import UIKit
 
-class CategoriesViewController: UITableViewController {
+class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     
     // Initialized in didFinishLaunch, do not use in init
     weak var videosViewController: VideosViewController!
     
-    var tempVideos: [VideoInfo] = []
-
-    var tempAllVideos = Collection(title: "All Videos")
+    var collections: [Collection] = []
+    var sections: [Section] = []
     
-    func tempGetSections() -> [Section] {
+    func updateSections() {
         let general = Section(title: nil)
-        general.collections = [tempAllVideos]
-        tempAllVideos.videos = tempVideos
+        general.collections = self.collections
         
-        return [general]
+        self.sections = [general]
+        self.tableView.reloadData()
     }
     
     override func viewWillAppear(animated: Bool) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        self.tempVideos = (try? appDelegate.getVideoInfos()) ?? []
-        self.tableView.reloadData()
-        
-        // HACK: Think about load order
-        // This doesn't even work on phone
-        self.videosViewController.collectionView?.reloadData()
+        videoRepository.addListener(self)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        videoRepository.removeListener(self)
+    }
+    
+    func videoRepositoryUpdated() {
+        self.collections = videoRepository.collections
+        updateSections()
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return tempGetSections().count;
+        return self.sections.count;
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tempGetSections()[section].collections.count
+        return self.sections[section].collections.count
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return tempGetSections()[section].title
+        return self.sections[section].title
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("CategoryCell", forIndexPath: indexPath)
         
-        let collection = tempGetSections()[indexPath.section].collections[indexPath.item]
-        cell.textLabel?.text = collection.title
+        let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
+        cell.textLabel?.text = collection?.title
         
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let collection = tempGetSections()[indexPath.section].collections[indexPath.item]
+        let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
         
-        self.videosViewController.showCollection(collection)
-        self.splitViewController?.showDetailViewController(self.videosViewController.navigationController!, sender: nil)
+        if let index = self.collections.indexOf({ $0 === collection}) {
+            self.videosViewController.showCollection(index)
+            self.splitViewController?.showDetailViewController(self.videosViewController.navigationController!, sender: nil)
+        }
     }
 }

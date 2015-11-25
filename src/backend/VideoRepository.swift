@@ -1,17 +1,43 @@
 import UIKit
 
+protocol VideoRepositoryListener: class {
+    func videoRepositoryUpdated()
+}
+
 class VideoRepository {
     
     var achRails: AchRails?
     var videoInfos: [VideoInfo] = []
     var videoUploaders: [VideoUploader] = []
     var thumbnailUploaders: [ThumbnailUploader] = []
+
+    var collections: [Collection] = []
+    var listeners: [VideoRepositoryListener] = []
+    
+    func addListener(listener: VideoRepositoryListener) {
+        self.listeners.append(listener)
+        listener.videoRepositoryUpdated()
+    }
+    
+    func removeListener(listener: VideoRepositoryListener) {
+        if let index = self.listeners.indexOf({ $0 === listener}) {
+            self.listeners.removeAtIndex(index)
+        }
+    }
     
     func refresh() {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         if let videoInfos = try? appDelegate.getVideoInfos() {
             self.videoInfos = videoInfos
+        }
+        
+        let tempCollection = Collection(title: "All videos")
+        tempCollection.videos = videoInfos
+        self.collections = [tempCollection]
+        
+        for listener in self.listeners {
+            listener.videoRepositoryUpdated()
         }
         
         if let achRails = self.achRails {
@@ -21,6 +47,11 @@ class VideoRepository {
                 }
             }
         }
+    }
+    
+    func saveVideo(video: Video) throws {
+        try AppDelegate.instance.saveVideo(video)
+        refresh()
     }
     
     func findVideoInfo(id: NSUUID) -> VideoInfo? {
@@ -155,7 +186,7 @@ class VideoRepository {
                     switch tryUploadedVideo {
                     case .Success(let uploadedVideo):
                         do {
-                            try AppDelegate.instance.saveVideo(uploadedVideo)
+                            try videoRepository.saveVideo(uploadedVideo)
                             doneCallback(.Success(uploadedVideo))
                         } catch {
                             doneCallback(.Error(UserError.failedToSaveVideo.withInnerError(error)))
