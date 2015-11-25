@@ -134,6 +134,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             guard let video = try appDelegate.getVideo(videoInfo.id) else { return nil }
             return video
         } catch {
+            showErrorModal(error)
             return nil
         }
     }
@@ -145,8 +146,12 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             
         } else {
             
-            self.chosenVideo = videoForIndexPath(indexPath)
-            self.performSegueWithIdentifier("showPlayer", sender: self)
+            if let video = videoForIndexPath(indexPath) {
+                self.chosenVideo = video
+                self.performSegueWithIdentifier("showPlayer", sender: self)
+            } else {
+                collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            }
         }
     }
     

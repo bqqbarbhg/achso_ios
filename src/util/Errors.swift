@@ -10,6 +10,12 @@ extension NSError: PrintableError {
     }
 }
 
+extension UnwrapError: PrintableError {
+    var localizedErrorDescription: String {
+        return "[failed to unwrap \(self.target)]"
+    }
+}
+
 class AssertionError: ErrorType, PrintableError {
     let description: String
     

@@ -3,19 +3,26 @@ import Foundation
 typealias JSONObject = [String : AnyObject]
 typealias JSONArray = [AnyObject]
 
-enum JSONError: ErrorType {
-    case KeyNotFound
-    case KeyNotConvertible
+enum JSONError: ErrorType, PrintableError {
+    case KeyNotFound(key: String)
+    case KeyNotConvertible(key: String, type: String)
+    
+    var localizedErrorDescription: String {
+        switch self {
+        case .KeyNotFound(let key): return "[key '\(key)' not found]"
+        case .KeyNotConvertible(let key, let type): return "[key '\(key)' not convertible to '\(type)']"
+        }
+    }
 }
 
 extension Dictionary {
     
     func castGet<T>(key: Key) throws -> T {
         guard let valueAny = self[key] else {
-            throw JSONError.KeyNotFound
+            throw JSONError.KeyNotFound(key: String(key))
         }
         guard let value = valueAny as? T else {
-            throw JSONError.KeyNotConvertible
+            throw JSONError.KeyNotConvertible(key: String(key), type: String(T.self))
         }
         return value
     }
