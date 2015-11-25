@@ -158,7 +158,7 @@ class VideoRepository {
                             try AppDelegate.instance.saveVideo(uploadedVideo)
                             doneCallback(.Success(uploadedVideo))
                         } catch {
-                            doneCallback(.Error(UserError.failedToSaveVideo))
+                            doneCallback(.Error(UserError.failedToSaveVideo.withInnerError(error)))
                         }
                     case .Error(let error):
                         doneCallback(.Error(UserError.failedToUploadVideo.withInnerError(error)))
