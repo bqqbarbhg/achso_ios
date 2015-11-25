@@ -104,21 +104,31 @@
                                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="p5L-yq-lRa">
                                             <rect key="frame" x="18" y="152" width="231" height="2"/>
                                         </progressView>
+                                        <imageView opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CloudLocal" translatesAutoresizingMaskIntoConstraints="NO" id="P4Y-AC-c7O">
+                                            <rect key="frame" x="219" y="130" width="32" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="32" id="c7h-09-B5U"/>
+                                                <constraint firstAttribute="width" secondItem="P4Y-AC-c7O" secondAttribute="height" multiplier="1:1" id="sQY-An-fte"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="yNK-4S-INQ" secondAttribute="trailing" id="JpK-1F-ylL"/>
+                                    <constraint firstAttribute="bottom" secondItem="P4Y-AC-c7O" secondAttribute="bottom" constant="16" id="LS3-ze-tFv"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="p5L-yq-lRa" secondAttribute="bottom" constant="16" id="LcD-C8-zcF"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="p5L-yq-lRa" secondAttribute="trailing" constant="10" id="PQI-RS-0yw"/>
                                     <constraint firstItem="yNK-4S-INQ" firstAttribute="top" secondItem="VcV-dc-4N0" secondAttribute="top" id="SMw-f1-Wm1"/>
+                                    <constraint firstAttribute="trailing" secondItem="P4Y-AC-c7O" secondAttribute="trailing" constant="16" id="alo-72-aYo"/>
                                     <constraint firstAttribute="bottom" secondItem="yNK-4S-INQ" secondAttribute="bottom" id="bG2-lm-KPi"/>
                                     <constraint firstItem="yNK-4S-INQ" firstAttribute="leading" secondItem="VcV-dc-4N0" secondAttribute="leading" id="cO8-5A-aK8"/>
                                     <constraint firstItem="p5L-yq-lRa" firstAttribute="leading" secondItem="VcV-dc-4N0" secondAttribute="leadingMargin" constant="10" id="kn1-6z-3WG"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="progressView" destination="p5L-yq-lRa" id="jkE-Hk-SRI"/>
+                                    <outlet property="sharedCloudImage" destination="P4Y-AC-c7O" id="pdO-uc-TXt"/>
                                     <outlet property="thumbnailImageView" destination="yNK-4S-INQ" id="Hc6-Vv-4WD"/>
                                     <outlet property="titleLabel" destination="R2D-1x-7Ua" id="ECn-wV-Vb6"/>
                                 </connections>
@@ -388,4 +398,7 @@
             <point key="canvasLocation" x="2215" y="817"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="CloudLocal" width="32" height="32"/>
+    </resources>
 </document>

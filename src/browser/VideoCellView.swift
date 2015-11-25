@@ -8,6 +8,7 @@ class VideoViewCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
+    @IBOutlet weak var sharedCloudImage: UIImageView!
  
     // This is should reduce the amount the collection view relayouts when scrolling. Should be removed if the root cause of the relayouting is fixed.
     override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -26,6 +27,12 @@ class VideoViewCell: UICollectionViewCell {
         
         titleLabel.text = video.title
     
+        if video.isLocal {
+            sharedCloudImage.image = UIImage(named: "CloudLocal")
+        } else {
+            sharedCloudImage.image = UIImage(named: "CloudUploaded")
+        }
+        
         thumbnailImageView.sd_setImageWithURL(video.thumbnailUri)
         thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFill
         
