@@ -40,14 +40,23 @@ class AchRails {
         }
     }
     
-    func uploadVideo(video: Video, callback: Video? -> ()) {
+    func uploadVideo(video: Video, callback: Try<Video> -> ()) {
         
         let manifest = video.toManifest()
         let request = endpoint.request(.PUT, "videos/\(video.id.lowerUUIDString).json", json: manifest)
         http.authorizedRequestJSON(request, canRetry: true) { response in
-            let videoJson = response.result.value as? JSONObject
-            let video = try? Video(manifest: videoJson.unwrap())
-            callback(video)
+            switch response.result {
+            case .Failure(let error):
+                callback(.Error(error))
+            case .Success(let videoJson):
+                do {
+                    let video = try Video(manifest: (videoJson as? JSONObject).unwrap())
+                    callback(.Success(video))
+                } catch {
+                    callback(.Error(error))
+                }
+            }
+            
         }
     }
 }

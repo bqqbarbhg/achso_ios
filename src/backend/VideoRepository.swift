@@ -60,10 +60,10 @@ class VideoRepository {
         try! appDelegate.saveVideo(video)
     }
     
-    func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Video? -> ()) {
+    func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
         
         guard let achRails = self.achRails else {
-            doneCallback(nil)
+            doneCallback(.Error(UserError.failedToUploadVideo.withDebugError("achrails not initialized")))
             return
         }
         
@@ -138,7 +138,7 @@ class VideoRepository {
             
             guard let videoUrl = maybeVideoUrl, thumbnailUrl = maybeThumbnailUrl else {
                 dispatch_async(dispatch_get_main_queue()) {
-                    doneCallback(nil)
+                    doneCallback(.Error(UserError.failedToUploadVideo.withDebugError("Failed to upload media")))
                 }
                 return
             }
@@ -147,12 +147,22 @@ class VideoRepository {
             newVideo.videoUri = videoUrl
             newVideo.thumbnailUri = thumbnailUrl
             
-            achRails.uploadVideo(newVideo) { uploadedVideo in
+            achRails.uploadVideo(newVideo) { tryUploadedVideo in
                 dispatch_semaphore_signal(semaphore)
                 
                 dispatch_async(dispatch_get_main_queue()) {
                     progressCallback(1.0, animated: true)
-                    doneCallback(uploadedVideo)
+                    switch tryUploadedVideo {
+                    case .Success(let uploadedVideo):
+                        do {
+                            try AppDelegate.instance.saveVideo(uploadedVideo)
+                            doneCallback(.Success(uploadedVideo))
+                        } catch {
+                            doneCallback(.Error(UserError.failedToSaveVideo))
+                        }
+                    case .Error(let error):
+                        doneCallback(.Error(UserError.failedToUploadVideo.withInnerError(error)))
+                    }
                 }
             }
             

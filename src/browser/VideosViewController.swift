@@ -214,9 +214,14 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? VideoViewCell {
                 cell.setProgress(value, animated: animated)
             }
-        }, doneCallback: { video in
+        }, doneCallback: { tryVideo in
             if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? VideoViewCell {
                 cell.clearProgress()
+            }
+            
+            switch tryVideo {
+            case .Success(let video): break
+            case .Error(let error): self.showErrorModal(error)
             }
         })
     }

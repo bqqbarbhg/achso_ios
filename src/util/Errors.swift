@@ -42,9 +42,9 @@ class DebugError: ErrorType, PrintableError {
 
 class UserError: ErrorType, PrintableError {
     let description: String
-    let innerError: PrintableError?
+    let innerError: ErrorType?
     
-    init(_ description: String, innerError: PrintableError?) {
+    init(_ description: String, innerError: ErrorType?) {
         self.description = description
         self.innerError = innerError
     }
@@ -56,14 +56,14 @@ class UserError: ErrorType, PrintableError {
     var localizedErrorDescription: String {
         var description = self.description
         
-        if let innerError = self.innerError {
+        if let innerError = self.innerError as? PrintableError {
             description.appendContentsOf("\n\(innerError.localizedErrorDescription)")
         }
         
         return description
     }
     
-    func withInnerError(error: PrintableError) -> UserError {
+    func withInnerError(error: ErrorType) -> UserError {
         return UserError(self.description, innerError: error)
     }
     
@@ -78,4 +78,18 @@ class UserError: ErrorType, PrintableError {
     static var failedToAuthenticate: UserError {
         return UserError("Failed to authenticate with Layers Box")
     }
+    
+    static var failedToSaveVideo: UserError {
+        return UserError("Failed to save video")
+    }
+    
+    static var failedToUploadVideo: UserError {
+        return UserError("Failed to upload video")
+    }
 }
+
+enum Try<T> {
+    case Success(T)
+    case Error(ErrorType)
+}
+
