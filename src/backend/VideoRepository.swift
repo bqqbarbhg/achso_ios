@@ -39,7 +39,9 @@ class VideoRepository {
         for listener in self.listeners {
             listener.videoRepositoryUpdated()
         }
-        
+    }
+    
+    func refreshOnline() {
         if let achRails = self.achRails {
             achRails.getVideos() { videoRevisions in
                 if let revisions = videoRevisions {
@@ -87,8 +89,11 @@ class VideoRepository {
     }
     
     func updateVideo(video: Video) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        try! appDelegate.saveVideo(video)
+        do {
+            try self.saveVideo(video)
+        } catch {
+            // TODO
+        }
     }
     
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {

@@ -422,7 +422,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             videoRepository.thumbnailUploaders = [achminup]
         }
         
-        videoRepository.refresh()
+        videoRepository.refreshOnline()
     }
     
     func authenticate(callback: () -> ()) {
