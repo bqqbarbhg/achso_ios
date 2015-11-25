@@ -16,8 +16,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     @IBOutlet weak var undoButton: UIBarButtonItem!
     @IBOutlet weak var redoButton: UIBarButtonItem!
 
-    let videoPlayer = VideoPlayer()
-    let playerController: PlayerController
+    var videoPlayer: VideoPlayer?
+    var playerController: PlayerController?
+    
     var activeVideo: ActiveVideo?
     var keyboardVisible: Bool = false
     
@@ -29,12 +30,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var isWaiting: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
-        self.playerController = PlayerController(player: self.videoPlayer)
         super.init(coder: aDecoder)
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.playerController = PlayerController(player: self.videoPlayer)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -113,39 +112,55 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.videoView.attachPlayer(self.videoPlayer)
-        self.videoPlayer.play()
         
-        self.videoPlayer.delegate = self
+        if let videoPlayer = self.videoPlayer {
+            self.videoView?.attachPlayer(videoPlayer)
+            videoPlayer.delegate = self
+            videoPlayer.play()
+        }
         
         // No animation when setting the button mode later
         self.playButton.buttonMode = .Initial
         self.playButton.callback = {
-            self.playerController.userPlay()
+            self.playerController?.userPlay()
             self.refreshView()
         }
 
         self.seekBar.callback = { event in
             switch event {
             case .Preview(let time):
-                self.playerController.userSeek(time, final: false)
+                self.playerController?.userSeek(time, final: false)
             case .SeekTo(let time):
-                self.playerController.userSeek(time, final: true)
+                self.playerController?.userSeek(time, final: true)
             case .Cancel:
                 // Do a virtual final seek to current position when cancelled
-                if let duration = self.videoPlayer.videoDuration {
-                    let time = self.videoPlayer.avPlayer.currentTime().seconds
-                    self.playerController.userSeek(time / duration, final: true)
+                if let videoPlayer = self.videoPlayer,
+                    duration = videoPlayer.videoDuration {
+                    let time = videoPlayer.avPlayer.currentTime().seconds
+                    self.playerController?.userSeek(time / duration, final: true)
                 }
             }
         }
         
         self.videoView.callback = { event in
-            self.playerController.annotationEdit(event)
+            self.playerController?.annotationEdit(event)
             self.refreshView()
         }
         
         self.refreshView()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        self.videoPlayer?.pause()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        self.videoPlayer = nil
+        self.playerController = nil
+        self.activeVideo = nil
+        self.activeSelectedAnnotation = nil
+        self.keyboardVisible = false
+        self.videoView.removePlayer()
     }
     
     override func viewWillLayoutSubviews() {
@@ -189,8 +204,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     func refreshView() {
+        guard let playerController = self.playerController,
+            videoPlayer = self.videoPlayer else { return }
+        
         self.playButton.buttonMode = {
-            switch self.playerController.state {
+            switch playerController.state {
             case .Playing: return .Pause
             case .ManualPause: return .Play
             case .AnnotationPause: return .Pause
@@ -199,13 +217,13 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }()
         
         // TODO: Propertyify
-        if let batch = self.playerController.batch {
-            self.videoView.showAnnotations(batch.annotations, selected: self.playerController.selectedAnnotation)
+        if let batch = playerController.batch {
+            self.videoView.showAnnotations(batch.annotations, selected: playerController.selectedAnnotation)
         } else {
             self.videoView.showAnnotations([], selected: nil)
         }
         
-        if let selectedAnnotation = self.playerController.selectedAnnotation {
+        if let selectedAnnotation = playerController.selectedAnnotation {
             self.annotationToolbar.hidden = false
             
             if self.activeSelectedAnnotation !== selectedAnnotation {
@@ -228,10 +246,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         if let duration = videoPlayer.videoDuration {
-            self.seekBar.seekBarPositionPercentage = self.playerController.seekBarPosition / duration
+            self.seekBar.seekBarPositionPercentage = playerController.seekBarPosition / duration
         }
         
-        if let batch = self.playerController.batch {
+        if let batch = playerController.batch {
             var texts = [String]()
             
             for annotation in batch.annotations {
@@ -251,11 +269,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         // TODO: Move subtitles if play controls are hidden
         self.subtitlesBottomConstraint.constant = self.playControlsView.frame.minY - self.view.frame.maxY
         
-        if self.playerController.state == .AnnotationPause {
+        if playerController.state == .AnnotationPause {
             if !self.isWaiting {
                 
                 let waitTime: Double = {
-                    if let batch = self.playerController.batch {
+                    if let batch = playerController.batch {
                         return self.calculateAnnotationWaitTime(batch.annotations)
                     } else {
                         return self.calculateAnnotationWaitTime([])
@@ -269,15 +287,15 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             }
         }
         
-        if self.isWaiting && self.playerController.state != .AnnotationPause {
+        if self.isWaiting && playerController.state != .AnnotationPause {
             
             self.annotationWaitBar.stopAnimation()
             
             self.isWaiting = false
         }
         
-        self.undoButton.enabled = self.playerController.canUndo
-        self.redoButton.enabled = self.playerController.canRedo
+        self.undoButton.enabled = playerController.canUndo
+        self.redoButton.enabled = playerController.canRedo
         
         if let activeVideo = self.activeVideo {
             let snapDistanceInPoints = 10.0
@@ -286,7 +304,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             let videoDurationInSeconds = activeVideo.duration
             let snapDurationInSeconds = (snapDistanceInPoints / barLengthInPoints) * videoDurationInSeconds
             
-            self.playerController.batchSnapDistance = snapDurationInSeconds
+            playerController.batchSnapDistance = snapDurationInSeconds
         }
     }
     
@@ -297,12 +315,12 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             selectedAnnotation.text = text
         }
         
-        self.playerController.selectedAnnotationMutated()
+        self.playerController?.selectedAnnotationMutated()
         refreshView()
     }
     
     func annotationWaitDone(object: AnyObject) {
-        self.playerController.annotationWaitDone()
+        self.playerController?.annotationWaitDone()
         self.annotationWaitBar.stopAnimation()
         self.isWaiting = false
     }
@@ -316,21 +334,21 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     @IBAction func annotationDeleteButton(sender: UIButton) {
-        playerController.annotationDeleteButton()
+        playerController?.annotationDeleteButton()
         refreshView()
     }
     
     @IBAction func annotationSaveButton(sender: UIButton) {
-        playerController.unselectAnnotation()
+        playerController?.unselectAnnotation()
         refreshView()
     }
     
     @IBAction func undoButtonPressed(sender: UIBarButtonItem) {
-        playerController.doUndo()
+        playerController?.doUndo()
         self.refreshView()
     }
     @IBAction func redoButtonPressed(sender: UIBarButtonItem) {
-        playerController.doRedo()
+        playerController?.doRedo()
         self.refreshView()
     }
     
@@ -351,25 +369,30 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         let user = User()
         user.name = "test"
         
-        self.videoPlayer.loadVideo(video.videoUri)
+        let videoPlayer = VideoPlayer(url: video.videoUri)
+        let playerController = PlayerController(player: videoPlayer)
+        
         let activeVideo = ActiveVideo(video: video, user: user)
         
-        if let duration = self.videoPlayer.videoDuration {
+        if let duration = videoPlayer.videoDuration {
             activeVideo.duration = duration
         }
-        if let videoSize = self.videoPlayer.videoSize {
+        if let videoSize = videoPlayer.videoSize {
             let size = Vector2.init(cgSize: videoSize)
             let relative = size / min(size.x, size.y)
             activeVideo.resolution = relative
         }
         
         self.activeVideo = activeVideo
-        self.playerController.activeVideo = activeVideo
+        playerController.activeVideo = activeVideo
+        
+        self.videoPlayer = videoPlayer
+        self.playerController = playerController
     }
 
     
     func timeUpdate(time: Double) {
-        self.playerController.timeUpdate(time)
+        self.playerController?.timeUpdate(time)
         self.refreshView()
     }
 }

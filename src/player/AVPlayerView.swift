@@ -20,4 +20,8 @@ class AVPlayerView: UIView {
         playerLayer.videoGravity = AVLayerVideoGravityResize
         playerLayer.player = player.avPlayer
     }
+    
+    func removePlayer() {
+        playerLayer.player = nil
+    }
 }

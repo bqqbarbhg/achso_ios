@@ -16,11 +16,20 @@ class VideoPlayer {
     
     var delegate: VideoPlayerDelegate?
     
-    init() {
+    init(url: NSURL) {
         self.avPlayer = AVPlayer()
         self.avPlayer.actionAtItemEnd = .Pause
         
+        let asset = AVURLAsset(URL: url, options: .None)
+        let playerItem = AVPlayerItem(asset: asset)
+        
+        self.videoSize = getVideoSizeFromAsset(asset)
+        self.videoDuration = asset.duration.seconds
+        
+        let avPlayer = AVPlayer(playerItem: playerItem)
         avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(1, 60), queue: nil, usingBlock: timeUpdate)
+        
+        self.avPlayer = avPlayer
     }
     
     func getVideoSizeFromAsset(asset: AVURLAsset) -> CGSize? {
@@ -33,16 +42,6 @@ class VideoPlayer {
         
         let transformedSize = CGSizeApplyAffineTransform(naturalSize, affineTransform)
         return transformedSize.asPositive()
-    }
-    
-    func loadVideo(url: NSURL) {
-        let asset = AVURLAsset(URL: url, options: .None)
-        let playerItem = AVPlayerItem(asset: asset)
-        
-        self.videoSize = getVideoSizeFromAsset(asset)
-        self.videoDuration = asset.duration.seconds
-        
-        self.avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
     }
     
     func seekTo(time: Double) {

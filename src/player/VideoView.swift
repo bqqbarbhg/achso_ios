@@ -83,6 +83,11 @@ class VideoView: UIView {
         self.setNeedsLayout()
     }
     
+    func removePlayer() {
+        avPlayerView.removePlayer()
+        self.player = nil
+    }
+    
     func allocateAnnotationLayer() -> CALayer {
         if let last = self.freeLayers.popLast() {
             self.avPlayerView.layer.addSublayer(last)
