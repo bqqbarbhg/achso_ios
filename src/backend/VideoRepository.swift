@@ -41,13 +41,18 @@ class VideoRepository {
         }
     }
     
-    func refreshOnline() {
+    func refreshOnline() -> Bool {
         if let achRails = self.achRails {
             achRails.getVideos() { videoRevisions in
                 if let revisions = videoRevisions {
                     self.updateVideos(revisions)
+                } else {
+                    self.refresh()
                 }
             }
+            return true
+        } else {
+            return false
         }
     }
     
@@ -68,29 +73,45 @@ class VideoRepository {
     func updateVideos(revisions: [VideoRevision]) {
         guard let achRails = self.achRails else { return }
         
+        var updateCount = 0
+        var updateTotal = 1
+        
+        func updateDone() {
+            if ++updateCount == updateTotal {
+                self.refresh()
+            }
+        }
+        
         for revision in revisions {
             if let video = self.findVideoInfo(revision.id) {
                 if revision.revision <= video.revision { continue }
                 
+                updateTotal++
                 achRails.getVideo(revision.id) { video in
                     if let video = video {
                         self.updateVideo(video)
                     }
+                    updateDone()
                 }
                 
             } else {
+                
+                updateTotal++
                 achRails.getVideo(revision.id) { video in
                     if let video = video {
                         self.updateVideo(video)
                     }
+                    updateDone()
                 }
             }
         }
+        
+        updateDone()
     }
     
     func updateVideo(video: Video) {
         do {
-            try self.saveVideo(video)
+            try AppDelegate.instance.saveVideo(video)
         } catch {
             // TODO
         }
@@ -99,7 +120,7 @@ class VideoRepository {
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
         
         guard let achRails = self.achRails else {
-            doneCallback(.Error(UserError.failedToUploadVideo.withDebugError("achrails not initialized")))
+            doneCallback(.Error(UserError.invalidLayersBoxUrl.withDebugError("achrails not initialized")))
             return
         }
         

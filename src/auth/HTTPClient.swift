@@ -15,8 +15,20 @@ class HTTPClient {
     
     
     
-    static func authenticate(fromViewController viewController: UIViewController, callback: AuthenticationResult -> ()) {
+    static func authenticate(fromViewController viewController: UIViewController, callback userCallback: AuthenticationResult -> ()) {
 
+        func callback(result: AuthenticationResult) {
+            switch result {
+            case .OldSession: break
+            case .NewSession:
+                self.tempSetup()
+            case .Error(let error): break
+                // TODO: Something
+            }
+            
+            userCallback(result)
+        }
+        
         guard let http = self.http else {
             callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("HTTP client not initialized")))
             return
@@ -37,19 +49,13 @@ class HTTPClient {
         viewController.presentViewController(loginNav, animated: true, completion: nil)
     }
     
-    static func doAuthenticated(fromViewController viewController: UIViewController, callback: AuthenticationResult -> ()) {
+    static func doAuthenticated(callback: AuthenticationResult -> ()) {
         guard let http = self.http else {
             callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("HTTP client not initialized")))
             return
         }
         
-        http.refreshIfNecessary() { result in
-            if result.isAuthenticated {
-                callback(result)
-            } else {
-                authenticate(fromViewController: viewController, callback: callback)
-            }
-        }
+        http.refreshIfNecessary(callback)
     }
     
     static func loginRedirected(callback callback: AuthenticationResult -> ())(request: NSURLRequest) {
@@ -59,6 +65,21 @@ class HTTPClient {
         
         if let http = self.http {
             http.authenticateWithCode(code, callback: callback)
+        }
+    }
+    
+    static func tempSetup() {
+        guard let http = HTTPClient.http else { return }
+        
+        if let achrailsUrl = Secrets.getUrl("ACHRAILS_URL") {
+            let achrails = AchRails(http: http, endpoint: achrailsUrl)
+            videoRepository.achRails = achrails
+        }
+        
+        if let achminupUrl = Secrets.getUrl("ACHMINUP_URL") {
+            let achminup = AchMinUpUploader(endpoint: achminupUrl)
+            videoRepository.videoUploaders = [achminup]
+            videoRepository.thumbnailUploaders = [achminup]
         }
     }
 }

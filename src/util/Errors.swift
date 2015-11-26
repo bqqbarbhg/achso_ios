@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 protocol PrintableError {
     var localizedErrorDescription: String { get }
@@ -43,10 +43,18 @@ class DebugError: ErrorType, PrintableError {
 class UserError: ErrorType, PrintableError {
     let description: String
     let innerError: ErrorType?
-    
+    let fix: (title: String, action: UIViewController -> ())?
+
     init(_ description: String, innerError: ErrorType?) {
         self.description = description
         self.innerError = innerError
+        self.fix = nil
+    }
+    
+    init(_ description: String, fix: (title: String, action: UIViewController -> ())) {
+        self.description = description
+        self.innerError = nil
+        self.fix = fix
     }
     
     convenience init(_ description: String) {
@@ -85,6 +93,16 @@ class UserError: ErrorType, PrintableError {
     
     static var failedToUploadVideo: UserError {
         return UserError("Failed to upload video")
+    }
+    
+    static var notSignedIn: UserError {
+        func signIn(viewController: UIViewController) {
+            HTTPClient.authenticate(fromViewController: viewController, callback: {_ in 
+                // Nop
+            })
+        }
+        
+        return UserError("Not signed in", fix: (title: "Sign in", action: signIn))
     }
 }
 

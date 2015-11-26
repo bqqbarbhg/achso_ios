@@ -23,15 +23,20 @@ struct HTTPRequest {
 enum AuthenticationResult {
     case OldSession
     case NewSession
-    case Unauthenticated
     case Error(ErrorType)
     
     var isAuthenticated: Bool {
         switch self {
         case .OldSession: return true
         case .NewSession: return true
-        case .Unauthenticated: return false
         case .Error: return false
+        }
+    }
+    
+    var error: ErrorType? {
+        switch self {
+        case .Error(let error): return error
+        default: return nil
         }
     }
 }
@@ -99,7 +104,7 @@ class AuthenticatedHTTP {
     
     func refreshTokens(callback: AuthenticationResult -> ()) {
         guard let refreshToken = self.refreshToken else {
-            callback(.Unauthenticated)
+            callback(.Error(UserError.notSignedIn))
             return
         }
         

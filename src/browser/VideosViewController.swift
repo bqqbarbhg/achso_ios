@@ -7,6 +7,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     @IBOutlet var uploadButton: UIBarButtonItem!
     @IBOutlet var selectButton: UIBarButtonItem!
     
+    var refreshControl: UIRefreshControl!
+    
     // Initialized in didFinishLaunch, do not use in init
     weak var categoriesViewController: CategoriesViewController!
 
@@ -20,6 +22,12 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     
     override func viewDidLoad() {
         refreshToolbarView(animated: false)
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "startRefresh:", forControlEvents: .ValueChanged)
+        self.collectionView?.addSubview(refreshControl)
+        
+        self.refreshControl = refreshControl
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -44,6 +52,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if let collection = self.collection {
             updateCollection(collection)
         }
+        
+        self.refreshControl.endRefreshing()
     }
     
     func updateCollection(collection: Collection) {
@@ -51,6 +61,13 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         self.collection = collection
         
         self.collectionView?.reloadData()
+    }
+    
+    func startRefresh(sender: UIRefreshControl) {
+        if !videoRepository.refreshOnline() {
+            self.refreshControl.endRefreshing()
+            showErrorModal(UserError.notSignedIn, title: "Couldn't refresh")
+        }
     }
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -158,7 +175,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             guard let video = try appDelegate.getVideo(videoInfo.id) else { return nil }
             return video
         } catch {
-            showErrorModal(error)
+            showErrorModal(error, title: "Video not found")
             return nil
         }
     }
@@ -249,7 +266,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             
             switch tryVideo {
             case .Success(let video): break
-            case .Error(let error): self.showErrorModal(error)
+            case .Error(let error): self.showErrorModal(error, title: "Couldn't upload video")
             }
         })
     }
@@ -259,7 +276,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         
         if collectionView.allowsMultipleSelection {
             let selectedIndices = collectionView.indexPathsForSelectedItems() ?? []
-            self.authenticate() {
+            
+            self.doAuthenticated(errorTitle: "Can't upload") {
                 for indexPath in selectedIndices {
                     self.uploadVideo(atIndexPath: indexPath)
                 }
@@ -386,57 +404,42 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     }
 
     @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
-        self.authenticate() {
+        self.doAuthenticated(errorTitle: "Couldn't sign in") {
+            videoRepository.refreshOnline()
         }
     }
     
-    func showErrorModal(error: ErrorType) {
-        var errorTitle = "Error"
+    func showErrorModal(error: ErrorType, title: String) {
         var errorMessage = "An unknown error happened"
 
-        if let userError = error as? PrintableError {
-            errorMessage = userError.localizedErrorDescription
+        if let printableError = error as? PrintableError {
+            errorMessage = printableError.localizedErrorDescription
         }
         
-        let alertController = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .Alert)
+        let alertController = UIAlertController(title: title, message: errorMessage, preferredStyle: .Alert)
         
         let okAction = UIAlertAction(title: "OK", style: .Default, handler: { action in
             alertController.dismissViewControllerAnimated(true, completion: nil)
         })
+        
         alertController.addAction(okAction)
+        
+        if let userError = error as? UserError, fix = userError.fix {
+            let fixAction = UIAlertAction(title: fix.title, style: .Default, handler: { action in
+                fix.action(self)
+            })
+            alertController.addAction(fixAction)
+        }
         
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
-    func tempSetup() {
-        guard let http = HTTPClient.http else { return }
-        
-        if let achrailsUrl = Secrets.getUrl("ACHRAILS_URL") {
-            let achrails = AchRails(http: http, endpoint: achrailsUrl)
-            videoRepository.achRails = achrails
-        }
-        
-        if let achminupUrl = Secrets.getUrl("ACHMINUP_URL") {
-            let achminup = AchMinUpUploader(endpoint: achminupUrl)
-            videoRepository.videoUploaders = [achminup]
-            videoRepository.thumbnailUploaders = [achminup]
-        }
-        
-        videoRepository.refreshOnline()
-    }
-    
-    func authenticate(callback: () -> ()) {
-        HTTPClient.doAuthenticated(fromViewController: self) { result in
-            switch result {
-            case .OldSession:
+    func doAuthenticated(errorTitle errorTitle: String, callback: () -> ()) {
+        HTTPClient.doAuthenticated() { result in
+            if let error = result.error {
+                self.showErrorModal(error, title: errorTitle)
+            } else {
                 callback()
-            case .NewSession:
-                self.tempSetup()
-                callback()
-            case .Unauthenticated: break
-                // TODO: Something
-            case .Error(let error):
-                self.showErrorModal(error)
             }
         }
     }
