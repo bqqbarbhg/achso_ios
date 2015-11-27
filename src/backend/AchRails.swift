@@ -59,4 +59,51 @@ class AchRails {
             
         }
     }
+    
+    class Group {
+        var name: String
+        var description: String
+        var videos: [NSUUID]
+        
+        init(manifest: JSONObject) throws {
+            do {
+                self.name = try manifest.castGet("name")
+                self.description = try manifest.castGet("description")
+                
+                let videos: JSONArray = try manifest.castGet("videos")
+                self.videos = videos.flatMap {
+                    guard let string = $0 as? String else { return nil }
+                    return NSUUID(UUIDString: string)
+                }
+                
+            } catch {
+                self.name = ""
+                self.description = ""
+                self.videos = []
+            }
+        }
+    }
+    
+    func getGroups(callback: Try<[Group]> -> ()) {
+        
+        let request = endpoint.request(.GET, "groups.json")
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            switch response.result {
+            case .Failure(let error):
+                callback(.Error(error))
+            case .Success(let groupsJson):
+                if let groupsArray: JSONArray = groupsJson["groups"] as? JSONArray {
+                    
+                    let groups = groupsArray.flatMap { any -> Group? in
+                        guard let jsonObject = any as? JSONObject else { return nil }
+                        return try? Group(manifest: jsonObject)
+                    }
+                    
+                    callback(.Success(groups))
+                } else {
+                    callback(.Error(DebugError("Expected groups")))
+                }
+            }
+        }
+    }
 }

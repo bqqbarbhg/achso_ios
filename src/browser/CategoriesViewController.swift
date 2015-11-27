@@ -9,10 +9,18 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     var sections: [Section] = []
     
     func updateSections() {
-        let general = Section(title: nil)
-        general.collections = self.collections
+        let groupedCollections = self.collections.groupBy({ $0.type })
         
-        self.sections = [general]
+        let general = Section(title: nil)
+        general.collections = groupedCollections[.General] ?? []
+        
+        let genres = Section(title: "Genres")
+        genres.collections = groupedCollections[.Genre] ?? []
+        
+        let groups = Section(title: "Groups")
+        groups.collections = groupedCollections[.Group] ?? []
+        
+        self.sections = [general, genres, groups]
         self.tableView.reloadData()
     }
     

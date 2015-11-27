@@ -6,8 +6,10 @@ class VideoInfo {
     var revision: Int
     var title: String
     var thumbnailUri: NSURL
-    var isLocal: Bool
     var creationDate: NSDate
+    var genre: String
+    
+    var isLocal: Bool
     var hasLocalModifications: Bool
     
     init(video: Video) {
@@ -18,6 +20,7 @@ class VideoInfo {
         self.isLocal = video.videoUri.scheme == "file"
         self.creationDate = video.creationDate
         self.hasLocalModifications = video.hasLocalModifications
+        self.genre = video.genre
     }
     
     init(object: NSManagedObject) throws {
@@ -29,6 +32,7 @@ class VideoInfo {
             self.isLocal = try (object.valueForKey("isLocal") as? Bool).unwrap()
             self.creationDate = try (object.valueForKey("creationDate") as? NSDate).unwrap()
             self.hasLocalModifications = try (object.valueForKey("hasLocalModifications") as? Bool).unwrap()
+            self.genre = try (object.valueForKey("genre") as? String).unwrap()
         } catch {
             // Swift-bug: Classes need to be initialized even if thrown
             self.id = NSUUID(UUIDBytes: [UInt8](count: 16, repeatedValue: 0x00))
@@ -38,6 +42,7 @@ class VideoInfo {
             self.isLocal = false
             self.creationDate = NSDate(timeIntervalSince1970: 0)
             self.hasLocalModifications = false
+            self.genre = ""
             
             throw error
         }
@@ -51,5 +56,6 @@ class VideoInfo {
         object.setValue(self.isLocal, forKey: "isLocal")
         object.setValue(self.creationDate, forKey: "creationDate")
         object.setValue(self.hasLocalModifications, forKey: "hasLocalModifications")
+        object.setValue(self.genre, forKey: "genre")
     }
 }

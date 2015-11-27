@@ -14,6 +14,8 @@ class VideoRepository {
     var collections: [Collection] = []
     var listeners: [VideoRepositoryListener] = []
     
+    var groups: [AchRails.Group] = []
+    
     func addListener(listener: VideoRepositoryListener) {
         self.listeners.append(listener)
         listener.videoRepositoryUpdated()
@@ -32,9 +34,30 @@ class VideoRepository {
             self.videoInfos = videoInfos
         }
         
-        let tempCollection = Collection(title: "All videos")
-        tempCollection.videos = videoInfos
-        self.collections = [tempCollection]
+        let generalCollection = Collection(title: "All videos", type: .General)
+        generalCollection.videos = videoInfos
+        
+        let videosByGenre = videoInfos.groupBy({ $0.genre })
+        
+        let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
+        
+        let genreCollections: [Collection] = genres.map { genre in
+            let collection = Collection(title: genre, type: .Genre)
+            collection.videos = videosByGenre[genre] ?? []
+            return collection
+        }
+        
+        let groupCollections: [Collection] = groups.map { group in
+            let collection = Collection(title: group.name, type: .Group)
+            
+            collection.videos = group.videos.flatMap { id in
+                return self.findVideoInfo(id)
+            }
+            
+            return collection
+        }
+        
+        self.collections = [generalCollection] + genreCollections + groupCollections
         
         for listener in self.listeners {
             listener.videoRepositoryUpdated()
@@ -47,6 +70,16 @@ class VideoRepository {
                 if let revisions = videoRevisions {
                     self.updateVideos(revisions)
                 } else {
+                    self.refresh()
+                }
+            }
+            
+            achRails.getGroups() { tryGroups in
+                switch tryGroups {
+                case .Error(let error): break // TODO
+                case .Success(let groups):
+                    self.groups = groups
+                    // HACKish: Should call refresh only once
                     self.refresh()
                 }
             }
