@@ -83,26 +83,34 @@ class VideoRepository {
         }
         
         for revision in revisions {
-            if let video = self.findVideoInfo(revision.id) {
-                if revision.revision <= video.revision { continue }
+            if let videoInfo = self.findVideoInfo(revision.id) {
                 
-                updateTotal++
-                achRails.getVideo(revision.id) { video in
-                    if let video = video {
-                        self.updateVideo(video)
+                
+                if videoInfo.hasLocalModifications {
+                    
+                    if let video = (try? AppDelegate.instance.getVideo(videoInfo.id)).flatMap({ $0 }) {
+                        
+                        updateTotal++
+                        achRails.uploadVideo(video) { tryVideo in
+                            switch tryVideo {
+                            case .Success(let video): self.updateVideo(video)
+                            case .Error(let error): break // TODO
+                            }
+                            updateDone()
+                        }
                     }
-                    updateDone()
+                    continue
                 }
                 
-            } else {
-                
-                updateTotal++
-                achRails.getVideo(revision.id) { video in
-                    if let video = video {
-                        self.updateVideo(video)
-                    }
-                    updateDone()
+                if revision.revision <= videoInfo.revision { continue }
+            }
+            
+            updateTotal++
+            achRails.getVideo(revision.id) { video in
+                if let video = video {
+                    self.updateVideo(video)
                 }
+                updateDone()
             }
         }
         

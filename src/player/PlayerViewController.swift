@@ -357,6 +357,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         let video = activeVideo.toVideo()
         
         do {
+            video.hasLocalModifications = true
             try videoRepository.saveVideo(video)
         } catch {
             // TODO

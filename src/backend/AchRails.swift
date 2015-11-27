@@ -35,7 +35,7 @@ class AchRails {
         let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json")
         http.authorizedRequestJSON(request, canRetry: true) { response in
             let videoJson = response.result.value as? JSONObject
-            let video = try? Video(manifest: videoJson.unwrap())
+            let video = try? Video(manifest: videoJson.unwrap(), hasLocalModifications: false)
             callback(video)
         }
     }
@@ -50,7 +50,7 @@ class AchRails {
                 callback(.Error(error))
             case .Success(let videoJson):
                 do {
-                    let video = try Video(manifest: (videoJson as? JSONObject).unwrap())
+                    let video = try Video(manifest: (videoJson as? JSONObject).unwrap(), hasLocalModifications: false)
                     callback(.Success(video))
                 } catch {
                     callback(.Error(error))

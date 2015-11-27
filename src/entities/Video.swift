@@ -16,6 +16,8 @@ class Video {
     var location: Location?
     var author: User
     
+    var hasLocalModifications: Bool
+    
     init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL) {
         self.id = id
         self.title = title
@@ -29,6 +31,7 @@ class Video {
         self.rotation = 0
         self.location = nil
         self.author = User()
+        self.hasLocalModifications = true
     }
     
     init(copyFrom video: Video) {
@@ -44,9 +47,10 @@ class Video {
         self.rotation = video.rotation
         self.location = video.location
         self.author = video.author
+        self.hasLocalModifications = video.hasLocalModifications
     }
     
-    init(manifest: JSONObject) throws {
+    init(manifest: JSONObject, hasLocalModifications: Bool) throws {
         do {
             self.title = try manifest.castGet("title")
             self.id = try NSUUID(UUIDString: try manifest.castGet("id")).unwrap()
@@ -72,6 +76,8 @@ class Video {
             let annotations: [JSONObject] = try manifest.castGet("annotations")
             self.annotations = try annotations.map({ try Annotation(manifest: $0) })
             
+            self.hasLocalModifications = hasLocalModifications
+            
         } catch {
             // Swift-bug: Classes need to be initialized even if thrown
             self.title = ""
@@ -85,6 +91,7 @@ class Video {
             self.genre = ""
             self.rotation = 0
             self.author = User()
+            self.hasLocalModifications = false
             
             throw error
         }

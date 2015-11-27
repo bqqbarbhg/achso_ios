@@ -186,7 +186,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         let manifestString = try (videoModel.valueForKey("manifest") as? String).unwrap()
-        return try Video(manifest: parseJson(manifestString).unwrap())
+        let locallyModified = try (videoModel.valueForKey("hasLocalModifications") as? Bool).unwrap()
+        return try Video(manifest: parseJson(manifestString).unwrap(), hasLocalModifications: locallyModified)
     }
 }
 

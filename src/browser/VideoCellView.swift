@@ -27,11 +27,15 @@ class VideoViewCell: UICollectionViewCell {
         
         titleLabel.text = video.title
     
-        if video.isLocal {
-            sharedCloudImage.image = UIImage(named: "CloudLocal")
-        } else {
-            sharedCloudImage.image = UIImage(named: "CloudUploaded")
-        }
+        let imageName: String = {
+            switch (video.isLocal, video.hasLocalModifications) {
+            case (true, _): return "CloudLocal"
+            case (false, false): return "CloudUploaded"
+            case (false, true): return "CloudUploadedModified"
+            }
+        }()
+        
+        sharedCloudImage.image = UIImage(named: imageName)
         
         thumbnailImageView.sd_setImageWithURL(video.thumbnailUri)
         thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFill
