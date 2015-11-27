@@ -404,8 +404,12 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     }
 
     @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
-        self.doAuthenticated(errorTitle: "Couldn't sign in") {
-            videoRepository.refreshOnline()
+        HTTPClient.authenticate(fromViewController: self) { result in
+            if let error = result.error {
+                self.showErrorModal(error, title: "Couldn't sign in")
+            } else {
+                videoRepository.refreshOnline()
+            }
         }
     }
     
