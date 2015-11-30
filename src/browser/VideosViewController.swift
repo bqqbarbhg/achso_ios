@@ -23,11 +23,16 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     override func viewDidLoad() {
         refreshToolbarView(animated: false)
         
+        // Refresh control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "startRefresh:", forControlEvents: .ValueChanged)
         self.collectionView?.addSubview(refreshControl)
         
         self.refreshControl = refreshControl
+        
+        // Long press recognizer
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
+        self.collectionView?.addGestureRecognizer(longPressRecognizer)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -67,6 +72,18 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if !videoRepository.refreshOnline() {
             self.refreshControl.endRefreshing()
             showErrorModal(UserError.notSignedIn, title: "Couldn't refresh")
+        }
+    }
+    
+    func longPress(sender: UILongPressGestureRecognizer) {
+        guard let collectionView = self.collectionView else { return }
+        if sender.state != .Began { return }
+        
+        let point = sender.locationInView(collectionView)
+        if let indexPath = collectionView.indexPathForItemAtPoint(point) {
+            collectionView.allowsMultipleSelection = true
+            collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            refreshToolbarView(animated: true)
         }
     }
     
