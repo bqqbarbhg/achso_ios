@@ -41,17 +41,21 @@ enum AuthenticationResult {
     }
 }
 
+typealias TokenSet = (access: String, expires: NSDate, refresh: String?)
+
 // HTTP client that manages OAuth2 tokens
 class AuthenticatedHTTP {
     
     let oaClient: OAuth2Client
+    let userInfoEndpoint: NSURL
     
-    var accessToken: String?
-    var refreshToken: String?
-    var tokenExpiryDate: NSDate?
+    var tokens: TokenSet? {
+        return AuthUser.user?.tokens
+    }
     
-    init(oaClient: OAuth2Client) {
+    init(oaClient: OAuth2Client, userInfoEndpoint: NSURL) {
         self.oaClient = oaClient
+        self.userInfoEndpoint = userInfoEndpoint
     }
     
     func executeOAuth2Request(request: OAuth2Request, callback: ACallback) {
@@ -67,25 +71,46 @@ class AuthenticatedHTTP {
             
             let tokens = OAuth2Tokens(data)
             
-            self.accessToken = tokens.accessToken ?? self.accessToken
-            self.refreshToken = tokens.refreshToken ?? self.refreshToken
-            
             let expiryTimePadding = 5 // seconds
-            self.tokenExpiryDate = tokens.expiresIn.map { expiresIn in
+            
+            let accessToken = tokens.accessToken
+            let refreshToken = tokens.refreshToken ?? self.tokens?.refresh
+            let expiresIn = tokens.expiresIn.map { expiresIn in
                 NSDate(timeIntervalSinceNow: Double(expiresIn - expiryTimePadding))
             }
             
-            if tokens.accessToken == nil {
-                callback(.Error(UserError.failedToAuthenticate.withDebugError("No response token found")))
+            if let newAccess = accessToken, newExpires = expiresIn {
+                
+                let tokens = TokenSet(access: newAccess, expires: newExpires, refresh: refreshToken)
+                self.getUserInfo(tokens, callback: callback)
             } else {
-                callback(createSession ? .NewSession : .OldSession)
+                callback(.Error(UserError.failedToAuthenticate.withDebugError("No response token found")))
+            }
+        }
+    }
+    
+    func getUserInfo(tokens: TokenSet, callback: AuthenticationResult -> ()) {
+        
+        let request = self.userInfoEndpoint.request(.GET)
+        self.authorizedRequestJSON(request, canRetry: false, tokens: tokens) { response in
+            do {
+                let responseJson = try (response.result.value as? JSONObject).unwrap()
+                let sub: String = try responseJson.castGet("sub")
+                let name: String = try responseJson.castGet("name")
+                
+                AuthUser.user = AuthUser(tokens: tokens, id: sub, name: name)
+                
+                callback(.NewSession)
+            } catch {
+                callback(.Error(error))
             }
         }
     }
     
     func refreshIfNecessary(callback: AuthenticationResult -> ()) {
         // If the access token is still valid no need to refresh
-        if self.accessToken != nil && (self.tokenExpiryDate.map({ $0 < NSDate() }) ?? false) {
+        let isValid = (self.tokens?.expires).map({ $0 < NSDate() }) ?? false
+        if self.tokens?.access != nil && isValid {
             callback(.OldSession)
             return
         }
@@ -103,7 +128,7 @@ class AuthenticatedHTTP {
     }
     
     func refreshTokens(callback: AuthenticationResult -> ()) {
-        guard let refreshToken = self.refreshToken else {
+        guard let refreshToken = self.tokens?.refresh else {
             callback(.Error(UserError.notSignedIn))
             return
         }
@@ -125,19 +150,19 @@ class AuthenticatedHTTP {
         return [401, 403, 404, 500].contains(nsResponse.statusCode)
     }
     
-    func authorizeRequest(request: HTTPRequest) -> HTTPRequest {
+    func authorizeRequest(request: HTTPRequest, tokens: TokenSet?) -> HTTPRequest {
         var headers = request.headers ?? [:]
         
-        if let bearerToken = self.accessToken {
-            headers["Authorization"] = "Bearer \(bearerToken)"
+        if let tokens = tokens {
+            headers["Authorization"] = "Bearer \(tokens.access)"
         }
-        
+            
         return HTTPRequest(request.method, request.url, parameters: request.parameters, encoding: request.encoding, headers: headers)
     }
     
-    func authorizedRequestJSON(request: HTTPRequest, canRetry: Bool, callback: ACallback) {
+    func authorizedRequestJSON(request: HTTPRequest, canRetry: Bool, tokens: TokenSet?, callback: ACallback) {
         
-        let authorizedRequest = authorizeRequest(request)
+        let authorizedRequest = authorizeRequest(request, tokens: tokens)
         
         // Do the request directly if no need to retry
         if !canRetry {
@@ -155,13 +180,12 @@ class AuthenticatedHTTP {
             
             // Refresh the tokens and retry if got new ones
             self.refreshTokens() { result in
-                if result.isAuthenticated {
-                    self.unauthorizedRequestJSON(authorizedRequest, callback: callback)
-                } else {
-                    callback(response)
-                }
+                self.authorizedRequestJSON(request, canRetry: false, callback: callback)
             }
         }
-        
+    }
+    
+    func authorizedRequestJSON(request: HTTPRequest, canRetry: Bool, callback: ACallback) {
+        self.authorizedRequestJSON(request, canRetry: canRetry, tokens: self.tokens, callback: callback)
     }
 }

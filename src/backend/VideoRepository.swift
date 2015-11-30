@@ -14,7 +14,7 @@ class VideoRepository {
     var collections: [Collection] = []
     var listeners: [VideoRepositoryListener] = []
     
-    var groups: [AchRails.Group] = []
+    var groups: [Group] = []
     
     func addListener(listener: VideoRepositoryListener) {
         self.listeners.append(listener)
@@ -32,6 +32,10 @@ class VideoRepository {
         
         if let videoInfos = try? appDelegate.getVideoInfos() {
             self.videoInfos = videoInfos
+        }
+        
+        if let groups = appDelegate.loadGroups() {
+            self.groups = groups
         }
         
         let generalCollection = Collection(title: "All videos", type: .General)
@@ -78,7 +82,7 @@ class VideoRepository {
                 switch tryGroups {
                 case .Error(let error): break // TODO
                 case .Success(let groups):
-                    self.groups = groups
+                    AppDelegate.instance.saveGroups(groups, downloadedBy: achRails.userId)
                     // HACKish: Should call refresh only once
                     self.refresh()
                 }
@@ -231,7 +235,6 @@ class VideoRepository {
                 
                 progressBase = 0.8
             }
-            
             
             
             guard let videoUrl = maybeVideoUrl, thumbnailUrl = maybeThumbnailUrl else {

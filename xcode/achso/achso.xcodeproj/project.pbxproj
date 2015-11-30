@@ -23,6 +23,8 @@
 		A92B72F71BECE1AF0036B60E /* MathUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72F61BECE1AF0036B60E /* MathUtil.swift */; };
 		A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FB1BECEDCB0036B60E /* PlayerController.swift */; };
 		A92B72FE1BECEE360036B60E /* PlayButtonLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */; };
+		A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77B1C0CB7EC000C5D62 /* Group.swift */; };
+		A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */; };
 		A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A946FECB1BFDD38000F53003 /* HTTPClient.swift */; };
 		A94B82AF1BEA3DC00017874D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A94B82AD1BEA3DC00017874D /* Main.storyboard */; };
 		A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A94B82B01BEA3DC00017874D /* AchSo.xcdatamodeld */; };
@@ -35,6 +37,7 @@
 		A94B82E61BEA5EA10017874D /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E51BEA5EA10017874D /* Section.swift */; };
 		A94B82E81BEA5EF70017874D /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E71BEA5EF70017874D /* Collection.swift */; };
 		A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E91BEA64D60017874D /* VideosViewController.swift */; };
+		A94BCEB61C08909C00669476 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94BCEB51C08909C00669476 /* AuthUser.swift */; };
 		A952EE221BECA109003B638A /* SeekBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE211BECA109003B638A /* SeekBarView.swift */; };
 		A952EE241BECA154003B638A /* SeekBarLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE231BECA154003B638A /* SeekBarLayer.swift */; };
 		A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE251BECA354003B638A /* CGRectExtension.swift */; };
@@ -86,6 +89,8 @@
 		A92B72F61BECE1AF0036B60E /* MathUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtil.swift; sourceTree = "<group>"; };
 		A92B72FB1BECEDCB0036B60E /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButtonLayer.swift; sourceTree = "<group>"; };
+		A93AE77B1C0CB7EC000C5D62 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupList.swift; sourceTree = "<group>"; };
 		A946FECB1BFDD38000F53003 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		A94B82A61BEA3DC00017874D /* AchSo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AchSo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A94B82AE1BEA3DC00017874D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -100,6 +105,7 @@
 		A94B82E51BEA5EA10017874D /* Section.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		A94B82E71BEA5EF70017874D /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A94B82E91BEA64D60017874D /* VideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideosViewController.swift; sourceTree = "<group>"; };
+		A94BCEB51C08909C00669476 /* AuthUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		A952EE211BECA109003B638A /* SeekBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekBarView.swift; sourceTree = "<group>"; };
 		A952EE231BECA154003B638A /* SeekBarLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekBarLayer.swift; sourceTree = "<group>"; };
 		A952EE251BECA354003B638A /* CGRectExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtension.swift; sourceTree = "<group>"; };
@@ -255,6 +261,7 @@
 			children = (
 				A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */,
 				A946FECB1BFDD38000F53003 /* HTTPClient.swift */,
+				A94BCEB51C08909C00669476 /* AuthUser.swift */,
 			);
 			path = auth;
 			sourceTree = "<group>";
@@ -264,6 +271,8 @@
 			children = (
 				A98D82741BEB52F100BB7263 /* Video.swift */,
 				A91D67301BFE016900B15A66 /* VideoInfo.swift */,
+				A93AE77B1C0CB7EC000C5D62 /* Group.swift */,
+				A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */,
 				A973BC9C1BF1049900D07B82 /* User.swift */,
 				A973BC981BF1022900D07B82 /* ActiveVideo.swift */,
 				A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */,
@@ -459,12 +468,14 @@
 				A9167FC31BEBA6FF0018BEC4 /* Annotation.swift in Sources */,
 				A95E99F31BFF10BB001BF3E2 /* Async.swift in Sources */,
 				A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */,
+				A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */,
 				A91D672D1BFDF50700B15A66 /* NSURLExtension.swift in Sources */,
 				A94B82E61BEA5EA10017874D /* Section.swift in Sources */,
 				A95E99FF1BFF5E0D001BF3E2 /* DateUtils.swift in Sources */,
 				A952EE281BECB3C5003B638A /* HexColor.swift in Sources */,
 				A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */,
 				A95E99FB1BFF456C001BF3E2 /* AchMinUpUploader.swift in Sources */,
+				A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */,
 				A94B82E21BEA3FB10017874D /* PlayerViewController.swift in Sources */,
 				A9FE305B1BFCCCC000746686 /* Alamotypes.swift in Sources */,
 				A952EE221BECA109003B638A /* SeekBarView.swift in Sources */,
@@ -483,6 +494,7 @@
 				A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */,
 				A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */,
 				A98D82751BEB52F100BB7263 /* Video.swift in Sources */,
+				A94BCEB61C08909C00669476 /* AuthUser.swift in Sources */,
 				A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */,
 				A95E99F71BFF2348001BF3E2 /* Errors.swift in Sources */,
 			);

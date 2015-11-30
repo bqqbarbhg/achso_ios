@@ -14,10 +14,12 @@ class AchRails {
     
     let http: AuthenticatedHTTP
     let endpoint: NSURL
+    let userId: String
     
-    init(http: AuthenticatedHTTP, endpoint: NSURL) {
+    init(http: AuthenticatedHTTP, endpoint: NSURL, userId: String) {
         self.http = http
         self.endpoint = endpoint
+        self.userId = userId
     }
     
     func getVideos(callback: [VideoRevision]? -> ()) {
@@ -35,7 +37,7 @@ class AchRails {
         let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json")
         http.authorizedRequestJSON(request, canRetry: true) { response in
             let videoJson = response.result.value as? JSONObject
-            let video = try? Video(manifest: videoJson.unwrap(), hasLocalModifications: false)
+            let video = try? Video(manifest: videoJson.unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
             callback(video)
         }
     }
@@ -50,37 +52,13 @@ class AchRails {
                 callback(.Error(error))
             case .Success(let videoJson):
                 do {
-                    let video = try Video(manifest: (videoJson as? JSONObject).unwrap(), hasLocalModifications: false)
+                    let video = try Video(manifest: (videoJson as? JSONObject).unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
                     callback(.Success(video))
                 } catch {
                     callback(.Error(error))
                 }
             }
             
-        }
-    }
-    
-    class Group {
-        var name: String
-        var description: String
-        var videos: [NSUUID]
-        
-        init(manifest: JSONObject) throws {
-            do {
-                self.name = try manifest.castGet("name")
-                self.description = try manifest.castGet("description")
-                
-                let videos: JSONArray = try manifest.castGet("videos")
-                self.videos = videos.flatMap {
-                    guard let string = $0 as? String else { return nil }
-                    return NSUUID(UUIDString: string)
-                }
-                
-            } catch {
-                self.name = ""
-                self.description = ""
-                self.videos = []
-            }
         }
     }
     

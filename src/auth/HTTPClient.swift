@@ -10,23 +10,25 @@ class HTTPClient {
         let oaProvider = OAuth2Provider(baseUrl: endpointUrl, authorizePath: "authorize", tokenPath: "token")
         let oaClient = OAuth2Client(provider: oaProvider, clientId: clientId, clientSecret: clientSecret, callbackUrl: callbackUrl)
         
-        self.http = AuthenticatedHTTP(oaClient: oaClient)
+        self.http = AuthenticatedHTTP(oaClient: oaClient, userInfoEndpoint: endpointUrl.URLByAppendingPathComponent("userinfo"))
     }
-    
-    
     
     static func authenticate(fromViewController viewController: UIViewController, callback userCallback: AuthenticationResult -> ()) {
 
         func callback(result: AuthenticationResult) {
             switch result {
-            case .OldSession: break
+            case .OldSession:
+                userCallback(result)
+                
             case .NewSession:
-                self.tempSetup()
-            case .Error(let error): break
+                // Delegate to get user info (name and id)
+                tempSetup()
+                userCallback(result)
+                
+            case .Error(let error):
                 // TODO: Something
+                userCallback(result)
             }
-            
-            userCallback(result)
         }
         
         guard let http = self.http else {
@@ -70,9 +72,10 @@ class HTTPClient {
     
     static func tempSetup() {
         guard let http = HTTPClient.http else { return }
+        guard let user = AuthUser.user else { return }
         
         if let achrailsUrl = Secrets.getUrl("ACHRAILS_URL") {
-            let achrails = AchRails(http: http, endpoint: achrailsUrl)
+            let achrails = AchRails(http: http, endpoint: achrailsUrl, userId: user.id)
             videoRepository.achRails = achrails
         }
         

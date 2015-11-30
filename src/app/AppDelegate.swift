@@ -24,8 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         categoriesViewController.videosViewController = videosViewController
         videosViewController.categoriesViewController = categoriesViewController
         
-        videoRepository.refresh()
-        
         // HACK: Extract video collections out of CategoriesViewController
         // Compiled crash: /usr/bin/swift -frontend -c
         // videosViewController.showCollection(categoriesViewController.tempGetSections().first!.collections.first)
@@ -40,7 +38,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 HTTPClient.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
         }
         
+        loadUserSession()
+        videoRepository.refresh()
+        
         return true
+    }
+    
+    func saveUserSession() {
+        if let user = AuthUser.user {
+            NSKeyedArchiver.archiveRootObject(user, toFile: AuthUser.ArchiveURL.path!)
+        }
+    }
+    
+    func loadUserSession() {
+        AuthUser.user = NSKeyedUnarchiver.unarchiveObjectWithFile(AuthUser.ArchiveURL.path!) as? AuthUser
+        HTTPClient.tempSetup()
+    }
+    
+    func saveGroups(groups: [Group], downloadedBy: String) {
+        let groupList = GroupList(groups: groups, downloadedBy: downloadedBy)
+        NSKeyedArchiver.archiveRootObject(groupList, toFile: GroupList.ArchiveURL.path!)
+    }
+    
+    func loadGroups() -> [Group]? {
+        guard let groupList = NSKeyedUnarchiver.unarchiveObjectWithFile(GroupList.ArchiveURL.path!) as? GroupList else {
+            return nil
+        }
+        
+        if groupList.downloadedBy != AuthUser.user?.id {
+            return nil
+        }
+        
+        return groupList.groups
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -49,12 +78,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        saveUserSession()
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        loadUserSession()
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
@@ -64,6 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
+        saveUserSession()
         self.saveContext()
     }
     
@@ -187,7 +216,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let manifestString = try (videoModel.valueForKey("manifest") as? String).unwrap()
         let locallyModified = try (videoModel.valueForKey("hasLocalModifications") as? Bool).unwrap()
-        return try Video(manifest: parseJson(manifestString).unwrap(), hasLocalModifications: locallyModified)
+        let downloadedBy = videoModel.valueForKey("downloadedBy") as? String
+        return try Video(manifest: parseJson(manifestString).unwrap(),
+            hasLocalModifications: locallyModified,
+            downloadedBy: downloadedBy)
     }
 }
 
