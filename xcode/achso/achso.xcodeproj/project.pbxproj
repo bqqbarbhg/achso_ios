@@ -50,6 +50,7 @@
 		A95E99FF1BFF5E0D001BF3E2 /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */; };
 		A96623341BFB4D3C0021A6A4 /* NSUUIDExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */; };
 		A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */; };
+		A96AC4081C0EEFD800506B6D /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96AC4071C0EEFD800506B6D /* Tasks.swift */; };
 		A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */; };
 		A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC981BF1022900D07B82 /* ActiveVideo.swift */; };
 		A973BC9D1BF1049900D07B82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC9C1BF1049900D07B82 /* User.swift */; };
@@ -118,6 +119,7 @@
 		A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
 		A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSUUIDExtension.swift; sourceTree = "<group>"; };
 		A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalExtension.swift; sourceTree = "<group>"; };
+		A96AC4071C0EEFD800506B6D /* Tasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekAnnotationLayer.swift; sourceTree = "<group>"; };
 		A973BC981BF1022900D07B82 /* ActiveVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideo.swift; sourceTree = "<group>"; };
 		A973BC9C1BF1049900D07B82 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 				A95E99F41BFF1334001BF3E2 /* AVHelpers.swift */,
 				A95E99F61BFF2348001BF3E2 /* Errors.swift */,
 				A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */,
+				A96AC4071C0EEFD800506B6D /* Tasks.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				A96623341BFB4D3C0021A6A4 /* NSUUIDExtension.swift in Sources */,
 				A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */,
 				A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */,
+				A96AC4081C0EEFD800506B6D /* Tasks.swift in Sources */,
 				A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */,
 				A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */,
 				A91D67311BFE016900B15A66 /* VideoInfo.swift in Sources */,

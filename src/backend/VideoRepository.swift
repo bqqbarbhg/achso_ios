@@ -68,29 +68,206 @@ class VideoRepository {
         }
     }
     
-    func refreshOnline() -> Bool {
-        if let achRails = self.achRails {
-            achRails.getVideos() { videoRevisions in
-                if let revisions = videoRevisions {
-                    self.updateVideos(revisions)
+    typealias RepoContext = (achRails: AchRails, videoRepository: VideoRepository)
+    
+    class RepoTask: Task {
+        let ctx: RepoContext
+        
+        var achRails: AchRails {
+            return ctx.achRails
+        }
+
+        var videoRepository: VideoRepository {
+            return ctx.videoRepository
+        }
+        
+        init(_ ctx: RepoContext) {
+            self.ctx = ctx
+        }
+    }
+    
+    class RefreshOnlineTask: RepoTask {
+        
+        override init(_ ctx: RepoContext) {
+            super.init(ctx)
+        }
+        
+        override func run() {
+            
+            let getVideosTask = GetVideosTask(ctx)
+            let getGroupsTask = GetGroupsTask(ctx)
+            
+            self.addSubtask(getVideosTask)
+            self.addSubtask(getGroupsTask)
+            
+            getVideosTask.start()
+            getGroupsTask.start()
+            
+            self.done()
+        }
+    }
+    
+    class GetVideosTask: RepoTask {
+        
+        override init(_ ctx: RepoContext) {
+            super.init(ctx)
+        }
+        
+        override func run() {
+            self.achRails.getVideos() {
+                
+                guard let videoRevisions = $0 else {
+                    self.fail(DebugError("Failed to retrieve videos"))
+                    return
+                }
+                
+                for videoRevision in videoRevisions {
+                    self.updateVideoIfNeeded(videoRevision)
+                }
+                
+                self.done()
+            }
+        }
+        
+        func updateVideoIfNeeded(videoRevision: VideoRevision) {
+            if let localVideoInfo = self.videoRepository.findVideoInfo(videoRevision.id) {
+                
+                // Video found locally, check if it needs to be synced
+                
+                if localVideoInfo.hasLocalModifications {
+                    
+                    // Video has been modified locally: upload, merge in the server, and download the result.
+                    self.uploadVideo(videoRevision)
+                    
+                } else if videoRevision.revision > localVideoInfo.revision {
+                    
+                    // Video has been updated remotely, but not modified locally: Just download and overwrite.
+                    self.downloadVideo(videoRevision)
+                    
                 } else {
-                    self.refresh()
+                    // Video up to date: Nothing to do
+                }
+            } else {
+                // No local video yet: download it
+                self.downloadVideo(videoRevision)
+            }
+            
+        }
+
+        func downloadVideo(videoRevision: VideoRevision) {
+            
+            let task = DownloadVideoTask(ctx, videoRevision: videoRevision)
+            self.addSubtask(task)
+            task.start()
+            
+        }
+        
+        func uploadVideo(videoRevision: VideoRevision) {
+            
+            let task = UploadVideoTask(ctx, videoRevision: videoRevision)
+            self.addSubtask(task)
+            task.start()
+            
+        }
+    }
+    
+    class DownloadVideoTask: RepoTask {
+        
+        let videoRevision: VideoRevision
+        
+        init(_ ctx: RepoContext, videoRevision: VideoRevision) {
+            self.videoRevision = videoRevision
+            super.init(ctx)
+        }
+        
+        override func run() {
+            
+            self.achRails.getVideo(self.videoRevision.id) {
+                guard let video = $0 else {
+                    self.fail(DebugError("Failed to retrieve video \(self.videoRevision.id)"))
+                    return
+                }
+                
+                do {
+                    try AppDelegate.instance.saveVideo(video)
+                    self.done()
+                } catch {
+                    self.fail(error)
                 }
             }
             
+        }
+    }
+    
+    class UploadVideoTask: RepoTask {
+        let videoRevision: VideoRevision
+        
+        init(_ ctx: RepoContext, videoRevision: VideoRevision) {
+            self.videoRevision = videoRevision
+            super.init(ctx)
+        }
+        
+        override func run() {
+            do {
+                let maybeVideo = try AppDelegate.instance.getVideo(self.videoRevision.id)
+                
+                guard let video = maybeVideo else {
+                    throw DebugError("Video not found locally")
+                }
+                
+                self.achRails.uploadVideo(video) { tryVideo in
+                    
+                    switch tryVideo {
+                    case .Error(let error): self.fail(error)
+                    case .Success(let video):
+                        do {
+                            try AppDelegate.instance.saveVideo(video)
+                            self.done()
+                        } catch {
+                            self.fail(error)
+                        }
+                    }
+                    
+                }
+                
+            } catch {
+                self.fail(error)
+            }
+        }
+    }
+    
+    class GetGroupsTask: RepoTask {
+        
+        override init (_ ctx: RepoContext) {
+            super.init(ctx)
+        }
+        
+        override func run() {
             achRails.getGroups() { tryGroups in
                 switch tryGroups {
-                case .Error(let error): break // TODO
+                case .Error(let error):
+                    self.fail(error)
+                    
                 case .Success(let groups):
-                    AppDelegate.instance.saveGroups(groups, downloadedBy: achRails.userId)
-                    // HACKish: Should call refresh only once
-                    self.refresh()
+                    AppDelegate.instance.saveGroups(groups, downloadedBy: self.achRails.userId)
+                    self.done()
                 }
             }
-            return true
-        } else {
-            return false
         }
+        
+    }
+    
+    func refreshOnline() -> Bool {
+        guard let achRails = self.achRails else { return false }
+        let ctx = RepoContext(achRails: achRails, videoRepository: self)
+        
+        let task = RefreshOnlineTask(ctx)
+        task.completionHandler = {
+            self.refresh()
+        }
+        task.start()
+        
+        return true
     }
     
     func saveVideo(video: Video) throws {
@@ -105,61 +282,6 @@ class VideoRepository {
             }
         }
         return nil
-    }
-    
-    func updateVideos(revisions: [VideoRevision]) {
-        guard let achRails = self.achRails else { return }
-        
-        var updateCount = 0
-        var updateTotal = 1
-        
-        func updateDone() {
-            if ++updateCount == updateTotal {
-                self.refresh()
-            }
-        }
-        
-        for revision in revisions {
-            if let videoInfo = self.findVideoInfo(revision.id) {
-                
-                
-                if videoInfo.hasLocalModifications {
-                    
-                    if let video = (try? AppDelegate.instance.getVideo(videoInfo.id)).flatMap({ $0 }) {
-                        
-                        updateTotal++
-                        achRails.uploadVideo(video) { tryVideo in
-                            switch tryVideo {
-                            case .Success(let video): self.updateVideo(video)
-                            case .Error(let error): break // TODO
-                            }
-                            updateDone()
-                        }
-                    }
-                    continue
-                }
-                
-                if revision.revision <= videoInfo.revision { continue }
-            }
-            
-            updateTotal++
-            achRails.getVideo(revision.id) { video in
-                if let video = video {
-                    self.updateVideo(video)
-                }
-                updateDone()
-            }
-        }
-        
-        updateDone()
-    }
-    
-    func updateVideo(video: Video) {
-        do {
-            try AppDelegate.instance.saveVideo(video)
-        } catch {
-            // TODO
-        }
     }
     
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
