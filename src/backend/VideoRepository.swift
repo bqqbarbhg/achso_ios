@@ -88,10 +88,6 @@ class VideoRepository {
     
     class RefreshOnlineTask: RepoTask {
         
-        override init(_ ctx: RepoContext) {
-            super.init(ctx)
-        }
-        
         override func run() {
             
             let getVideosTask = GetVideosTask(ctx)
@@ -108,10 +104,6 @@ class VideoRepository {
     }
     
     class GetVideosTask: RepoTask {
-        
-        override init(_ ctx: RepoContext) {
-            super.init(ctx)
-        }
         
         override func run() {
             self.achRails.getVideos() {
@@ -237,10 +229,6 @@ class VideoRepository {
     }
     
     class GetGroupsTask: RepoTask {
-        
-        override init (_ ctx: RepoContext) {
-            super.init(ctx)
-        }
         
         override func run() {
             achRails.getGroups() { tryGroups in
