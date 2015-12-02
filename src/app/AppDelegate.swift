@@ -201,6 +201,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let fetch = NSFetchRequest(entityName: "Video")
         fetch.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
+        if let user = AuthUser.user {
+            fetch.predicate = NSPredicate(format: "downloadedBy == %@ OR isLocal == TRUE", argumentArray: [user.id])
+        } else {
+            fetch.predicate = NSPredicate(format: "isLocal == TRUE")
+        }
+        
         let resultsAny = try self.managedObjectContext.executeFetchRequest(fetch)
         guard let results = resultsAny as? [NSManagedObject] else {
             throw AppDataError.UnexpectedResultFormat
