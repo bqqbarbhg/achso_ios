@@ -18,7 +18,7 @@ class VideoInfo {
         self.revision = video.revision
         self.title = video.title
         self.thumbnailUri = video.thumbnailUri
-        self.isLocal = video.videoUri.scheme == "file"
+        self.isLocal = video.videoUri.isLocal
         self.creationDate = video.creationDate
         self.genre = video.genre
         

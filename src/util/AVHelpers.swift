@@ -9,21 +9,9 @@ func getThumbnailFromVideo(assetUrl: NSURL, relativeTime: Double = 0.3) throws -
     return try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
 }
 
-func saveThumbnailFromVideo(assetUrl: NSURL, filename: String, relativeTime: Double = 0.3, quality: CGFloat = 0.8) throws -> NSURL {
+func saveThumbnailFromVideo(assetUrl: NSURL, outputUrl: NSURL, relativeTime: Double = 0.3, quality: CGFloat = 0.8) throws {
     let thumbnailImage = UIImage(CGImage: try getThumbnailFromVideo(assetUrl, relativeTime: relativeTime))
     
-    let fileManager = NSFileManager.defaultManager()
-    let documentsUrl = try fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[safe: 0].unwrap()
-    let thumbnailsUrl = documentsUrl.URLByAppendingPathComponent("thumbnails", isDirectory: true)
-    
-    if !fileManager.fileExistsAtPath(try thumbnailsUrl.path.unwrap()) {
-        try fileManager.createDirectoryAtURL(thumbnailsUrl, withIntermediateDirectories: true, attributes: nil)
-    }
-    
-    let fileUrl = thumbnailsUrl.URLByAppendingPathComponent(filename)
-    
     let jpgData = try UIImageJPEGRepresentation(thumbnailImage, quality).unwrap()
-    try jpgData.writeToURL(fileUrl, options: .DataWritingAtomic)
-    
-    return fileUrl
+    try jpgData.writeToURL(outputUrl, options: .DataWritingAtomic)
 }

@@ -268,7 +268,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         guard let collectionView = self.collectionView else { return }
         guard let video = videoForIndexPath(indexPath) else { return }
         
-        if video.videoUri.scheme != "file" {
+        if !video.videoUri.isLocal {
             return
         }
         
@@ -332,6 +332,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         
         let title = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.FullStyle)
         
+        let videoUrl = NSURLComponents(string: "iosdocuments://videos/\(id.lowerUUIDString).mp4")!.URL!
+        let thumbnailUrl = NSURLComponents(string: "iosdocuments://thumbnails/\(id.lowerUUIDString).jpg")!.URL!
+        
         let fileManager = NSFileManager.defaultManager()
         guard let documentsUrl = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[safe: 0] else {
             return
@@ -343,57 +346,29 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         do {
             try videosUrl.createDirectoryIfUnexisting()
             try thumbnailsUrl.createDirectoryIfUnexisting()
+            
+            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl)
+            
+            let realVideoUrl = try videoUrl.realUrl.unwrap()
+            let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()
+            
+            try saveThumbnailFromVideo(temporaryUrl, outputUrl: realThumbnailUrl)
+            try fileManager.moveItemAtURL(temporaryUrl, toURL: realVideoUrl)
+            try videoRepository.saveVideo(video)
+
+            dismissViewControllerAnimated(true) {
+                self.chosenVideo = video
+                self.performSegueWithIdentifier("showPlayer", sender: self)
+            }
+            
         } catch {
-            return
-        }
-        
-        let videoUrl = videosUrl.URLByAppendingPathComponent("\(id.lowerUUIDString).mp4")
-        let thumbnailUrl = thumbnailsUrl.URLByAppendingPathComponent("\(id.lowerUUIDString).jpg")
-        
-        let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl)
-        
-        func saveUrl(callback: ErrorType? -> ()) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let returnValue: ErrorType? = {
-                    do {
-                        try fileManager.copyItemAtURL(temporaryUrl, toURL: videoUrl)
-                        return nil
-                    } catch {
-                        return error
-                    }
-                }()
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    callback(returnValue)
-                }
+            dismissViewControllerAnimated(true) {
+                self.showErrorModal(error, title: "Couldn't save video")
             }
         }
-        
-        func generateThumbnailAndDismissView(callback: ErrorType? -> ()) {
-            
-            do {
-                let filename = "\(id.lowerUUIDString).jpg"
-                video.thumbnailUri = try saveThumbnailFromVideo(temporaryUrl, filename: filename)
-                
-                try videoRepository.saveVideo(video)
-                
-                dismissViewControllerAnimated(true) {
-                    callback(nil)
-                }
-            } catch {
-                callback(error)
-            }
-        }
-        
-        parallelAsync(saveUrl, generateThumbnailAndDismissView, success: {
-            self.chosenVideo = video
-            self.performSegueWithIdentifier("showPlayer", sender: self)
-        }, errors: { errors in
-            
-        })
 
     }
-    
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         func handleShowPlayer(viewController: UIViewController) {
@@ -406,7 +381,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             }
 
             if let video = self.chosenVideo {
-                playerViewController.setVideo(video)
+                do {
+                    try playerViewController.setVideo(video)
+                } catch {
+                    // TODO: Cancel segue
+                }
             }
         }
         

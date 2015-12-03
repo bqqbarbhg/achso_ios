@@ -34,5 +34,18 @@ extension NSURL {
         guard let path = self.path else { return nil }
         return (try? fileManager.attributesOfItemAtPath(path)[NSFileSize])??.longLongValue
     }
+    
+    var realUrl: NSURL? {
+        if self.scheme != "iosdocuments" { return self }
+        guard let path = self.path else { return nil }
+        
+        let fileManager = NSFileManager.defaultManager()
+        let documents = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[safe: 0]
+        return documents?.URLByAppendingPathComponent(path)
+    }
+    
+    var isLocal: Bool {
+        return self.scheme == "file" || self.scheme == "iosdocuments"
+    }
 }
 

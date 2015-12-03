@@ -366,11 +366,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func setVideo(video: Video) {
+    func setVideo(video: Video) throws {
         let user = User()
         user.name = "test"
         
-        let videoPlayer = VideoPlayer(url: video.videoUri)
+        let videoPlayer = VideoPlayer(url: try video.videoUri.realUrl.unwrap())
         let playerController = PlayerController(player: videoPlayer)
         
         let activeVideo = ActiveVideo(video: video, user: user)

@@ -37,7 +37,9 @@ class VideoViewCell: UICollectionViewCell {
         
         sharedCloudImage.image = UIImage(named: imageName)
         
-        thumbnailImageView.sd_setImageWithURL(video.thumbnailUri)
+        if let url = video.thumbnailUri.realUrl {
+            thumbnailImageView.sd_setImageWithURL(url)
+        }
         thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFill
         
         progressView.hidden = true
