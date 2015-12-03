@@ -84,6 +84,8 @@ class HTTPClient {
             videoRepository.videoUploaders = [achminup]
             videoRepository.thumbnailUploaders = [achminup]
         }
+        
+        videoRepository.refreshOnline()
     }
 }
 

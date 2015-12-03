@@ -359,6 +359,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         do {
             video.hasLocalModifications = true
             try videoRepository.saveVideo(video)
+            videoRepository.refreshOnline()
         } catch {
             // TODO
         }

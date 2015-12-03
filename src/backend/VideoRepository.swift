@@ -249,9 +249,13 @@ class VideoRepository {
         guard let achRails = self.achRails else { return false }
         let ctx = RepoContext(achRails: achRails, videoRepository: self)
         
+        // TODO: Count these if many?
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let task = RefreshOnlineTask(ctx)
         task.completionHandler = {
             self.refresh()
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         task.start()
         

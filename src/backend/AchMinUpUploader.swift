@@ -40,12 +40,22 @@ class AchMinUpUploader: VideoUploader, ThumbnailUploader {
     }
     
     func uploadVideo(video: Video, progressCallback: Float -> (), doneCallback: VideoUploadResult? -> ()) {
-        uploadFile(video.videoUri, id: video.id, type: "video", progressCallback: progressCallback, doneCallback: { url in
+        guard let uri = video.videoUri.realUrl else {
+            doneCallback(nil)
+            return
+        }
+        
+        uploadFile(uri, id: video.id, type: "video", progressCallback: progressCallback, doneCallback: { url in
             doneCallback(url.flatMap { VideoUploadResult($0, nil) })
         })
     }
     
     func uploadThumbnail(video: Video, progressCallback: Float -> (), doneCallback: NSURL? -> ()) {
-        uploadFile(video.thumbnailUri, id: video.id, type: "thumbnail", progressCallback: progressCallback, doneCallback: doneCallback)
+        guard let uri = video.thumbnailUri.realUrl else {
+            doneCallback(nil)
+            return
+        }
+        
+        uploadFile(uri, id: video.id, type: "thumbnail", progressCallback: progressCallback, doneCallback: doneCallback)
     }
 }
