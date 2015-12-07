@@ -13,16 +13,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Connect the parts of the split view
-        let splitViewController = self.window!.rootViewController as! UISplitViewController
+        let browserViewController = self.window!.rootViewController as! BrowserViewController
         
-        let categoriesNavController = splitViewController.viewControllers[0] as! UINavigationController
-        let videosNavController = splitViewController.viewControllers[1] as! UINavigationController
+        let categoriesNavController = browserViewController.viewControllers[0] as! UINavigationController
+        let videosNavController = browserViewController.viewControllers[1] as! UINavigationController
         
         let categoriesViewController = categoriesNavController.topViewController as! CategoriesViewController
         let videosViewController = videosNavController.topViewController as! VideosViewController
         
         categoriesViewController.videosViewController = videosViewController
         videosViewController.categoriesViewController = categoriesViewController
+        browserViewController.videosViewController = videosViewController
         
         // HACK: Extract video collections out of CategoriesViewController
         // Compiled crash: /usr/bin/swift -frontend -c

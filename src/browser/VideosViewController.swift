@@ -37,10 +37,16 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     
     override func viewWillAppear(animated: Bool) {
         videoRepository.addListener(self)
+        self.splitViewControllerDidChangeDisplayMode()
     }
     
     override func viewWillDisappear(animated: Bool) {
         videoRepository.removeListener(self)
+    }
+    
+    func splitViewControllerDidChangeDisplayMode() {
+        guard let splitViewController = self.splitViewController else { return }
+        self.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
     }
     
     func showCollection(collectionIndex: Int) {
