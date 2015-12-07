@@ -80,19 +80,23 @@ class UserError: ErrorType, PrintableError {
     }
     
     static var invalidLayersBoxUrl: UserError {
-        return UserError("Invalid Layers Box URL")
+        return UserError(NSLocalizedString("error_invalid_layers_box_url",
+            comment: "Error title when the Layers Box URL is misconfigured"))
     }
     
     static var failedToAuthenticate: UserError {
-        return UserError("Failed to authenticate with Layers Box")
+        return UserError(NSLocalizedString("error_failed_to_authenticate",
+            comment: "Error title when something stopped them from authenticating"))
     }
     
     static var failedToSaveVideo: UserError {
-        return UserError("Failed to save video")
+        return UserError(NSLocalizedString("error_failed_to_save_video",
+            comment: "Error title when something stopped them from saving a video"))
     }
     
     static var failedToUploadVideo: UserError {
-        return UserError("Failed to upload video")
+        return UserError(NSLocalizedString("error_failed_to_upload_video",
+            comment: "Error title when something stopped them from uploading a video"))
     }
     
     static var notSignedIn: UserError {
@@ -102,7 +106,11 @@ class UserError: ErrorType, PrintableError {
             })
         }
         
-        return UserError("Not signed in", fix: (title: "Sign in", action: signIn))
+        return UserError(NSLocalizedString("error_not_signed_in",
+                comment: "Error title when the user is not signed in but would need to be"),
+            fix: (title: NSLocalizedString("error_fix_sign_in",
+                comment: "Error fix button to sign the user in"),
+                action: signIn))
     }
 }
 

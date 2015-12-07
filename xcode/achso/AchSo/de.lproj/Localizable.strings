@@ -1,0 +1,20 @@
+/* Category for all videos */
+"all_videos" = "Alle Videos";
+
+/* Title of a category section */
+"Genres" = "Genres";
+
+/* Title of a category section */
+"Groups" = "Gruppen";
+
+/* Video genre for good work */
+"good_work" = "Gute Arbeit";
+
+/* Video genre for problems */
+"problem" = "Problem";
+
+/* Video genre for site overviews */
+"site_overview" = "Standortüberblick";
+
+/* Video genre for tricks of trade */
+"trick_of_trade" = "Tricks";

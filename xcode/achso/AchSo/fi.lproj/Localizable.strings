@@ -1,0 +1,60 @@
+/* Category for all videos */
+"all_videos" = "Kaikki videot";
+
+/* Title of a category section */
+"Genres" = "Lajityypit";
+
+/* Title of a category section */
+"Groups" = "Ryhmät";
+
+/* Video genre for good work */
+"good_work" = "Hyvää työtä";
+
+/* Video genre for problems */
+"problem" = "Ongelma";
+
+/* Video genre for site overviews */
+"site_overview" = "Yleiskatsaus";
+
+/* Video genre for tricks of trade */
+"trick_of_trade" = "Ammattilaisen niksi";
+
+/* Error title if something prevented the user from uploading */
+"error_before_upload" = "Lataaminen ei onnistu";
+
+/* Button title for dismissing the error */
+"error_dismiss" = "OK";
+
+/* Error title when something stopped them from authenticating */
+"error_failed_to_authenticate" = "Virhe kirjautuessa sisään.";
+
+/* Error title when something stopped them from saving a video */
+"error_failed_to_save_video" = "Virhe tallentaessa videota.";
+
+/* Error title when something stopped them from uploading a video */
+"error_failed_to_upload_video" = "Virhe lähettäessä videota palvelimelle.";
+
+/* Error fix button to sign the user in */
+"error_fix_sign_in" = "Kirjaudu";
+
+/* Error title when the Layers Box URL is misconfigured */
+"error_invalid_layers_box_url" = "Layers Box URL on vääränmuotoinen.";
+
+/* Error title when the user is not signed in but would need to be */
+"error_not_signed_in" = "Sinun pitää olla kirjautunut sisään.";
+
+/* Error title when refreshing failed */
+"error_on_refresh" = "Päivitys epäonnistui";
+
+/* Error title when trying to sign in */
+"error_on_sign_in" = "Sisäänkirjautuminen epäonnistui";
+
+/* Error title when the upload failed */
+"error_on_upload" = "Videon lataaminen palvelimelle epäonnistui";
+
+/* Error title when trying to save video */
+"error_on_video_save" = "Videon tallentaminen epäonnistui";
+
+/* Error title when some unknown error happened */
+"error_unknown" = "Odottamaton virhe.";
+

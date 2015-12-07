@@ -1,0 +1,17 @@
+/* Category for all videos */
+"all_videos" = "Kõik videod";
+
+/* Title of a category section */
+"Groups" = "Gruppen";
+
+/* Video genre for good work */
+"good_work" = "Tubli töö";
+
+/* Video genre for problems */
+"problem" = "Mure";
+
+/* Video genre for site overviews */
+"site_overview" = "Portaali ülevaade";
+
+/* Video genre for tricks of trade */
+"trick_of_trade" = "Trick of trade";

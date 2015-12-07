@@ -1,0 +1,27 @@
+
+/* Class = "UINavigationItem"; title = "Categories"; ObjectID = "1Nh-fv-pxC"; */
+"1Nh-fv-pxC.title" = "Kategoriat";
+
+/* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "2pi-dw-o1p"; */
+"2pi-dw-o1p.title" = "Valitse";
+
+/* Class = "UIBarButtonItem"; title = "Login"; ObjectID = "ALM-6l-nzU"; */
+"ALM-6l-nzU.title" = "Kirjaudu";
+
+/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "IHP-Zo-LNN"; */
+"IHP-Zo-LNN.normalTitle" = "Tallenna";
+
+/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "KbS-ac-ydW"; */
+"KbS-ac-ydW.normalTitle" = "Tallenna";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "R2D-1x-7Ua"; */
+"R2D-1x-7Ua.text" = "Otsikko";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "VPh-OM-Uzl"; */
+"VPh-OM-Uzl.normalTitle" = "Poista";
+
+/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "rm3-t7-OQk"; */
+"rm3-t7-OQk.normalTitle" = "Poista";
+
+/* Class = "UIBarButtonItem"; title = "Upload"; ObjectID = "x9A-lX-pvy"; */
+"x9A-lX-pvy.title" = "Lataa palvelimelle";

@@ -38,15 +38,20 @@ class VideoRepository {
             self.groups = groups
         }
         
-        let generalCollection = Collection(title: "All videos", type: .General)
+        let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
+        let generalCollection = Collection(title: allVideosTitle, type: .General)
         generalCollection.videos = videoInfos
         
         let videosByGenre = videoInfos.groupBy({ $0.genre })
         
-        let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
+        let genres = [
+            ("good_work", NSLocalizedString("good_work", comment: "Video genre for good work")),
+            ("problem", NSLocalizedString("problem", comment: "Video genre for problems")),
+            ("site_overview", NSLocalizedString("site_overview", comment: "Video genre for site overviews")),
+            ("trick_of_trade", NSLocalizedString("trick_of_trade", comment: "Video genre for tricks of trade"))]
         
-        let genreCollections: [Collection] = genres.map { genre in
-            let collection = Collection(title: genre, type: .Genre)
+        let genreCollections: [Collection] = genres.map { (genre, localized) in
+            let collection = Collection(title: localized, type: .Genre)
             collection.videos = videosByGenre[genre] ?? []
             return collection
         }

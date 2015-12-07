@@ -1,0 +1,61 @@
+/* Category for all videos */
+"all_videos" = "All videos";
+
+/* Title of a category section */
+"Genres" = "Genres";
+
+/* Title of a category section */
+"Groups" = "Groups";
+
+/* Video genre for good work */
+"good_work" = "Good work";
+
+/* Video genre for problems */
+"problem" = "Problem";
+
+/* Video genre for site overviews */
+"site_overview" = "Site overview";
+
+/* Video genre for tricks of trade */
+"trick_of_trade" = "Trick of trade";
+
+/* Error title if something prevented the user from uploading */
+"error_before_upload" = "Can't upload";
+
+/* Button title for dismissing the error */
+"error_dismiss" = "OK";
+
+/* Error title when something stopped them from authenticating */
+"error_failed_to_authenticate" = "An error occurred while authenticating with the server.";
+
+/* Error title when something stopped them from saving a video */
+"error_failed_to_save_video" = "An error occurred while saving the video.";
+
+/* Error title when something stopped them from uploading a video */
+"error_failed_to_upload_video" = "An error occurred while uploading the video.";
+
+/* Error fix button to sign the user in */
+"error_fix_sign_in" = "Sign in";
+
+/* Error title when the Layers Box URL is misconfigured */
+"error_invalid_layers_box_url" = "The Layers Box URL is invalid.";
+
+/* Error title when the user is not signed in but would need to be */
+"error_not_signed_in" = "Expected to be signed in.";
+
+/* Error title when refreshing failed */
+"error_on_refresh" = "Couldn't refresh videos";
+
+/* Error title when trying to sign in */
+"error_on_sign_in" = "Couldn't sign in";
+
+/* Error title when the upload failed */
+"error_on_upload" = "Couldn't upload video";
+
+/* Error title when trying to save video */
+"error_on_video_save" = "Couldn't save video";
+
+/* Error title when some unknown error happened */
+"error_unknown" = "An unexpected error occurred";
+
+

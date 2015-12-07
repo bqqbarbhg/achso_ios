@@ -71,7 +71,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     func startRefresh(sender: UIRefreshControl) {
         if !videoRepository.refreshOnline() {
             self.refreshControl.endRefreshing()
-            showErrorModal(UserError.notSignedIn, title: "Couldn't refresh")
+            showErrorModal(UserError.notSignedIn, title: NSLocalizedString("error_on_refresh",
+                comment: "Error title when refreshing failed"))
         }
     }
     
@@ -192,7 +193,6 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             guard let video = try appDelegate.getVideo(videoInfo.id) else { return nil }
             return video
         } catch {
-            showErrorModal(error, title: "Video not found")
             return nil
         }
     }
@@ -283,7 +283,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             
             switch tryVideo {
             case .Success(let video): break
-            case .Error(let error): self.showErrorModal(error, title: "Couldn't upload video")
+            case .Error(let error): self.showErrorModal(error, title: NSLocalizedString("error_on_upload",
+                comment: "Error title when the upload failed"))
             }
         })
     }
@@ -294,7 +295,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if collectionView.allowsMultipleSelection {
             let selectedIndices = collectionView.indexPathsForSelectedItems() ?? []
             
-            self.doAuthenticated(errorTitle: "Can't upload") {
+            let errorTitle = NSLocalizedString("error_before_upload",
+                comment: "Error title if something prevented the user from uploading")
+            self.doAuthenticated(errorTitle: errorTitle) {
                 for indexPath in selectedIndices {
                     self.uploadVideo(atIndexPath: indexPath)
                 }
@@ -388,7 +391,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             
         } catch {
             dismissViewControllerAnimated(true) {
-                self.showErrorModal(error, title: "Couldn't save video")
+                self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
+                    comment: "Error title when trying to save video"))
             }
         }
     }
@@ -426,7 +430,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
         HTTPClient.authenticate(fromViewController: self) { result in
             if let error = result.error {
-                self.showErrorModal(error, title: "Couldn't sign in")
+                self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
+                    comment: "Error title when trying to sign in"))
             } else {
                 videoRepository.refreshOnline()
             }
@@ -434,19 +439,23 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func showErrorModal(error: ErrorType, title: String) {
-        var errorMessage = "An unknown error happened"
+        var errorMessage = NSLocalizedString("error_unknown",
+            comment: "Error title when some unknown error happened")
 
+        let errorDismissButton = NSLocalizedString("error_dismiss",
+            comment: "Button title for dismissing the error")
+        
         if let printableError = error as? PrintableError {
             errorMessage = printableError.localizedErrorDescription
         }
         
         let alertController = UIAlertController(title: title, message: errorMessage, preferredStyle: .Alert)
         
-        let okAction = UIAlertAction(title: "OK", style: .Default, handler: { action in
+        let dismissAction = UIAlertAction(title: errorDismissButton, style: .Default, handler: { action in
             alertController.dismissViewControllerAnimated(true, completion: nil)
         })
         
-        alertController.addAction(okAction)
+        alertController.addAction(dismissAction)
         
         if let userError = error as? UserError, fix = userError.fix {
             let fixAction = UIAlertAction(title: fix.title, style: .Default, handler: { action in
