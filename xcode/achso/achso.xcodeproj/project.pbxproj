@@ -66,6 +66,7 @@
 		A99442B11BFB0EA6001C6FC9 /* ActiveVideoState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */; };
 		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
 		A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B41BFB27C3001C6FC9 /* MiniJson.swift */; };
+		A99B95F31C108A3B00ECBD52 /* LocationRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */; };
 		A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30521BFC981A00746686 /* OAuth2.swift */; };
 		A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */; };
 		A9FE305B1BFCCCC000746686 /* Alamotypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE305A1BFCCCC000746686 /* Alamotypes.swift */; };
@@ -134,6 +135,7 @@
 		A99442B01BFB0EA6001C6FC9 /* ActiveVideoState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideoState.swift; sourceTree = "<group>"; };
 		A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationBatch.swift; sourceTree = "<group>"; };
 		A99442B41BFB27C3001C6FC9 /* MiniJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniJson.swift; sourceTree = "<group>"; };
+		A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationRetriever.swift; sourceTree = "<group>"; };
 		A9FE30521BFC981A00746686 /* OAuth2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2.swift; sourceTree = "<group>"; };
 		A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginWebViewController.swift; sourceTree = "<group>"; };
 		A9FE305A1BFCCCC000746686 /* Alamotypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alamotypes.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				A95E99F61BFF2348001BF3E2 /* Errors.swift */,
 				A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */,
 				A96AC4071C0EEFD800506B6D /* Tasks.swift */,
+				A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				A91D672F1BFE007C00B15A66 /* VideoRepository.swift in Sources */,
 				A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */,
 				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
+				A99B95F31C108A3B00ECBD52 /* LocationRetriever.swift in Sources */,
 				A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */,
 				A91D672B1BFDF42A00B15A66 /* AchRails.swift in Sources */,
 				A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */,

@@ -109,6 +109,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     override func viewWillAppear(animated: Bool) {
         // Show as pause button during segue
         self.playButton.setModeNoAniamtion(.Pause)
+        self.title = self.activeVideo?.video.title
     }
     
     override func viewDidAppear(animated: Bool) {

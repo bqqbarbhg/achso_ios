@@ -308,6 +308,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
 
     @IBAction func cameraButton(sender: UIBarButtonItem) {
         
+        LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
+        
+    }
+    
+    func startRecordingVideo() {
         let imagePicker = UIImagePickerController()
         imagePicker.mediaTypes = [String(kUTTypeMovie)]
         
@@ -327,10 +332,30 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        let temporaryUrl = (info[UIImagePickerControllerMediaURL]! as! NSURL)
-        let id = NSUUID()
         
-        let title = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.FullStyle)
+        let temporaryUrl = info[UIImagePickerControllerMediaURL]! as! NSURL
+        let date = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
+        
+        if let location = LocationRetriever.instance.finishRetrievingLocation() {
+            LocationRetriever.instance.reverseGeocodeLocation(location) { street in
+                if let street = street {
+                    let videoLocation = Video.Location(latitude: location.coordinate.latitude,
+                        longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy)
+                    
+                    self.createVideo(sourceVideoUrl: temporaryUrl, title: "\(street) \(date)", location: videoLocation)
+                } else {
+                    self.createVideo(sourceVideoUrl: temporaryUrl, title: date, location: nil)
+                }
+            }
+        } else {
+            self.createVideo(sourceVideoUrl: temporaryUrl, title: date, location: nil)
+        }
+        
+        
+    }
+
+    func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, title: String, location: Video.Location?) {
+        let id = NSUUID()
         
         let videoUrl = NSURLComponents(string: "iosdocuments://videos/\(id.lowerUUIDString).mp4")!.URL!
         let thumbnailUrl = NSURLComponents(string: "iosdocuments://thumbnails/\(id.lowerUUIDString).jpg")!.URL!
@@ -339,7 +364,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         guard let documentsUrl = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[safe: 0] else {
             return
         }
-
+        
         let videosUrl = documentsUrl.URLByAppendingPathComponent("videos", isDirectory: true)
         let thumbnailsUrl = documentsUrl.URLByAppendingPathComponent("thumbnails", isDirectory: true)
         
@@ -347,15 +372,15 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             try videosUrl.createDirectoryIfUnexisting()
             try thumbnailsUrl.createDirectoryIfUnexisting()
             
-            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl)
+            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, location: location)
             
             let realVideoUrl = try videoUrl.realUrl.unwrap()
             let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()
             
-            try saveThumbnailFromVideo(temporaryUrl, outputUrl: realThumbnailUrl)
-            try fileManager.moveItemAtURL(temporaryUrl, toURL: realVideoUrl)
+            try saveThumbnailFromVideo(sourceVideoUrl, outputUrl: realThumbnailUrl)
+            try fileManager.moveItemAtURL(sourceVideoUrl, toURL: realVideoUrl)
             try videoRepository.saveVideo(video)
-
+            
             dismissViewControllerAnimated(true) {
                 self.chosenVideo = video
                 self.performSegueWithIdentifier("showPlayer", sender: self)
@@ -366,9 +391,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
                 self.showErrorModal(error, title: "Couldn't save video")
             }
         }
-
     }
-
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         func handleShowPlayer(viewController: UIViewController) {

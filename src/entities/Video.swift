@@ -19,7 +19,7 @@ class Video {
     var hasLocalModifications: Bool
     var downloadedBy: String?
     
-    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL) {
+    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, location: Location?) {
         self.id = id
         self.title = title
         self.annotations = []
@@ -30,7 +30,7 @@ class Video {
         self.creationDate = NSDate()
         self.genre = "good_work" // TEMP!
         self.rotation = 0
-        self.location = nil
+        self.location = location
         self.author = User()
         
         self.hasLocalModifications = true
