@@ -31,16 +31,62 @@
                             <outlet property="delegate" destination="DLM-1r-yOf" id="ykC-Fd-xQh"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Categories" id="1Nh-fv-pxC"/>
+                    <navigationItem key="navigationItem" title="Categories" id="1Nh-fv-pxC">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="mTN-Up-9H8">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="DLM-1r-yOf" id="JN3-S1-RYV"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EKb-me-Mj3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1528" y="156"/>
         </scene>
+        <!--Shares View Controller-->
+        <scene sceneID="s5V-eX-Mq5">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="X7v-Le-DOj" customClass="SharesViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nlw-a5-RoP"/>
+                        <viewControllerLayoutGuide type="bottom" id="LJ1-jB-kDG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gko-Ng-Oxb">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxh-lu-Dss">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Bxh-lu-Dss" firstAttribute="top" secondItem="nlw-a5-RoP" secondAttribute="bottom" id="Jc1-st-aim"/>
+                            <constraint firstItem="Bxh-lu-Dss" firstAttribute="leading" secondItem="gko-Ng-Oxb" secondAttribute="leading" id="LHJ-V0-1PA"/>
+                            <constraint firstItem="LJ1-jB-kDG" firstAttribute="top" secondItem="Bxh-lu-Dss" secondAttribute="bottom" id="Mzb-OJ-fIv"/>
+                            <constraint firstAttribute="trailing" secondItem="Bxh-lu-Dss" secondAttribute="trailing" id="irX-P7-rdH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="EZ1-it-LGU">
+                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="Hqp-6d-YcY">
+                            <connections>
+                                <action selector="doneButtonPressed:" destination="X7v-Le-DOj" id="Nub-MT-hdn"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="webView" destination="Bxh-lu-Dss" id="28E-iJ-cxc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xBx-bJ-Gfl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4776" y="817"/>
+        </scene>
         <!--Login Web View Controller-->
         <scene sceneID="V6S-Yv-M6T">
             <objects>
-                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="4sn-0r-2U8" customClass="LoginWebViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4sn-0r-2U8" customClass="LoginWebViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="hZ0-wn-V6v"/>
                         <viewControllerLayoutGuide type="bottom" id="Mdg-tg-dJA"/>
@@ -161,6 +207,11 @@
                     </collectionView>
                     <toolbarItems>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="mH1-sT-W9v"/>
+                        <barButtonItem title="Share" id="OCM-8u-nM4">
+                            <connections>
+                                <action selector="shareButtonPressed:" destination="83W-Gl-1p4" id="v4l-iY-slk"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem systemItem="edit" id="4Sn-U9-ELa">
                             <connections>
                                 <action selector="editButtonPressed:" destination="83W-Gl-1p4" id="QXN-yG-GAr"/>
@@ -194,6 +245,7 @@
                     <connections>
                         <outlet property="editButton" destination="4Sn-U9-ELa" id="9aj-uy-kXL"/>
                         <outlet property="selectButton" destination="2pi-dw-o1p" id="but-8W-gm7"/>
+                        <outlet property="shareButton" destination="OCM-8u-nM4" id="wB7-2r-vUY"/>
                         <outlet property="toolbarSpace" destination="mH1-sT-W9v" id="yH3-FF-DQH"/>
                         <outlet property="uploadButton" destination="x9A-lX-pvy" id="F4j-ac-szZ"/>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="lLw-ZV-LrG"/>
@@ -489,6 +541,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qxc-4g-rj8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2026" y="1655"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="3lE-IF-Py2">
+            <objects>
+                <navigationController storyboardIdentifier="SharesViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="NCI-3k-RcH" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="5A3-AX-lNn">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="X7v-Le-DOj" kind="relationship" relationship="rootViewController" id="VT9-LP-Cls"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OPo-uf-Lck" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3964" y="817"/>
         </scene>
     </scenes>
     <resources>

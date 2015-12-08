@@ -66,4 +66,15 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
             self.splitViewController?.showDetailViewController(self.videosViewController.navigationController!, sender: nil)
         }
     }
+    
+    @IBAction func addButtonPressed(sender: UIBarButtonItem) {
+        
+        let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+        let sharesController = sharesNav.topViewController as! SharesViewController
+        sharesController.prepareForCreateGroup()
+        self.presentViewController(sharesNav, animated: true) {
+        }
+        
+    }
+    
 }

@@ -4,6 +4,7 @@ import MobileCoreServices
 class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
     
     @IBOutlet var toolbarSpace: UIBarButtonItem!
+    @IBOutlet var shareButton: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
     @IBOutlet var selectButton: UIBarButtonItem!
@@ -255,8 +256,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if collectionView.allowsMultipleSelection {
             let selectedCount = collectionView.indexPathsForSelectedItems()?.count ?? 0
             
+            self.shareButton.enabled = selectedCount > 0
             self.editButton.enabled = selectedCount == 1
             self.uploadButton.enabled = selectedCount > 0
+            
+            newItems.append(self.shareButton)
             newItems.append(self.editButton)
             newItems.append(self.uploadButton)
         }
@@ -336,6 +340,20 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         self.refreshToolbarView(animated: true)
         
         self.presentViewController(detailsNav, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func shareButtonPressed(sender: UIBarButtonItem) {
+        guard let collectionView = self.collectionView else { return }
+        let indices = collectionView.indexPathsForSelectedItems() ?? []
+        let videos = indices.flatMap { self.videoForIndexPath($0) }
+        let ids = videos.map { $0.id }
+        
+        let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+        let sharesController = sharesNav.topViewController as! SharesViewController
+        sharesController.prepareForShareVideos(ids)
+        self.presentViewController(sharesNav, animated: true) {
+        }
     }
     
     @IBAction func cameraButton(sender: UIBarButtonItem) {
