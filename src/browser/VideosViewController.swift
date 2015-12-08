@@ -47,7 +47,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     
     func splitViewControllerDidChangeDisplayMode() {
         guard let splitViewController = self.splitViewController else { return }
-        self.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        
+        // HACK: Add this back if split view is removed from tablet
+        // self.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
     }
     
     func showCollection(collectionIndex: Int) {
