@@ -23,6 +23,7 @@
 		A92B72F71BECE1AF0036B60E /* MathUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72F61BECE1AF0036B60E /* MathUtil.swift */; };
 		A92B72FC1BECEDCB0036B60E /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FB1BECEDCB0036B60E /* PlayerController.swift */; };
 		A92B72FE1BECEE360036B60E /* PlayButtonLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */; };
+		A93A7FF51C16D46A00C193AD /* VideoDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A7FF41C16D46A00C193AD /* VideoDetailsViewController.swift */; };
 		A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77B1C0CB7EC000C5D62 /* Group.swift */; };
 		A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */; };
 		A946CC031C1587700020828A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A946CC051C1587700020828A /* Localizable.strings */; };
@@ -53,6 +54,7 @@
 		A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */; };
 		A96AC4081C0EEFD800506B6D /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96AC4071C0EEFD800506B6D /* Tasks.swift */; };
 		A96BCB051C15A21C00F8B27C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A96BCB071C15A21C00F8B27C /* InfoPlist.strings */; };
+		A96BCB101C1600B500F8B27C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96BCB0F1C1600B500F8B27C /* MapKit.framework */; };
 		A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */; };
 		A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC981BF1022900D07B82 /* ActiveVideo.swift */; };
 		A973BC9D1BF1049900D07B82 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A973BC9C1BF1049900D07B82 /* User.swift */; };
@@ -93,6 +95,7 @@
 		A92B72F61BECE1AF0036B60E /* MathUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtil.swift; sourceTree = "<group>"; };
 		A92B72FB1BECEDCB0036B60E /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		A92B72FD1BECEE360036B60E /* PlayButtonLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButtonLayer.swift; sourceTree = "<group>"; };
+		A93A7FF41C16D46A00C193AD /* VideoDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDetailsViewController.swift; sourceTree = "<group>"; };
 		A93AE77B1C0CB7EC000C5D62 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupList.swift; sourceTree = "<group>"; };
 		A946CBFB1C1585970020828A /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Main.strings; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 		A96BCB091C15A21E00F8B27C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A96BCB0A1C15A21F00F8B27C /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A96BCB0C1C15ABA600F8B27C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		A96BCB0F1C1600B500F8B27C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A973BC961BF0F02F00D07B82 /* SeekAnnotationLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekAnnotationLayer.swift; sourceTree = "<group>"; };
 		A973BC981BF1022900D07B82 /* ActiveVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveVideo.swift; sourceTree = "<group>"; };
 		A973BC9C1BF1049900D07B82 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A96BCB101C1600B500F8B27C /* MapKit.framework in Frameworks */,
 				A9767BE14423B8AAD41E5258 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -174,6 +179,7 @@
 		76B463381EFB68F2F5D83683 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A96BCB0F1C1600B500F8B27C /* MapKit.framework */,
 				4AE8803CC441BE9B3C8F48B3 /* Pods.framework */,
 			);
 			name = Frameworks;
@@ -256,6 +262,7 @@
 				A94B82E71BEA5EF70017874D /* Collection.swift */,
 				A94B82E91BEA64D60017874D /* VideosViewController.swift */,
 				A98D82701BEB510800BB7263 /* VideoCellView.swift */,
+				A93A7FF41C16D46A00C193AD /* VideoDetailsViewController.swift */,
 			);
 			path = browser;
 			sourceTree = "<group>";
@@ -378,6 +385,11 @@
 					A94B82A51BEA3DC00017874D = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = NF9DDZHZYT;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -508,6 +520,7 @@
 				A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */,
 				A95E99FB1BFF456C001BF3E2 /* AchMinUpUploader.swift in Sources */,
 				A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */,
+				A93A7FF51C16D46A00C193AD /* VideoDetailsViewController.swift in Sources */,
 				A94B82E21BEA3FB10017874D /* PlayerViewController.swift in Sources */,
 				A9FE305B1BFCCCC000746686 /* Alamotypes.swift in Sources */,
 				A952EE221BECA109003B638A /* SeekBarView.swift in Sources */,

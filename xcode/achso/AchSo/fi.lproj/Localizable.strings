@@ -58,3 +58,14 @@
 /* Error title when some unknown error happened */
 "error_unknown" = "Odottamaton virhe.";
 
+/* Title of the genre picker */
+"choose_genre_title" = "Valitse lajityyppi";
+
+/* Genre label shown in the video details form */
+"details_creator" = "Tekijä";
+
+/* Genre label shown in the video details form */
+"details_genre" = "Lajityyppi";
+
+/* Title label shown in the video details form */
+"details_title" = "Otsikko";

@@ -58,4 +58,14 @@
 /* Error title when some unknown error happened */
 "error_unknown" = "An unexpected error occurred";
 
+/* Title of the genre picker */
+"choose_genre_title" = "Choose genre";
 
+/* Genre label shown in the video details form */
+"details_creator" = "Creator";
+
+/* Genre label shown in the video details form */
+"details_genre" = "Genre";
+
+/* Title label shown in the video details form */
+"details_title" = "Title";

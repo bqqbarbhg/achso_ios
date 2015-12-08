@@ -4,6 +4,7 @@ import MobileCoreServices
 class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
     
     @IBOutlet var toolbarSpace: UIBarButtonItem!
+    @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
     @IBOutlet var selectButton: UIBarButtonItem!
     
@@ -211,6 +212,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         } else {
             
             if let video = videoForIndexPath(indexPath) {
+                
                 self.chosenVideo = video
                 self.performSegueWithIdentifier("showPlayer", sender: self)
             } else {
@@ -251,7 +253,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if collectionView.allowsMultipleSelection {
             let selectedCount = collectionView.indexPathsForSelectedItems()?.count ?? 0
             
+            self.editButton.enabled = selectedCount == 1
             self.uploadButton.enabled = selectedCount > 0
+            newItems.append(self.editButton)
             newItems.append(self.uploadButton)
         }
         
@@ -266,7 +270,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         } ?? false
         
         if !equal {
-            self.setToolbarItems(newItems, animated: true)
+            self.setToolbarItems(newItems, animated: animated)
         }
     }
     
@@ -314,7 +318,24 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             }
         }
     }
-
+    
+    @IBAction func editButtonPressed(sender: UIBarButtonItem) {
+        guard let collectionView = self.collectionView else { return }
+        guard let selectedList = collectionView.indexPathsForSelectedItems() else { return }
+        guard let selected = selectedList.first else { return }
+        guard let video = videoForIndexPath(selected) else { return }
+        
+        let detailsNav = self.storyboard!.instantiateViewControllerWithIdentifier("VideoDetailsViewController") as! UINavigationController
+        let detailsController = detailsNav.topViewController as! VideoDetailsViewController
+        detailsController.initializeForm(video)
+        
+        self.deselectAllItems()
+        collectionView.allowsMultipleSelection = false
+        self.refreshToolbarView(animated: true)
+        
+        self.presentViewController(detailsNav, animated: true, completion: nil)
+    }
+    
     @IBAction func cameraButton(sender: UIBarButtonItem) {
         
         LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
@@ -345,6 +366,8 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         let temporaryUrl = info[UIImagePickerControllerMediaURL]! as! NSURL
         let date = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
         
+
+        
         if let location = LocationRetriever.instance.finishRetrievingLocation() {
             LocationRetriever.instance.reverseGeocodeLocation(location) { street in
                 if let street = street {
@@ -359,8 +382,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         } else {
             self.createVideo(sourceVideoUrl: temporaryUrl, title: date, location: nil)
         }
-        
-        
+
     }
 
     func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, title: String, location: Video.Location?) {
@@ -391,8 +413,52 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             try videoRepository.saveVideo(video)
             
             dismissViewControllerAnimated(true) {
-                self.chosenVideo = video
-                self.performSegueWithIdentifier("showPlayer", sender: self)
+                
+                func picked(genre: String) {
+                    video.genre = genre
+                    do {
+                        try videoRepository.saveVideo(video)
+                        self.chosenVideo = video
+                        self.performSegueWithIdentifier("showPlayer", sender: self)
+                    } catch {
+                        self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
+                            comment: "Error title when trying to save video"))
+                    }
+                }
+                
+                let pickerTitle = NSLocalizedString("choose_genre_title", comment: "Title of the genre picker")
+                let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
+                let visibleCells = self.collectionView?.visibleCells() ?? []
+                let maybeIndex = visibleCells.indexOf() { cell in
+                    guard let cell = cell as? VideoViewCell else { return false }
+                    guard let videoInfo = cell.videoInfo else { return false }
+                    return videoInfo.id == id
+                }
+                
+                if let popover = genrePicker.popoverPresentationController {
+                    if let index = maybeIndex {
+                        let cell = visibleCells[index] as! VideoViewCell
+                        popover.sourceView = cell.genreLabel
+                        let rect = cell.genreLabel.bounds.divide(1.0, fromEdge: CGRectEdge.MaxYEdge).slice
+                        let leftRect = rect.divide(20.0, fromEdge: CGRectEdge.MinXEdge).slice
+                        popover.permittedArrowDirections = UIPopoverArrowDirection.Up
+                        popover.sourceRect = leftRect
+                    } else {
+                        popover.sourceView = self.view
+                    }
+                }
+                
+                // Todo: enum?
+                let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
+                for genre in genres {
+                    let button = UIAlertAction(title: NSLocalizedString(genre, comment: "Genre"), style: .Default) { _ in
+                        picked(genre)
+                    }
+                    genrePicker.addAction(button)
+                }
+                
+                self.presentViewController(genrePicker, animated: true, completion: nil)
+                
             }
             
         } catch {
