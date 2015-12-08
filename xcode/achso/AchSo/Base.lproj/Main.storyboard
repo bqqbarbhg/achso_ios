@@ -265,42 +265,6 @@
                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FR8-nq-5Af">
                                 <rect key="frame" x="0.0" y="28" width="600" height="60"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0SU-Vh-zSK">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="60"/>
-                                        <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zHe-1A-BHd">
-                                                <rect key="frame" x="8" y="15" width="476" height="30"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                                <connections>
-                                                    <action selector="annotationTextFieldEditingChanged:" destination="uj0-XH-hhR" eventType="editingChanged" id="viQ-TQ-YAw"/>
-                                                    <action selector="annotationTextFieldEditingDidEnd:" destination="uj0-XH-hhR" eventType="editingDidEnd" id="gmD-Up-cAt"/>
-                                                </connections>
-                                            </textField>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rm3-t7-OQk">
-                                                <rect key="frame" x="546" y="15" width="46" height="30"/>
-                                                <state key="normal" title="Delete"/>
-                                                <connections>
-                                                    <action selector="annotationDeleteButton:" destination="uj0-XH-hhR" eventType="touchUpInside" id="3of-F5-3j7"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KbS-ac-ydW">
-                                                <rect key="frame" x="492" y="15" width="46" height="30"/>
-                                                <state key="normal" title="Save"/>
-                                                <connections>
-                                                    <action selector="annotationSaveButton:" destination="uj0-XH-hhR" eventType="touchUpInside" id="AKB-pM-GHT"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="rm3-t7-OQk" secondAttribute="trailing" constant="16" id="2fp-JU-1aK"/>
-                                            <constraint firstItem="zHe-1A-BHd" firstAttribute="leading" secondItem="0SU-Vh-zSK" secondAttribute="leading" constant="16" id="Htu-vU-9V8"/>
-                                            <constraint firstItem="rm3-t7-OQk" firstAttribute="leading" secondItem="KbS-ac-ydW" secondAttribute="trailing" constant="16" id="ibv-ym-aX8"/>
-                                            <constraint firstItem="KbS-ac-ydW" firstAttribute="leading" secondItem="zHe-1A-BHd" secondAttribute="trailing" constant="16" id="nH6-Qn-R1m"/>
-                                            <constraint firstAttribute="height" constant="60" id="tp3-mC-QjP"/>
-                                        </constraints>
-                                    </view>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oUU-ZY-n5J">
                                         <rect key="frame" x="8" y="15" width="476" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
