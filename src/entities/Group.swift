@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 
 class Group: NSObject, NSCoding {
+    var id: String = ""
     var name: String = ""
     var groupDescription: String = ""
     var videos: [NSUUID] = []
@@ -10,6 +11,7 @@ class Group: NSObject, NSCoding {
         super.init()
         
         do {
+            self.id = String(try (manifest["id"] as? Int).unwrap())
             self.name = try manifest.castGet("name")
             self.groupDescription = try manifest.castGet("description")
             
@@ -28,6 +30,7 @@ class Group: NSObject, NSCoding {
         super.init()
         
         do {
+            self.id = try (aCoder.decodeObjectForKey("id") as? String).unwrap()
             self.name = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
             self.groupDescription = try (aCoder.decodeObjectForKey("description") as? String).unwrap()
             self.videos = try (aCoder.decodeObjectForKey("videos") as? [NSUUID]).unwrap()    
@@ -37,6 +40,7 @@ class Group: NSObject, NSCoding {
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.id, forKey: "id")
         aCoder.encodeObject(self.name, forKey: "name")
         aCoder.encodeObject(self.groupDescription, forKey: "description")
         aCoder.encodeObject(self.videos, forKey: "videos")

@@ -57,7 +57,7 @@ class VideoRepository {
         }
         
         let groupCollections: [Collection] = groups.map { group in
-            let collection = Collection(title: group.name, type: .Group)
+            let collection = Collection(title: group.name, type: .Group, extra: group)
             
             collection.videos = group.videos.flatMap { id in
                 return self.findVideoInfo(id)

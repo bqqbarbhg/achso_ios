@@ -16,6 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryCell" id="VuQ-1s-xGL">
                                 <rect key="frame" x="0.0" y="92" width="600" height="44"/>
@@ -32,6 +33,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Categories" id="1Nh-fv-pxC">
+                        <barButtonItem key="leftBarButtonItem" title="Sign in" id="3dm-QC-MQq">
+                            <connections>
+                                <action selector="loginButtonPressed:" destination="DLM-1r-yOf" id="Mef-5a-8G1"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="mTN-Up-9H8">
                             <connections>
                                 <action selector="addButtonPressed:" destination="DLM-1r-yOf" id="JN3-S1-RYV"/>
@@ -212,7 +218,7 @@
                                 <action selector="shareButtonPressed:" destination="83W-Gl-1p4" id="v4l-iY-slk"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="edit" id="4Sn-U9-ELa">
+                        <barButtonItem title="Properties" id="4Sn-U9-ELa">
                             <connections>
                                 <action selector="editButtonPressed:" destination="83W-Gl-1p4" id="QXN-yG-GAr"/>
                             </connections>
@@ -222,29 +228,31 @@
                                 <action selector="uploadButtonPressed:" destination="83W-Gl-1p4" id="Hgw-Ga-Xfj"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem title="Select" id="2pi-dw-o1p">
-                            <connections>
-                                <action selector="selectButtonPressed:" destination="83W-Gl-1p4" id="s3m-zQ-SbI"/>
-                            </connections>
-                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="UPr-XF-tiG">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="camera" id="e1x-2A-Edz">
                                 <connections>
-                                    <action selector="cameraButton:" destination="83W-Gl-1p4" id="sJT-g2-QdF"/>
+                                    <action selector="cameraButtonPressed:" destination="83W-Gl-1p4" id="ejt-KS-uIk"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Login" id="ALM-6l-nzU">
+                            <barButtonItem title="Select" id="gHd-EU-FOe">
                                 <connections>
-                                    <action selector="loginButtonPressed:" destination="83W-Gl-1p4" id="aYf-oY-5uH"/>
+                                    <action selector="selectButtonPressed:" destination="83W-Gl-1p4" id="DqE-WL-3hM"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="cancel" id="om3-Y1-uEZ">
+                                <connections>
+                                    <action selector="selectButtonPressed:" destination="83W-Gl-1p4" id="We4-mb-d0N"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="cameraButton" destination="e1x-2A-Edz" id="e2h-lD-2Eb"/>
+                        <outlet property="cancelSelectButton" destination="om3-Y1-uEZ" id="0jY-YV-C7h"/>
                         <outlet property="editButton" destination="4Sn-U9-ELa" id="9aj-uy-kXL"/>
-                        <outlet property="selectButton" destination="2pi-dw-o1p" id="but-8W-gm7"/>
+                        <outlet property="selectButton" destination="gHd-EU-FOe" id="u5N-Fw-3rt"/>
                         <outlet property="shareButton" destination="OCM-8u-nM4" id="wB7-2r-vUY"/>
                         <outlet property="toolbarSpace" destination="mH1-sT-W9v" id="yH3-FF-DQH"/>
                         <outlet property="uploadButton" destination="x9A-lX-pvy" id="F4j-ac-szZ"/>
@@ -438,7 +446,7 @@
         <!--Navigation Controller-->
         <scene sceneID="ybF-WR-bNn">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="Aew-wV-J9K" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Aew-wV-J9K" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="EB3-bK-0gd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

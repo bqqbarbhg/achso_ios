@@ -8,6 +8,8 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     var collections: [Collection] = []
     var sections: [Section] = []
     
+    var isEnabled: Bool = true
+    
     func updateSections() {
         let groupedCollections = self.collections.groupBy({ $0.type })
         
@@ -54,6 +56,7 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         
         let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
         cell.textLabel?.text = collection?.title
+        cell.textLabel?.enabled = self.isEnabled
         
         return cell
     }
@@ -67,14 +70,44 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         }
     }
     
+    func setEnabled(enabled: Bool) {
+        self.isEnabled = enabled
+        
+        self.view.userInteractionEnabled = enabled
+        self.navigationItem.rightBarButtonItem?.enabled = enabled
+        self.navigationItem.leftBarButtonItem?.enabled = enabled
+        for cell in self.tableView.visibleCells {
+            cell.textLabel?.enabled = enabled
+        }
+        let sections = self.numberOfSectionsInTableView(self.tableView)
+        for header in (0..<sections).flatMap(self.tableView.headerViewForSection) {
+            header.textLabel?.enabled = enabled
+        }
+    }
+    
     @IBAction func addButtonPressed(sender: UIBarButtonItem) {
         
-        let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
-        let sharesController = sharesNav.topViewController as! SharesViewController
-        sharesController.prepareForCreateGroup()
-        self.presentViewController(sharesNav, animated: true) {
+        do {
+            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+            let sharesController = sharesNav.topViewController as! SharesViewController
+            try sharesController.prepareForCreateGroup()
+            self.presentViewController(sharesNav, animated: true) {
+            }
+        } catch {
+            self.showErrorModal(error, title: NSLocalizedString("error_on_create_group", comment: "Error title shown when creating a group was interrupted"))
         }
         
+    }
+    
+    @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
+        HTTPClient.authenticate(fromViewController: self) { result in
+            if let error = result.error {
+                self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
+                    comment: "Error title when trying to sign in"))
+            } else {
+                videoRepository.refreshOnline()
+            }
+        }
     }
     
 }

@@ -55,6 +55,12 @@
 /* Error title when trying to save video */
 "error_on_video_save" = "Couldn't save video";
 
+/* Error title shown when creating a group was interrupted */
+"error_on_create_group" = "Can't create group";
+
+/* Error title when trying to share videos to groups was interrupted */
+"error_on_share" = "Can't share videos";
+
 /* Error title when some unknown error happened */
 "error_unknown" = "An unexpected error occurred";
 

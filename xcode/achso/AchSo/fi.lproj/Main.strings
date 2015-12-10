@@ -2,26 +2,29 @@
 /* Class = "UINavigationItem"; title = "Categories"; ObjectID = "1Nh-fv-pxC"; */
 "1Nh-fv-pxC.title" = "Kategoriat";
 
-/* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "2pi-dw-o1p"; */
-"2pi-dw-o1p.title" = "Valitse";
+/* Class = "UIBarButtonItem"; title = "Sign in"; ObjectID = "3dm-QC-MQq"; */
+"3dm-QC-MQq.title" = "Kirjaudu";
 
-/* Class = "UIBarButtonItem"; title = "Login"; ObjectID = "ALM-6l-nzU"; */
-"ALM-6l-nzU.title" = "Kirjaudu";
+/* Class = "UIBarButtonItem"; title = "Properties"; ObjectID = "4Sn-U9-ELa"; */
+"4Sn-U9-ELa.title" = "Ominaisuudet";
 
 /* Class = "UIButton"; normalTitle = "Save"; ObjectID = "IHP-Zo-LNN"; */
 "IHP-Zo-LNN.normalTitle" = "Tallenna";
 
-/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "KbS-ac-ydW"; */
-"KbS-ac-ydW.normalTitle" = "Tallenna";
+/* Class = "UIBarButtonItem"; title = "Share"; ObjectID = "OCM-8u-nM4"; */
+"OCM-8u-nM4.title" = "Jaa";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "R2D-1x-7Ua"; */
-"R2D-1x-7Ua.text" = "Otsikko";
+"R2D-1x-7Ua.text" = "Title";
 
 /* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "VPh-OM-Uzl"; */
 "VPh-OM-Uzl.normalTitle" = "Poista";
 
-/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "rm3-t7-OQk"; */
-"rm3-t7-OQk.normalTitle" = "Poista";
+/* Class = "UILabel"; text = "Title"; ObjectID = "bd3-6F-1Cd"; */
+"bd3-6F-1Cd.text" = "Title";
+
+/* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "gHd-EU-FOe"; */
+"gHd-EU-FOe.title" = "Valitse";
 
 /* Class = "UIBarButtonItem"; title = "Upload"; ObjectID = "x9A-lX-pvy"; */
 "x9A-lX-pvy.title" = "Lataa palvelimelle";

@@ -3,11 +3,16 @@ import MobileCoreServices
 
 class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
     
+    @IBOutlet var cameraButton: UIBarButtonItem!
+    @IBOutlet var selectButton: UIBarButtonItem!
+    @IBOutlet var cancelSelectButton: UIBarButtonItem!
+    
     @IBOutlet var toolbarSpace: UIBarButtonItem!
     @IBOutlet var shareButton: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
-    @IBOutlet var selectButton: UIBarButtonItem!
+    
+    @IBOutlet var manageGroupButton: UIBarButtonItem!
     
     var refreshControl: UIRefreshControl!
     
@@ -28,13 +33,14 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         // Refresh control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "startRefresh:", forControlEvents: .ValueChanged)
-        self.collectionView?.addSubview(refreshControl)
-        
         self.refreshControl = refreshControl
         
         // Long press recognizer
+        // NOTE: Removed, maybe this was a bad idea...
+        /*
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
         self.collectionView?.addGestureRecognizer(longPressRecognizer)
+        */
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -249,10 +255,6 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     func refreshToolbarView(animated animated: Bool) {
         guard let collectionView = self.collectionView else { return }
         
-        var newItems: [UIBarButtonItem] = []
-        
-        newItems.append(self.toolbarSpace)
-        
         if collectionView.allowsMultipleSelection {
             let selectedCount = collectionView.indexPathsForSelectedItems()?.count ?? 0
             
@@ -260,23 +262,24 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             self.editButton.enabled = selectedCount == 1
             self.uploadButton.enabled = selectedCount > 0
             
-            newItems.append(self.shareButton)
-            newItems.append(self.editButton)
-            newItems.append(self.uploadButton)
-        }
-        
-        newItems.append(selectButton)
-        
-        let equal = self.toolbarItems.map { oldItems -> Bool in
-            if oldItems.count != newItems.count { return false }
-            for pair in zip(oldItems, newItems) {
-                if pair.0 !== pair.1 { return false }
-            }
-            return true
-        } ?? false
-        
-        if !equal {
-            self.setToolbarItems(newItems, animated: animated)
+            self.navigationItem.setHidesBackButton(true, animated: animated)
+            self.cameraButton.enabled = false
+            
+            let items = [self.cancelSelectButton!]
+            self.navigationItem.setRightBarButtonItems(items, animated: animated)
+            
+            self.categoriesViewController?.setEnabled(false)
+            self.navigationController?.setToolbarHidden(false, animated: animated)
+            
+        } else {
+            self.navigationItem.setHidesBackButton(false, animated: animated)
+            self.cameraButton.enabled = true
+            
+            let items = [self.cameraButton!, self.selectButton!]
+            self.navigationItem.setRightBarButtonItems(items, animated: animated)
+            
+            self.categoriesViewController?.setEnabled(true)
+            self.navigationController?.setToolbarHidden(true, animated: animated)
         }
     }
     
@@ -349,14 +352,38 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         let videos = indices.flatMap { self.videoForIndexPath($0) }
         let ids = videos.map { $0.id }
         
-        let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
-        let sharesController = sharesNav.topViewController as! SharesViewController
-        sharesController.prepareForShareVideos(ids)
-        self.presentViewController(sharesNav, animated: true) {
+        self.deselectAllItems()
+        collectionView.allowsMultipleSelection = false
+        self.refreshToolbarView(animated: true)
+        
+        if ids.count == 0 { return }
+        
+        do {
+            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+            let sharesController = sharesNav.topViewController as! SharesViewController
+            try sharesController.prepareForShareVideos(ids)
+            self.presentViewController(sharesNav, animated: true) {
+            }
+        } catch {
+            self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
         }
     }
     
-    @IBAction func cameraButton(sender: UIBarButtonItem) {
+    @IBAction func manageGroupButtonPressed(sender: UIBarButtonItem) {
+        guard let group = self.collection?.extra as? Group else { return }
+        do {
+            
+            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+            let sharesController = sharesNav.topViewController as! SharesViewController
+            try sharesController.prepareForManageGroup(group.id)
+            self.presentViewController(sharesNav, animated: true) {
+            }
+        } catch {
+            self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
+        }
+    }
+    
+    @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {
         
         LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
         
@@ -517,46 +544,6 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         guard let handler = handlers[identifier] else { return }
         
         handler(segue.destinationViewController)
-    }
-
-    @IBAction func loginButtonPressed(sender: UIBarButtonItem) {
-        HTTPClient.authenticate(fromViewController: self) { result in
-            if let error = result.error {
-                self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
-                    comment: "Error title when trying to sign in"))
-            } else {
-                videoRepository.refreshOnline()
-            }
-        }
-    }
-    
-    func showErrorModal(error: ErrorType, title: String) {
-        var errorMessage = NSLocalizedString("error_unknown",
-            comment: "Error title when some unknown error happened")
-
-        let errorDismissButton = NSLocalizedString("error_dismiss",
-            comment: "Button title for dismissing the error")
-        
-        if let printableError = error as? PrintableError {
-            errorMessage = printableError.localizedErrorDescription
-        }
-        
-        let alertController = UIAlertController(title: title, message: errorMessage, preferredStyle: .Alert)
-        
-        let dismissAction = UIAlertAction(title: errorDismissButton, style: .Default, handler: { action in
-            alertController.dismissViewControllerAnimated(true, completion: nil)
-        })
-        
-        alertController.addAction(dismissAction)
-        
-        if let userError = error as? UserError, fix = userError.fix {
-            let fixAction = UIAlertAction(title: fix.title, style: .Default, handler: { action in
-                fix.action(self)
-            })
-            alertController.addAction(fixAction)
-        }
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
     }
     
     func doAuthenticated(errorTitle errorTitle: String, callback: () -> ()) {

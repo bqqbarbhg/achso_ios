@@ -15,17 +15,29 @@ class SharesViewController: UIViewController {
 
     var url: NSURL?
     
-    func prepareForShareVideos(ids: [NSUUID]) {
-        guard let endpointUrl = self.endpointUrl else { return }
+    func prepareForShareVideos(ids: [NSUUID]) throws {
+        guard let endpointUrl = self.endpointUrl else {
+            throw UserError.notSignedIn
+        }
         
         let idStr = ids.map { $0.lowerUUIDString }.joinWithSeparator(",")
         self.url = endpointUrl.URLByAppendingPathComponent("videos/\(idStr)/shares")
     }
     
-    func prepareForCreateGroup() {
-        guard let endpointUrl = self.endpointUrl else { return }
+    func prepareForCreateGroup() throws {
+        guard let endpointUrl = self.endpointUrl else {
+            throw UserError.notSignedIn
+        }
         
         self.url = endpointUrl.URLByAppendingPathComponent("groups/new")
+    }
+    
+    func prepareForManageGroup(id: String) throws {
+        guard let endpointUrl = self.endpointUrl else {
+            throw UserError.notSignedIn
+        }
+        
+        self.url = endpointUrl.URLByAppendingPathComponent("groups/\(id)")
     }
     
     override func viewWillAppear(animated: Bool) {

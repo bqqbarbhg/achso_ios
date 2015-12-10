@@ -2,17 +2,17 @@
 /* Class = "UINavigationItem"; title = "Categories"; ObjectID = "1Nh-fv-pxC"; */
 "1Nh-fv-pxC.title" = "Categories";
 
-/* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "2pi-dw-o1p"; */
-"2pi-dw-o1p.title" = "Select";
+/* Class = "UIBarButtonItem"; title = "Sign in"; ObjectID = "3dm-QC-MQq"; */
+"3dm-QC-MQq.title" = "Sign ain";
 
-/* Class = "UIBarButtonItem"; title = "Login"; ObjectID = "ALM-6l-nzU"; */
-"ALM-6l-nzU.title" = "Login";
+/* Class = "UIBarButtonItem"; title = "Properties"; ObjectID = "4Sn-U9-ELa"; */
+"4Sn-U9-ELa.title" = "Properties";
 
 /* Class = "UIButton"; normalTitle = "Save"; ObjectID = "IHP-Zo-LNN"; */
 "IHP-Zo-LNN.normalTitle" = "Save";
 
-/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "KbS-ac-ydW"; */
-"KbS-ac-ydW.normalTitle" = "Save";
+/* Class = "UIBarButtonItem"; title = "Share"; ObjectID = "OCM-8u-nM4"; */
+"OCM-8u-nM4.title" = "Share";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "R2D-1x-7Ua"; */
 "R2D-1x-7Ua.text" = "Title";
@@ -20,8 +20,11 @@
 /* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "VPh-OM-Uzl"; */
 "VPh-OM-Uzl.normalTitle" = "Delete";
 
-/* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "rm3-t7-OQk"; */
-"rm3-t7-OQk.normalTitle" = "Delete";
+/* Class = "UILabel"; text = "Title"; ObjectID = "bd3-6F-1Cd"; */
+"bd3-6F-1Cd.text" = "Title";
+
+/* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "gHd-EU-FOe"; */
+"gHd-EU-FOe.title" = "Select";
 
 /* Class = "UIBarButtonItem"; title = "Upload"; ObjectID = "x9A-lX-pvy"; */
 "x9A-lX-pvy.title" = "Upload";
