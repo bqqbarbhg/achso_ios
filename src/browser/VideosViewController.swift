@@ -271,7 +271,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         let viewSize = self.view.bounds.size
 
         // This should match the spacing configured in the storyboard
-        let spacing = 5
+        let spacing = 2
 
         let viewSpaceWidth = viewSize.width - CGFloat(spacing * 2)
         

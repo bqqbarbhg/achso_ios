@@ -17,6 +17,21 @@ class VideoViewCell: UICollectionViewCell {
     }
     
     var videoInfo: VideoInfo?
+    static let gradient = makeGradient([
+        GradientPoint(location: 0.0, color: hexCgColor(0x000000, alpha: 0.3)),
+        GradientPoint(location: 1.0, color: hexCgColor(0x000000, alpha: 0.0)),
+    ])
+    let gradientLayer = GradientLayer(gradient: gradient)
+    
+    override func awakeFromNib() {
+        self.thumbnailImageView.layer.addSublayer(self.gradientLayer)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.gradientLayer.frame = layer.bounds
+        self.gradientLayer.setNeedsDisplay()
+    }
     
     func update(video: VideoInfo) {
         
@@ -26,9 +41,8 @@ class VideoViewCell: UICollectionViewCell {
         self.layer.shouldRasterize = true
         self.layer.rasterizationScale = UIScreen.mainScreen().scale
         
-        titleLabel.text = video.title
-    
-        genreLabel.text = NSLocalizedString(video.genre, comment: "Genre")
+        titleLabel?.text = video.title
+        genreLabel?.text = NSLocalizedString(video.genre, comment: "Genre")
         
         let imageName: String = {
             switch (video.isLocal, video.hasLocalModifications) {

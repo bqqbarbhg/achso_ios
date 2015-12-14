@@ -1,5 +1,6 @@
 import UIKit
 import CoreData
+import SDWebImage
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -41,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         loadUserSession()
         videoRepository.refresh()
+        
+        SDWebImageManager.sharedManager().delegate = ImageLoader.instance
         
         return true
     }

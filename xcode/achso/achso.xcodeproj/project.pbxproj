@@ -72,6 +72,9 @@
 		A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B41BFB27C3001C6FC9 /* MiniJson.swift */; };
 		A99B95F31C108A3B00ECBD52 /* LocationRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */; };
 		A9AE5C5E1C1EEB6C002F7537 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5D1C1EEB6C002F7537 /* Search.swift */; };
+		A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */; };
+		A9AE5C621C1F0D88002F7537 /* GradientHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C611C1F0D88002F7537 /* GradientHelper.swift */; };
+		A9AE5C641C1F1302002F7537 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C631C1F1302002F7537 /* ImageLoader.swift */; };
 		A9BCADB81C196BEE0075976E /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BCADB71C196BEE0075976E /* UIViewControllerExtension.swift */; };
 		A9FA26EF1C1729C90079B8F8 /* SharesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */; };
 		A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30521BFC981A00746686 /* OAuth2.swift */; };
@@ -161,6 +164,9 @@
 		A99442B41BFB27C3001C6FC9 /* MiniJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniJson.swift; sourceTree = "<group>"; };
 		A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationRetriever.swift; sourceTree = "<group>"; };
 		A9AE5C5D1C1EEB6C002F7537 /* Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientLayer.swift; sourceTree = "<group>"; };
+		A9AE5C611C1F0D88002F7537 /* GradientHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientHelper.swift; sourceTree = "<group>"; };
+		A9AE5C631C1F1302002F7537 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		A9BCADB71C196BEE0075976E /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharesViewController.swift; sourceTree = "<group>"; };
 		A9FE30521BFC981A00746686 /* OAuth2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2.swift; sourceTree = "<group>"; };
@@ -270,6 +276,7 @@
 				A98D82701BEB510800BB7263 /* VideoCellView.swift */,
 				A93A7FF41C16D46A00C193AD /* VideoDetailsViewController.swift */,
 				A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */,
+				A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */,
 			);
 			path = browser;
 			sourceTree = "<group>";
@@ -346,6 +353,8 @@
 				A96AC4071C0EEFD800506B6D /* Tasks.swift */,
 				A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */,
 				A9AE5C5D1C1EEB6C002F7537 /* Search.swift */,
+				A9AE5C611C1F0D88002F7537 /* GradientHelper.swift */,
+				A9AE5C631C1F1302002F7537 /* ImageLoader.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -494,6 +503,7 @@
 			files = (
 				A9167FBB1BEB8B110018BEC4 /* VideoView.swift in Sources */,
 				A9167FC51BEBA73D0018BEC4 /* Vector2.swift in Sources */,
+				A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */,
 				A9BCADB81C196BEE0075976E /* UIViewControllerExtension.swift in Sources */,
 				A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */,
 				A94B82E01BEA3FB10017874D /* AppDelegate.swift in Sources */,
@@ -503,6 +513,7 @@
 				A96AC4081C0EEFD800506B6D /* Tasks.swift in Sources */,
 				A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */,
 				A9167FC11BEB9C8C0018BEC4 /* CGSizeExtension.swift in Sources */,
+				A9AE5C641C1F1302002F7537 /* ImageLoader.swift in Sources */,
 				A91D67311BFE016900B15A66 /* VideoInfo.swift in Sources */,
 				A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */,
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
@@ -552,6 +563,7 @@
 				A975F4A71BF094DF007A020C /* PlayButtonView.swift in Sources */,
 				A98D82751BEB52F100BB7263 /* Video.swift in Sources */,
 				A94BCEB61C08909C00669476 /* AuthUser.swift in Sources */,
+				A9AE5C621C1F0D88002F7537 /* GradientHelper.swift in Sources */,
 				A98D82781BEB550A00BB7263 /* ArrayExtension.swift in Sources */,
 				A95E99F71BFF2348001BF3E2 /* Errors.swift in Sources */,
 			);
