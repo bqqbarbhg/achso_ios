@@ -121,6 +121,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.title = collection.title
         self.collection = collection
         
+        // Invalidate the search index (will be rebuilt if needed)
+        self.searchIndex = nil
         self.filterContent()
     }
 
