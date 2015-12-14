@@ -47,7 +47,7 @@ class VideoRepository {
             
             collection.videos = group.videos.flatMap { id in
                 return self.findVideoInfo(id)
-            }
+            }.sort({ $0.creationDate > $1.creationDate })
             
             return collection
         }
