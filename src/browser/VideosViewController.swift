@@ -1,19 +1,26 @@
 import UIKit
 import MobileCoreServices
 
-class VideosViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
+class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
+    
+    @IBOutlet var collectionView: UICollectionView!
     
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var selectButton: UIBarButtonItem!
     @IBOutlet var cancelSelectButton: UIBarButtonItem!
     
+    @IBOutlet var genreButton: UIButton!
+    @IBOutlet var searchBar: UISearchBar!
+    
     @IBOutlet var toolbarSpace: UIBarButtonItem!
     @IBOutlet var shareButton: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
-    
+
+    /*
     @IBOutlet var manageGroupButton: UIBarButtonItem!
-    
+    */
+
     var refreshControl: UIRefreshControl!
     
     // Initialized in didFinishLaunch, do not use in init
@@ -22,18 +29,31 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     var collectionIndex: Int?
     var collection: Collection?
     
+    var filteredVideos: [VideoInfo] = []
+    
     var itemSize: CGSize?
     
     // Used to pass the video from selection to the segue callback
     var chosenVideo: Video?
     
+    // If the repository updates while in select mode, apply the changes after the user stops selecting.
+    var pendingCollectionUpdateAfterSelect: Collection? = nil
+    
+    var genreFilter: String?
+    
     override func viewDidLoad() {
-        refreshToolbarView(animated: false)
+        refreshSelectedViewState(animated: false)
         
         // Refresh control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "startRefresh:", forControlEvents: .ValueChanged)
         self.refreshControl = refreshControl
+        self.collectionView.addSubview(refreshControl)
+        
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
+        
+        self.resetFilter()
         
         // Long press recognizer
         // NOTE: Removed, maybe this was a bad idea...
@@ -52,6 +72,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         videoRepository.removeListener(self)
     }
     
+    func resetFilter() {
+        self.genreFilter = nil
+        self.genreButton?.setTitle(NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), forState: .Normal)
+    }
+    
     func splitViewControllerDidChangeDisplayMode() {
         guard let splitViewController = self.splitViewController else { return }
         
@@ -62,6 +87,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     func showCollection(collectionIndex: Int) {
         self.collectionIndex = collectionIndex
         self.collection = videoRepository.collections[safe: collectionIndex]
+        self.resetFilter()
         if let collection = self.collection {
             updateCollection(collection)
         }
@@ -71,7 +97,11 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         guard let collectionIndex = self.collectionIndex else { return }
         self.collection = videoRepository.collections[safe: collectionIndex]
         if let collection = self.collection {
-            updateCollection(collection)
+            if !self.collectionView.allowsMultipleSelection {
+                updateCollection(collection)
+            } else {
+                self.pendingCollectionUpdateAfterSelect = collection
+            }
         }
         
         self.refreshControl.endRefreshing()
@@ -81,7 +111,19 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         self.title = collection.title
         self.collection = collection
         
-        self.collectionView?.reloadData()
+        self.filterContent()
+    }
+    
+    func filterContent() {
+        guard let collection = self.collection else { return }
+        var videos = collection.videos
+        
+        if let genreFilter = self.genreFilter {
+            videos = videos.filter({ $0.genre == genreFilter })
+        }
+        
+        self.filteredVideos = videos
+        self.collectionView.reloadData()
     }
     
     func startRefresh(sender: UIRefreshControl) {
@@ -100,28 +142,28 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         if let indexPath = collectionView.indexPathForItemAtPoint(point) {
             collectionView.allowsMultipleSelection = true
             collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-            refreshToolbarView(animated: true)
+            refreshSelectedViewState(animated: true)
         }
     }
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1;
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch (section) {
         case 0:
-            return self.collection?.videos.count ?? 0
+            return self.filteredVideos.count
         default:
             return 0
         }
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("VideoCell", forIndexPath: indexPath) as! VideoViewCell
         
-        if let video = collection?.videos[safe: indexPath.item] {
+        if let video = self.filteredVideos[safe: indexPath.item] {
             cell.update(video)
         }
         
@@ -153,14 +195,12 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         }
         
         // Default single column
-        return 1;
+        return 1
     }
 
     
     func calculateItemSize() -> CGSize? {
-        guard let viewSize = self.collectionView?.bounds.size else {
-            return nil
-        }
+        let viewSize = self.view.bounds.size
 
         // This should match the spacing configured in the storyboard
         let spacing = 5
@@ -205,7 +245,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     func videoForIndexPath(indexPath: NSIndexPath) -> Video? {
         do {
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            guard let videoInfo = self.collection?.videos[safe: indexPath.item] else { return nil }
+            guard let videoInfo = self.filteredVideos[safe: indexPath.item] else { return nil }
             guard let video = try appDelegate.getVideo(videoInfo.id) else { return nil }
             return video
         } catch {
@@ -213,10 +253,10 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         }
     }
     
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if collectionView.allowsMultipleSelection {
 
-            refreshToolbarView(animated: true)
+            refreshSelectedViewState(animated: true)
             
         } else {
             
@@ -230,9 +270,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         }
     }
     
-    override func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         if collectionView.allowsMultipleSelection {
-            refreshToolbarView(animated: true)
+            refreshSelectedViewState(animated: true)
         }
     }
     
@@ -246,13 +286,27 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
     @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
         guard let collectionView = self.collectionView else { return }
         
-        collectionView.allowsMultipleSelection = !collectionView.allowsMultipleSelection
-        self.deselectAllItems()
+        if collectionView.allowsMultipleSelection {
+            self.endSelectMode()
+        } else {
+            collectionView.allowsMultipleSelection = true
+        }
         
-        refreshToolbarView(animated: true)
+        refreshSelectedViewState(animated: true)
     }
     
-    func refreshToolbarView(animated animated: Bool) {
+    func endSelectMode() {
+        self.deselectAllItems()
+        collectionView.allowsMultipleSelection = false
+        self.refreshSelectedViewState(animated: true)
+        
+        if let collection = self.pendingCollectionUpdateAfterSelect {
+            self.updateCollection(collection)
+            self.pendingCollectionUpdateAfterSelect = nil
+        }
+    }
+    
+    func refreshSelectedViewState(animated animated: Bool) {
         guard let collectionView = self.collectionView else { return }
         
         if collectionView.allowsMultipleSelection {
@@ -261,6 +315,10 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             self.shareButton.enabled = selectedCount > 0
             self.editButton.enabled = selectedCount == 1
             self.uploadButton.enabled = selectedCount > 0
+
+            self.genreButton.enabled = false
+            self.searchBar.userInteractionEnabled = false
+            self.searchBar.alpha = 0.6
             
             self.navigationItem.setHidesBackButton(true, animated: animated)
             self.cameraButton.enabled = false
@@ -272,6 +330,10 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
             self.navigationController?.setToolbarHidden(false, animated: animated)
             
         } else {
+            self.genreButton.enabled = true
+            self.searchBar.userInteractionEnabled = true
+            self.searchBar.alpha = 1.0
+            
             self.navigationItem.setHidesBackButton(false, animated: animated)
             self.cameraButton.enabled = true
             
@@ -321,9 +383,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
                     self.uploadVideo(atIndexPath: indexPath)
                 }
                 
-                self.deselectAllItems()
-                collectionView.allowsMultipleSelection = false
-                self.refreshToolbarView(animated: true)
+                self.endSelectMode()
             }
         }
     }
@@ -338,9 +398,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         let detailsController = detailsNav.topViewController as! VideoDetailsViewController
         detailsController.initializeForm(video)
         
-        self.deselectAllItems()
-        collectionView.allowsMultipleSelection = false
-        self.refreshToolbarView(animated: true)
+        self.endSelectMode()
         
         self.presentViewController(detailsNav, animated: true, completion: nil)
     }
@@ -352,9 +410,7 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         let videos = indices.flatMap { self.videoForIndexPath($0) }
         let ids = videos.map { $0.id }
         
-        self.deselectAllItems()
-        collectionView.allowsMultipleSelection = false
-        self.refreshToolbarView(animated: true)
+        self.endSelectMode()
         
         if ids.count == 0 { return }
         
@@ -381,6 +437,39 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
         } catch {
             self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
         }
+    }
+    
+    @IBAction func genreButtonPressed(sender: UIButton) {
+        
+        func picked(genre: String?, title: String?) {
+            self.genreButton.setTitle(title, forState: .Normal)
+            self.genreFilter = genre
+            self.filterContent()
+        }
+
+        let pickerTitle = NSLocalizedString("filter_genre_title", comment: "Title of the genre picker")
+        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
+
+        if let popover = genrePicker.popoverPresentationController {
+            popover.sourceView = self.genreButton
+            popover.sourceRect = CGRect(x: self.genreButton.bounds.midX, y: self.genreButton.bounds.maxY, width: 0.0, height: 0.0)
+        }
+        
+        let button = UIAlertAction(title: NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), style: .Default) { action in
+            picked(nil, title: action.title)
+        }
+        genrePicker.addAction(button)
+        
+        // Todo: enum?
+        let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
+        for genre in genres {
+            let button = UIAlertAction(title: NSLocalizedString(genre, comment: "Genre"), style: .Default) { action in
+                picked(genre, title: action.title)
+            }
+            genrePicker.addAction(button)
+        }
+        
+        self.presentViewController(genrePicker, animated: true, completion: nil)
     }
     
     @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {
@@ -486,10 +575,9 @@ class VideosViewController: UICollectionViewController, UICollectionViewDelegate
                     if let index = maybeIndex {
                         let cell = visibleCells[index] as! VideoViewCell
                         popover.sourceView = cell.genreLabel
-                        let rect = cell.genreLabel.bounds.divide(1.0, fromEdge: CGRectEdge.MaxYEdge).slice
-                        let leftRect = rect.divide(20.0, fromEdge: CGRectEdge.MinXEdge).slice
+                        let rect = CGRect(x: cell.genreLabel.bounds.minX + 10.0, y: cell.genreLabel.bounds.maxY, width: 0, height: 0)
                         popover.permittedArrowDirections = UIPopoverArrowDirection.Up
-                        popover.sourceRect = leftRect
+                        popover.sourceRect = rect
                     } else {
                         popover.sourceView = self.view
                     }

@@ -4,7 +4,6 @@ class Collection {
     
     enum Type {
         case General
-        case Genre
         case Group
     }
     

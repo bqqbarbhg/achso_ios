@@ -75,3 +75,9 @@
 
 /* Title label shown in the video details form */
 "details_title" = "Otsikko";
+
+/* Title of the genre picker */
+"filter_genre_title" = "Suodata lajityypin mukaan";
+
+/* Any genre filter option */
+"filter_any_genre" = "Kaikki lajityypit";

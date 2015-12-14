@@ -16,13 +16,10 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         let general = Section(title: nil)
         general.collections = groupedCollections[.General] ?? []
         
-        let genres = Section(title: NSLocalizedString("Genres", comment: "Title of a category section"))
-        genres.collections = groupedCollections[.Genre] ?? []
-        
         let groups = Section(title: NSLocalizedString("Groups", comment: "Title of a category section"))
         groups.collections = groupedCollections[.Group] ?? []
         
-        self.sections = [general, genres, groups]
+        self.sections = [general, groups]
         self.tableView.reloadData()
     }
     
