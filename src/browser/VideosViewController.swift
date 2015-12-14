@@ -1,7 +1,7 @@
 import UIKit
 import MobileCoreServices
 
-class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, VideoRepositoryListener {
+class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchBarDelegate, VideoRepositoryListener {
     
     @IBOutlet var collectionView: UICollectionView!
     
@@ -39,7 +39,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     // If the repository updates while in select mode, apply the changes after the user stops selecting.
     var pendingCollectionUpdateAfterSelect: Collection? = nil
     
+    var searchIndex: SearchIndex?
+    var isBuildingSearchIndex: Bool = false
+    
     var genreFilter: String?
+    var searchFilter: String?
     
     override func viewDidLoad() {
         refreshSelectedViewState(animated: false)
@@ -52,6 +56,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+        
+        self.searchBar.delegate = self
         
         self.resetFilter()
         
@@ -75,6 +81,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     func resetFilter() {
         self.genreFilter = nil
         self.genreButton?.setTitle(NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), forState: .Normal)
+        
+        self.searchFilter = nil
+        self.searchBar?.text = nil
     }
     
     func splitViewControllerDidChangeDisplayMode() {
@@ -87,6 +96,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     func showCollection(collectionIndex: Int) {
         self.collectionIndex = collectionIndex
         self.collection = videoRepository.collections[safe: collectionIndex]
+        self.searchIndex = nil
         self.resetFilter()
         if let collection = self.collection {
             updateCollection(collection)
@@ -113,6 +123,37 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.filterContent()
     }
+
+    func buildSearchIndex() {
+        if self.isBuildingSearchIndex {
+            return
+        }
+        
+        self.isBuildingSearchIndex = true
+        
+        
+        let videoInfos = collection?.videos ?? []
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let appDelegate = AppDelegate.instance
+            
+            let searchIndex = SearchIndex()
+            for videoInfo in videoInfos {
+                do {
+                    if let video = try appDelegate.getVideo(videoInfo.id) {
+                        searchIndex.add(video.toSearchObject())
+                    }
+                } catch {
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                
+                self.searchIndex = searchIndex
+                self.isBuildingSearchIndex = false
+                self.filterContent()
+            }
+        }
+    }
     
     func filterContent() {
         guard let collection = self.collection else { return }
@@ -120,6 +161,26 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         if let genreFilter = self.genreFilter {
             videos = videos.filter({ $0.genre == genreFilter })
+        }
+        
+        if let searchFilter = self.searchFilter where !searchFilter.isEmpty {
+            
+            
+            if let searchIndex = self.searchIndex {
+                let results = searchIndex.search(searchFilter)
+                let uuids = results.sort({ $0.score > $1.score }).flatMap({ $0.object.tag as? NSUUID })
+                
+                var foundVideos = [VideoInfo]()
+                for uuid in uuids {
+                    if let index = videos.indexOf({ $0.id == uuid }) {
+                        foundVideos.append(videos[index])
+                    }
+                }
+                videos = foundVideos
+            } else {
+                // This will re-call to filterContent()
+                self.buildSearchIndex()
+            }
         }
         
         self.filteredVideos = videos
@@ -132,6 +193,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             showErrorModal(UserError.notSignedIn, title: NSLocalizedString("error_on_refresh",
                 comment: "Error title when refreshing failed"))
         }
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        self.searchFilter = searchBar.text
+        self.filterContent()
     }
     
     func longPress(sender: UILongPressGestureRecognizer) {

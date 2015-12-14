@@ -127,4 +127,15 @@ class Video {
             "author": self.author.toManifest(),
         ]
     }
+    
+    func toSearchObject() -> SearchObject {
+        let searchObject = SearchObject(tag: self.id)
+        searchObject.feed(self.title)
+        for annotation in annotations {
+            if !annotation.text.isEmpty {
+                searchObject.feed(annotation.text)
+            }
+        }
+        return searchObject
+    }
 }
