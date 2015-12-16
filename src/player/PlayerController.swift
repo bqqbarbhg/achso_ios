@@ -253,9 +253,13 @@ class PlayerController {
     var previousTime: Double = 0.0
     var batchSnapDistance: Double = 0.05
     
+    var videoHasEnded: Bool = false
+    
     var undoStream: [UndoPoint] = []
     var redoStream: [UndoPoint] = []
     var maxUndoDepth: Int = 256
+    
+    var wasModified: Bool = false
     
     init(player: VideoPlayer) {
         self.player = player
@@ -265,6 +269,17 @@ class PlayerController {
             PlayerState.AnnotationPause: AnnotationPauseHandler(),
             PlayerState.AnnotationEdit: AnnotationEditHandler(),
         ]
+    }
+    
+    func resetVideo(video: ActiveVideo) {
+        self.activeVideo = video
+        
+        if let batch = self.batch {
+            self.batch = video.closestBatch(batch.time, minimumDistance: 0.1)
+            if self.batch == nil {
+                self.switchState(.Playing)
+            }
+        }
     }
     
     func doSeek(time: Double) {
@@ -283,6 +298,11 @@ class PlayerController {
         self.isSeeking = false
     }
     
+    func videoEnded() {
+        self.switchState(.ManualPause)
+        self.videoHasEnded = true
+    }
+    
     func switchState(state: PlayerState) -> PlayerHandler {
         self.state = state
         let handler = self.handlers[self.state]!
@@ -298,11 +318,18 @@ class PlayerController {
     }
     
     func userPlay() {
+        if self.videoHasEnded {
+            self.doSeek(0.0)
+            self.videoHasEnded = false
+        }
+        
         self.currentHandler.userPlay(self)
     }
     
     func userSeek(relative: Double, final: Bool) {
         guard let duration = player.videoDuration else { return }
+        
+        self.videoHasEnded = false
         
         let time = relative * duration
         self.currentHandler.userSeek(self, time: time, final: final)
@@ -353,6 +380,8 @@ class PlayerController {
     func createUndoPoint() -> UndoPoint {
         let state = self.activeVideo.saveState()
         let batchIndex = self.activeVideo.batches.indexOf({ $0 === self.batch })
+        
+        self.wasModified = true
         
         return UndoPoint(time: self.time, state: state, batchIndex: batchIndex)
     }

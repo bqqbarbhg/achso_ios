@@ -29,6 +29,8 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     var isWaiting: Bool = false
     
+    var annotationWaitToken: Int = 0
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -281,7 +283,9 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                     }
                 }()
                 
-                self.performSelector("annotationWaitDone:", withObject: nil, afterDelay: waitTime)
+                self.annotationWaitToken += 1
+                
+                self.performSelector("annotationWaitDone:", withObject: self.annotationWaitToken, afterDelay: waitTime)
                 self.annotationWaitBar.animateProgress(waitTime)
                 
                 self.isWaiting = true
@@ -321,9 +325,21 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     func annotationWaitDone(object: AnyObject) {
+        if object as? Int != self.annotationWaitToken { return }
+        
         self.playerController?.annotationWaitDone()
         self.annotationWaitBar.stopAnimation()
         self.isWaiting = false
+    }
+    
+    func timeUpdate(time: Double) {
+        self.playerController?.timeUpdate(time)
+        self.refreshView()
+    }
+    
+    func videoEnded() {
+        self.playerController?.videoEnded()
+        self.refreshView()
     }
     
     @IBAction func annotationTextFieldEditingChanged(sender: UITextField) {
@@ -355,12 +371,14 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     
     @IBAction func saveButtonPressed(sender: UIBarButtonItem) {
         guard let activeVideo = self.activeVideo else { return }
-        let video = activeVideo.toVideo()
         
         do {
-            video.hasLocalModifications = true
-            try videoRepository.saveVideo(video)
-            videoRepository.refreshOnline()
+            if self.playerController?.wasModified ?? false {
+                let video = activeVideo.toVideo()
+                video.hasLocalModifications = true
+                try videoRepository.saveVideo(video)
+                videoRepository.refreshOnline()
+            }
         } catch {
             // TODO
         }
@@ -392,10 +410,36 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.videoPlayer = videoPlayer
         self.playerController = playerController
     }
-
     
-    func timeUpdate(time: Double) {
-        self.playerController?.timeUpdate(time)
-        self.refreshView()
+    func videoDidUpdate(video: Video?) {
+        
+        if let video = video {
+            do {
+                try AppDelegate.instance.saveVideo(video)
+            } catch {
+            }
+            
+            guard let videoPlayer = self.videoPlayer,
+                playerController = self.playerController else { return }
+            
+            if playerController.wasModified { return }
+            
+            let user = User()
+            user.name = "test"
+            
+            let activeVideo = ActiveVideo(video: video, user: user)
+            
+            if let duration = videoPlayer.videoDuration {
+                activeVideo.duration = duration
+            }
+            if let videoSize = videoPlayer.videoSize {
+                let size = Vector2.init(cgSize: videoSize)
+                let relative = size / min(size.x, size.y)
+                activeVideo.resolution = relative
+            }
+            
+            self.activeVideo = activeVideo
+            playerController.activeVideo = activeVideo
+        }
     }
 }

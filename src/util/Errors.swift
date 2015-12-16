@@ -117,5 +117,19 @@ class UserError: ErrorType, PrintableError {
 enum Try<T> {
     case Success(T)
     case Error(ErrorType)
+    
+    var success: T? {
+        switch self {
+            case .Success(let value): return value
+            case .Error: return nil
+        }
+    }
+    
+    var error: ErrorType? {
+        switch self {
+            case .Success: return nil
+            case .Error(let error): return error
+        }
+    }
 }
 

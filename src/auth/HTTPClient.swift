@@ -85,6 +85,8 @@ class HTTPClient {
             videoRepository.thumbnailUploaders = [achminup]
         }
         
+        AppDelegate.instance.saveUserSession()
+        
         videoRepository.refreshOnline()
     }
 }

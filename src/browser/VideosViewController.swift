@@ -5,6 +5,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     @IBOutlet var collectionView: UICollectionView!
     
+    @IBOutlet var actionButton: UIBarButtonItem!
     @IBOutlet var cameraButton: UIBarButtonItem!
     @IBOutlet var selectButton: UIBarButtonItem!
     @IBOutlet var cancelSelectButton: UIBarButtonItem!
@@ -17,6 +18,10 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
 
+    @IBOutlet weak var progressBar: UIProgressView!
+    
+    @IBOutlet var searchBarToGenreButtonConstraint: NSLayoutConstraint!
+    @IBOutlet var searchBarToParentConstraint: NSLayoutConstraint!
     /*
     @IBOutlet var manageGroupButton: UIBarButtonItem!
     */
@@ -44,6 +49,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     var genreFilter: String?
     var searchFilter: String?
+    
+    var currentProgressBarOwner: String?
     
     override func viewDidLoad() {
         refreshSelectedViewState(animated: false)
@@ -89,8 +96,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     func splitViewControllerDidChangeDisplayMode() {
         guard let splitViewController = self.splitViewController else { return }
         
-        // HACK: Add this back if split view is removed from tablet
-        // self.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        self.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        self.navigationItem.leftItemsSupplementBackButton = true
     }
     
     func showCollection(collectionIndex: Int) {
@@ -103,7 +110,50 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    func beginProgressBar(identifier: String) {
+        guard let progressBar = self.progressBar else { return }
+        
+        self.currentProgressBarOwner = identifier
+        progressBar.setProgress(0.0, animated: false)
+        self.progressBar.alpha = 0.0
+        self.progressBar.hidden = false
+        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
+                self.progressBar.alpha = 1.0
+            }, completion: nil)
+        
+    }
+
+    func updateProgressBar(identifier: String, progress: Float) {
+        if identifier != self.currentProgressBarOwner { return }
+        self.progressBar?.setProgress(progress, animated: true)
+    }
+    
+    func endProgressBar(identifier: String) {
+        if identifier != self.currentProgressBarOwner { return }
+        self.currentProgressBarOwner = nil
+        
+        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
+                self.progressBar.alpha = 0.0
+            }, completion: { _ in
+                self.progressBar.hidden = true
+        })
+    }
+    
+    func videoRepositoryUpdateStart() {
+        self.beginProgressBar("repository_update")
+    }
+    
+    func videoRepositoryUpdateProgress(done: Int, total: Int) {
+
+        if total <= 0 { return }
+        self.updateProgressBar("repository_update", progress: Float(done) / Float(total))
+        
+        // HACKish: Force to update UI
+        NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate())
+    }
+    
     func videoRepositoryUpdated() {
+        
         guard let collectionIndex = self.collectionIndex else { return }
         self.collection = videoRepository.collections[safe: collectionIndex]
         if let collection = self.collection {
@@ -115,6 +165,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         self.refreshControl.endRefreshing()
+        
+        self.endProgressBar("repository_update")
     }
     
     func updateCollection(collection: Collection) {
@@ -133,16 +185,24 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.isBuildingSearchIndex = true
         
+        self.beginProgressBar("search_index")
         
         let videoInfos = collection?.videos ?? []
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let appDelegate = AppDelegate.instance
             
             let searchIndex = SearchIndex()
-            for videoInfo in videoInfos {
+            for (index, videoInfo) in videoInfos.enumerate() {
                 do {
                     if let video = try appDelegate.getVideo(videoInfo.id) {
                         searchIndex.add(video.toSearchObject())
+                    }
+                    
+                    if index % 10 == 0 {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            let progress = Float(index) / Float(videoInfos.count)
+                            self.updateProgressBar("search_index", progress: progress)
+                        }
                     }
                 } catch {
                 }
@@ -150,6 +210,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             dispatch_async(dispatch_get_main_queue()) {
                 
+                self.endProgressBar("search_index")
                 self.searchIndex = searchIndex
                 self.isBuildingSearchIndex = false
                 self.filterContent()
@@ -182,6 +243,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             } else {
                 // This will re-call to filterContent()
                 self.buildSearchIndex()
+                videos = []
             }
         }
         
@@ -197,9 +259,56 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    
+        if self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact {
+            self.searchBarToGenreButtonConstraint.active = false
+            self.searchBarToParentConstraint.active = true
+            
+            UIView.animateWithDuration(0.2) {
+                self.searchBar.layoutIfNeeded()
+                self.genreButton.alpha = 0.0
+            }
+        }
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+        
+        if self.searchBarToParentConstraint.active {
+            self.searchBarToGenreButtonConstraint.active = true
+            self.searchBarToParentConstraint.active = false
+            
+            UIView.animateWithDuration(0.2) {
+                self.searchBar.layoutIfNeeded()
+                self.genreButton.alpha = 1.0
+            }
+        }
+    }
+    
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        self.searchFilter = searchBar.text
+        
+        if searchText.isEmpty && !searchBar.isFirstResponder() {
+            // Hack: if the text is empty and the search bar is not the first responder the user tapped the clear button.
+            // Dismiss the keyboard after the first responder has propagated to the search bar.
+            self.performSelector("searchBarCancelButtonClicked:", withObject: searchBar, afterDelay: 0)
+            return
+        }
+
+        self.searchFilter = searchText
         self.filterContent()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        self.searchBar.resignFirstResponder()
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        self.searchFilter = nil
+        self.searchBar.text = nil
+        self.filterContent()
+        self.searchBar.resignFirstResponder()
     }
     
     func longPress(sender: UILongPressGestureRecognizer) {
@@ -394,6 +503,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             let items = [self.cancelSelectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
             
+            let toolbarItems = [self.toolbarSpace!, self.editButton!, self.shareButton!, self.uploadButton! ]
+            self.setToolbarItems(toolbarItems, animated: animated)
+            
             self.categoriesViewController?.setEnabled(false)
             self.navigationController?.setToolbarHidden(false, animated: animated)
             
@@ -405,11 +517,15 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             self.navigationItem.setHidesBackButton(false, animated: animated)
             self.cameraButton.enabled = true
             
-            let items = [self.cameraButton!, self.selectButton!]
+            let items = [self.selectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
             
             self.categoriesViewController?.setEnabled(true)
-            self.navigationController?.setToolbarHidden(true, animated: animated)
+            
+            let toolbarItems = [self.actionButton!, self.toolbarSpace!, self.cameraButton!]
+            self.setToolbarItems(toolbarItems, animated: animated)
+            
+            self.navigationController?.setToolbarHidden(false, animated: animated)
         }
     }
     
@@ -493,20 +609,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
-    @IBAction func manageGroupButtonPressed(sender: UIBarButtonItem) {
-        guard let group = self.collection?.extra as? Group else { return }
-        do {
-            
-            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
-            let sharesController = sharesNav.topViewController as! SharesViewController
-            try sharesController.prepareForManageGroup(group.id)
-            self.presentViewController(sharesNav, animated: true) {
-            }
-        } catch {
-            self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
-        }
-    }
-    
     @IBAction func genreButtonPressed(sender: UIButton) {
         
         func picked(genre: String?, title: String?) {
@@ -540,6 +642,64 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.presentViewController(genrePicker, animated: true, completion: nil)
     }
     
+    @IBAction func actionButtonPressed(sender: UIBarButtonItem) {
+        let genrePicker = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        if let popover = genrePicker.popoverPresentationController {
+            popover.barButtonItem = sender
+        }
+
+        genrePicker.addAction(UIAlertAction(title: "Import video", style: .Default, handler: nil))
+        
+        if self.collection?.type == .Group {
+            genrePicker.addAction(UIAlertAction(title: "Group info", style: .Default, handler: self.actionManageGroup))
+        }
+        
+        if AuthUser.user == nil {
+            genrePicker.addAction(UIAlertAction(title: "Sign in", style: .Default, handler: self.actionSignIn))
+        } else {
+            genrePicker.addAction(UIAlertAction(title: "Sign out", style: .Destructive, handler: self.actionSignOut))
+        }
+        
+        genrePicker.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        self.presentViewController(genrePicker, animated: true, completion: nil)
+        
+    }
+    
+    func actionManageGroup(action: UIAlertAction) {
+        guard let group = self.collection?.extra as? Group else { return }
+        do {
+            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+            let sharesController = sharesNav.topViewController as! SharesViewController
+            try sharesController.prepareForManageGroup(group.id)
+            self.presentViewController(sharesNav, animated: true) {
+            }
+        } catch {
+            self.showErrorModal(error, title: NSLocalizedString("error_on_manage_group", comment: "Error title when the group info could not be found"))
+        }
+    }
+    
+    func actionSignIn(action: UIAlertAction) {
+        HTTPClient.authenticate(fromViewController: self) { result in
+            if let error = result.error {
+                self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
+                    comment: "Error title when trying to sign in"))
+            } else {
+                videoRepository.refreshOnline()
+            }
+        }
+    }
+    
+    func actionSignOut(action: UIAlertAction) {
+        // TODO: Extract to function
+        AuthUser.user = nil
+        videoRepository.achRails = nil
+        AppDelegate.instance.saveUserSession()
+        
+        videoRepository.refresh()
+    }
+    
     @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {
         
         LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
@@ -570,7 +730,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         let temporaryUrl = info[UIImagePickerControllerMediaURL]! as! NSURL
         let date = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
         
-
+        // Go to all videos so the new video is shown
+        self.collectionView.setContentOffset(CGPointZero, animated: false)
+        self.showCollection(0)
         
         if let location = LocationRetriever.instance.finishRetrievingLocation() {
             LocationRetriever.instance.reverseGeocodeLocation(location) { street in
@@ -686,6 +848,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             if let video = self.chosenVideo {
                 do {
                     try playerViewController.setVideo(video)
+                    videoRepository.refreshVideo(video, callback: playerViewController.videoDidUpdate)
                 } catch {
                     // TODO: Cancel segue
                 }

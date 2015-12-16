@@ -16,12 +16,29 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OjF-uy-Ox8">
+                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Dts-P4-KuX"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="OjF-uy-Ox8" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="bLp-ee-ePR"/>
+                            <constraint firstAttribute="trailing" secondItem="OjF-uy-Ox8" secondAttribute="trailing" id="fo6-E7-LAX"/>
+                            <constraint firstItem="OjF-uy-Ox8" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="ve7-91-tNB"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="rzs-9P-gSE">
-                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="FrT-M4-zAT"/>
-                    </navigationItem>
+                    <toolbarItems>
+                        <barButtonItem systemItem="action" id="ZKd-DX-2Sl"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Vc1-4M-Lb0"/>
+                        <barButtonItem systemItem="camera" id="FrT-M4-zAT"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="rzs-9P-gSE"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -30,13 +47,17 @@
         <!--Navigation Controller-->
         <scene sceneID="wqO-nm-iw3">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="iLq-g3-J7N" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="iLq-g3-J7N" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Edb-AE-Ra1">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="gMM-DV-GCu">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="01J-lp-oVM" kind="relationship" relationship="rootViewController" id="wft-ny-oR6"/>
                     </connections>

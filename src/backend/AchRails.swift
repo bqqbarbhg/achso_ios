@@ -32,13 +32,36 @@ class AchRails {
         
     }
     
-    func getVideo(id: NSUUID, callback: Video? -> ()) {
+    func getVideo(id: NSUUID, callback: Try<Video> -> ()) {
         
         let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json")
         http.authorizedRequestJSON(request, canRetry: true) { response in
             let videoJson = response.result.value as? JSONObject
-            let video = try? Video(manifest: videoJson.unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
-            callback(video)
+            do {
+                let video = try Video(manifest: videoJson.unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
+                callback(.Success(video))
+            } catch {
+                callback(.Error(error))
+            }
+        }
+    }
+    
+    func getVideo(id: NSUUID, ifNewerThanRevision revision: Int, callback: Try<Video?> -> ()) {
+        
+        let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json", parameters: ["newer_than_rev": String(revision)])
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            if response.response?.statusCode == 304 {
+                callback(.Success(nil))
+                return
+            }
+            
+            let videoJson = response.result.value as? JSONObject
+            do {
+                let video = try Video(manifest: videoJson.unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
+                callback(.Success(video))
+            } catch {
+                callback(.Error(error))
+            }
         }
     }
     

@@ -6,9 +6,10 @@ import CoreGraphics
 
 protocol VideoPlayerDelegate {
     func timeUpdate(time: Double)
+    func videoEnded()
 }
 
-class VideoPlayer {
+class VideoPlayer: NSObject {
     
     var avPlayer: AVPlayer
     var videoSize: CGSize?
@@ -18,6 +19,9 @@ class VideoPlayer {
     
     init(url: NSURL) {
         self.avPlayer = AVPlayer()
+        
+        super.init()
+        
         self.avPlayer.actionAtItemEnd = .Pause
         
         let asset = AVURLAsset(URL: url, options: .None)
@@ -29,7 +33,13 @@ class VideoPlayer {
         let avPlayer = AVPlayer(playerItem: playerItem)
         avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(1, 60), queue: nil, usingBlock: timeUpdate)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoEnded:", name: AVPlayerItemDidPlayToEndTimeNotification, object: playerItem)
+        
         self.avPlayer = avPlayer
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func getVideoSizeFromAsset(asset: AVURLAsset) -> CGSize? {
@@ -55,6 +65,10 @@ class VideoPlayer {
     
     func timeUpdate(time: CMTime) {
         self.delegate?.timeUpdate(time.seconds)
+    }
+    
+    func videoEnded(notification: NSNotification) {
+        self.delegate?.videoEnded()
     }
     
     func pause() {

@@ -54,8 +54,26 @@ class VideoViewCell: UICollectionViewCell {
         
         sharedCloudImage.image = UIImage(named: imageName)
         
+        self.thumbnailImageView.alpha = 0.0
         if let url = video.thumbnailUri.realUrl {
-            thumbnailImageView.sd_setImageWithURL(url)
+            thumbnailImageView.sd_setImageWithURL(url) { image, error, cacheType, url in
+                
+                if cacheType == .Memory {
+                    // Set the alpha immediately if the image was already in memory. This stops flickering on refresh.
+                    self.thumbnailImageView.alpha = 1.0
+                } else {
+                
+                    // Fade in the image.
+                    self.layer.shouldRasterize = false
+                    UIView.transitionWithView(self.thumbnailImageView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut,
+                        animations: {
+                            self.thumbnailImageView.alpha = 1.0
+                        }, completion: { _ in
+                            self.layer.shouldRasterize = true
+                    })
+                        
+                }
+            }
         }
         thumbnailImageView.contentMode = UIViewContentMode.ScaleAspectFill
         

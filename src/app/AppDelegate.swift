@@ -51,6 +51,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func saveUserSession() {
         if let user = AuthUser.user {
             NSKeyedArchiver.archiveRootObject(user, toFile: AuthUser.ArchiveURL.path!)
+        } else {
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(AuthUser.ArchiveURL)
+            } catch {
+            }
         }
     }
     
@@ -184,7 +189,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return videoModel
     }
     
-    func saveVideo(video: Video) throws {
+    func saveVideo(video: Video, saveToDisk: Bool = true) throws {
         let manifest: String = try stringifyJson(video.toManifest()).unwrap()
         
         let videoModel = try findVideoModel(video.id) ?? createVideoModel(video.id)
@@ -193,8 +198,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         videoInfo.writeToObject(videoModel)
         videoModel.setValue(manifest, forKey: "manifest")
-        
-        try self.managedObjectContext.save()
+
+        if saveToDisk {
+            try self.managedObjectContext.save()
+        }
     }
     
     enum AppDataError: ErrorType {

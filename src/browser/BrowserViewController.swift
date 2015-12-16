@@ -5,12 +5,9 @@ class BrowserViewController: UISplitViewController, UISplitViewControllerDelegat
     var videosViewController: VideosViewController!
     
     override func viewDidLoad() {
-        
-        // HACK: All visible if possible
-        self.preferredDisplayMode = .AllVisible
-        
-        // The categories view does not need to be so wide (320 is the default)
-        self.maximumPrimaryColumnWidth = 260
+
+        // Hide the groups always
+        self.preferredDisplayMode = .PrimaryHidden
         self.delegate = self
     }
 

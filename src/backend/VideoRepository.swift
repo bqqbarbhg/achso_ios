@@ -1,7 +1,14 @@
 import UIKit
 
 protocol VideoRepositoryListener: class {
+    func videoRepositoryUpdateStart()
+    func videoRepositoryUpdateProgress(done: Int, total: Int)
     func videoRepositoryUpdated()
+}
+
+extension VideoRepositoryListener {
+    func videoRepositoryUpdateStart() {}
+    func videoRepositoryUpdateProgress(done: Int, total: Int) {}
 }
 
 class VideoRepository {
@@ -15,6 +22,9 @@ class VideoRepository {
     var listeners: [VideoRepositoryListener] = []
     
     var groups: [Group] = []
+    
+    var progressMax: Int = 0
+    var progressDone: Int = 0
     
     func addListener(listener: VideoRepositoryListener) {
         self.listeners.append(listener)
@@ -36,6 +46,8 @@ class VideoRepository {
         
         if let groups = appDelegate.loadGroups() {
             self.groups = groups
+        } else {
+            self.groups = []
         }
         
         let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
@@ -56,6 +68,25 @@ class VideoRepository {
         
         for listener in self.listeners {
             listener.videoRepositoryUpdated()
+        }
+    }
+    
+    func progressBegin(count: Int) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressDone = 0
+            self.progressMax = count
+            for listener in self.listeners {
+                listener.videoRepositoryUpdateStart()
+            }
+        }
+    }
+    
+    func progressAdvance() {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressDone += 1
+            for listener in self.listeners {
+                listener.videoRepositoryUpdateProgress(self.progressDone, total: self.progressMax)
+            }
         }
     }
     
@@ -104,15 +135,21 @@ class VideoRepository {
                     return
                 }
                 
+                var numberOfTasks: Int = 0
+                
                 for videoRevision in videoRevisions {
-                    self.updateVideoIfNeeded(videoRevision)
+                    if self.updateVideoIfNeeded(videoRevision) {
+                        numberOfTasks += 1
+                    }
                 }
+                
+                self.ctx.videoRepository.progressBegin(numberOfTasks)
                 
                 self.done()
             }
         }
         
-        func updateVideoIfNeeded(videoRevision: VideoRevision) {
+        func updateVideoIfNeeded(videoRevision: VideoRevision) -> Bool {
             if let localVideoInfo = self.videoRepository.findVideoInfo(videoRevision.id) {
                 
                 // Video found locally, check if it needs to be synced
@@ -121,11 +158,13 @@ class VideoRepository {
                     
                     // Video has been modified locally: upload, merge in the server, and download the result.
                     self.uploadVideo(videoRevision)
+                    return true
                     
                 } else if videoRevision.revision > localVideoInfo.revision {
                     
                     // Video has been updated remotely, but not modified locally: Just download and overwrite.
                     self.downloadVideo(videoRevision)
+                    return true
                     
                 } else {
                     // Video up to date: Nothing to do
@@ -133,8 +172,10 @@ class VideoRepository {
             } else {
                 // No local video yet: download it
                 self.downloadVideo(videoRevision)
+                return true
             }
             
+            return false
         }
 
         func downloadVideo(videoRevision: VideoRevision) {
@@ -165,17 +206,21 @@ class VideoRepository {
         
         override func run() {
             
-            self.achRails.getVideo(self.videoRevision.id) {
-                guard let video = $0 else {
-                    self.fail(DebugError("Failed to retrieve video \(self.videoRevision.id)"))
-                    return
-                }
+            self.achRails.getVideo(self.videoRevision.id) { tryVideo in
                 
-                do {
-                    try AppDelegate.instance.saveVideo(video)
-                    self.done()
-                } catch {
-                    self.fail(error)
+                self.ctx.videoRepository.progressAdvance()
+                
+                switch tryVideo {
+                case .Error(let error): self.fail(error)
+                case .Success(let video):
+                    dispatch_async(dispatch_get_main_queue()) {
+                        do {
+                            try AppDelegate.instance.saveVideo(video, saveToDisk: false)
+                            self.done()
+                        } catch {
+                            self.fail(error)
+                        }
+                    }
                 }
             }
             
@@ -200,20 +245,25 @@ class VideoRepository {
                 
                 self.achRails.uploadVideo(video) { tryVideo in
                     
-                    switch tryVideo {
-                    case .Error(let error): self.fail(error)
-                    case .Success(let video):
-                        do {
-                            try AppDelegate.instance.saveVideo(video)
-                            self.done()
-                        } catch {
-                            self.fail(error)
+                    self.ctx.videoRepository.progressAdvance()
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        switch tryVideo {
+                        case .Error(let error): self.fail(error)
+                        case .Success(let video):
+                            do {
+                                try AppDelegate.instance.saveVideo(video, saveToDisk: false)
+                                self.done()
+                            } catch {
+                                self.fail(error)
+                            }
                         }
                     }
                     
                 }
                 
             } catch {
+                self.ctx.videoRepository.progressAdvance()
                 self.fail(error)
             }
         }
@@ -228,8 +278,10 @@ class VideoRepository {
                     self.fail(error)
                     
                 case .Success(let groups):
-                    AppDelegate.instance.saveGroups(groups, downloadedBy: self.achRails.userId)
-                    self.done()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        AppDelegate.instance.saveGroups(groups, downloadedBy: self.achRails.userId)
+                        self.done()
+                    }
                 }
             }
         }
@@ -245,6 +297,7 @@ class VideoRepository {
         
         let task = RefreshOnlineTask(ctx)
         task.completionHandler = {
+            AppDelegate.instance.saveContext()
             self.refresh()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
@@ -265,6 +318,28 @@ class VideoRepository {
             }
         }
         return nil
+    }
+    
+    func refreshVideo(video: Video, callback: Video? -> ()) {
+        guard let achRails = self.achRails else {
+            callback(nil)
+            return
+        }
+        
+        if video.videoUri.isLocal {
+            callback(nil)
+            return
+        }
+        
+        if video.hasLocalModifications {
+            achRails.uploadVideo(video) { tryVideo in
+                callback(tryVideo.success)
+            }
+        } else {
+            achRails.getVideo(video.id, ifNewerThanRevision: video.revision) { tryVideo in
+                callback(tryVideo.success?.flatMap { $0 })
+            }
+        }
     }
     
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
