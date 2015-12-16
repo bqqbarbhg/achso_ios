@@ -1,5 +1,7 @@
 import UIKit
 import MobileCoreServices
+import AssetsLibrary
+import CoreLocation
 
 class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchBarDelegate, VideoRepositoryListener {
     
@@ -261,30 +263,12 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(true, animated: true)
-    
-        if self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact {
-            self.searchBarToGenreButtonConstraint.active = false
-            self.searchBarToParentConstraint.active = true
-            
-            UIView.animateWithDuration(0.2) {
-                self.searchBar.layoutIfNeeded()
-                self.genreButton.alpha = 0.0
-            }
-        }
+        refreshSearchBarViewState(animated: true)
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(false, animated: true)
-        
-        if self.searchBarToParentConstraint.active {
-            self.searchBarToGenreButtonConstraint.active = true
-            self.searchBarToParentConstraint.active = false
-            
-            UIView.animateWithDuration(0.2) {
-                self.searchBar.layoutIfNeeded()
-                self.genreButton.alpha = 1.0
-            }
-        }
+        refreshSearchBarViewState(animated: true)
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
@@ -404,6 +388,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.refreshSearchBarViewState(animated: false)
+    }
+    
     func collectionView(collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
@@ -480,6 +469,24 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         if let collection = self.pendingCollectionUpdateAfterSelect {
             self.updateCollection(collection)
             self.pendingCollectionUpdateAfterSelect = nil
+        }
+    }
+    
+    func refreshSearchBarViewState(animated animated: Bool) {
+        
+        let compact = self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact
+        let hideGenreButton = compact && searchBar.isFirstResponder()
+        
+        self.searchBarToGenreButtonConstraint.active = !hideGenreButton
+        self.searchBarToParentConstraint.active = hideGenreButton
+     
+        if animated {
+            UIView.animateWithDuration(0.2) {
+                self.searchBar.layoutIfNeeded()
+                self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
+            }
+        } else {
+            self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
         }
     }
     
@@ -649,7 +656,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             popover.barButtonItem = sender
         }
 
-        genrePicker.addAction(UIAlertAction(title: "Import video", style: .Default, handler: nil))
+        genrePicker.addAction(UIAlertAction(title: "Import video", style: .Default, handler: self.actionImportVideo))
         
         if self.collection?.type == .Group {
             genrePicker.addAction(UIAlertAction(title: "Group info", style: .Default, handler: self.actionManageGroup))
@@ -665,6 +672,16 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.presentViewController(genrePicker, animated: true, completion: nil)
         
+    }
+    
+    func actionImportVideo(action: UIAlertAction) {
+        let imagePicker = UIImagePickerController()
+        
+        imagePicker.mediaTypes = [String(kUTTypeMovie)]
+        imagePicker.sourceType = .PhotoLibrary
+
+        imagePicker.delegate = self
+        presentViewController(imagePicker, animated: true, completion: nil)
     }
     
     func actionManageGroup(action: UIAlertAction) {
@@ -728,27 +745,56 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
         let temporaryUrl = info[UIImagePickerControllerMediaURL]! as! NSURL
-        let date = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
         
         // Go to all videos so the new video is shown
         self.collectionView.setContentOffset(CGPointZero, animated: false)
         self.showCollection(0)
         
-        if let location = LocationRetriever.instance.finishRetrievingLocation() {
+        let date = NSDate()
+        
+        if let assetUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
+            let library = ALAssetsLibrary()
+            
+            library.assetForURL(assetUrl, resultBlock: { asset in
+                    let date = asset.valueForProperty(ALAssetPropertyDate) as? NSDate ?? date
+                    let location = asset.valueForProperty(ALAssetPropertyLocation) as? CLLocation
+                
+                    self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: location)
+
+                }, failureBlock: { _ in
+                    self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: nil)
+                }
+            )
+        } else {
+            
+            
+            
+            if let location = LocationRetriever.instance.finishRetrievingLocation() {
+                self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: location)
+            } else {
+                self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: nil)
+            }
+        }
+
+    }
+
+    func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, date: NSDate, location: CLLocation?) {
+        let dateText = NSDateFormatter.localizedStringFromDate(date, dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
+        
+        if let location = location {
             LocationRetriever.instance.reverseGeocodeLocation(location) { street in
                 if let street = street {
                     let videoLocation = Video.Location(latitude: location.coordinate.latitude,
                         longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy)
                     
-                    self.createVideo(sourceVideoUrl: temporaryUrl, title: "\(street) \(date)", location: videoLocation)
+                    self.createVideo(sourceVideoUrl: sourceVideoUrl, title: "\(street) \(dateText)", location: videoLocation)
                 } else {
-                    self.createVideo(sourceVideoUrl: temporaryUrl, title: date, location: nil)
+                    self.createVideo(sourceVideoUrl: sourceVideoUrl, title: dateText, location: nil)
                 }
             }
         } else {
-            self.createVideo(sourceVideoUrl: temporaryUrl, title: date, location: nil)
+            self.createVideo(sourceVideoUrl: sourceVideoUrl, title: dateText, location: nil)
         }
-
     }
 
     func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, title: String, location: Video.Location?) {
