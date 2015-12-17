@@ -387,13 +387,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     }
     
     func setVideo(video: Video) throws {
-        let user = User()
-        user.name = "test"
         
         let videoPlayer = VideoPlayer(url: try video.videoUri.realUrl.unwrap())
         let playerController = PlayerController(player: videoPlayer)
         
-        let activeVideo = ActiveVideo(video: video, user: user)
+        let activeVideo = ActiveVideo(video: video, user: videoRepository.user)
         
         if let duration = videoPlayer.videoDuration {
             activeVideo.duration = duration
@@ -424,10 +422,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             
             if playerController.wasModified { return }
             
-            let user = User()
-            user.name = "test"
-            
-            let activeVideo = ActiveVideo(video: video, user: user)
+            let activeVideo = ActiveVideo(video: video, user: videoRepository.user)
             
             if let duration = videoPlayer.videoDuration {
                 activeVideo.duration = duration

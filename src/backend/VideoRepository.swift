@@ -31,6 +31,8 @@ class VideoRepository {
     var groups: [Group] = []
     var groupCollections: [String: Collection] = [:]
     
+    var user: User = User.localUser
+    
     var progressMax: Int = 0
     var progressDone: Int = 0
     
@@ -52,10 +54,12 @@ class VideoRepository {
             self.videoInfos = videoInfos
         }
         
-        if let groups = appDelegate.loadGroups() {
-            self.groups = groups
+        if let groupList = appDelegate.loadGroups() {
+            self.groups = groupList.groups
+            self.user = groupList.user
         } else {
             self.groups = []
+            self.user = User.localUser
         }
         
         let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
@@ -286,9 +290,9 @@ class VideoRepository {
                 case .Error(let error):
                     self.fail(error)
                     
-                case .Success(let groups):
+                case .Success(let (groups, user)):
                     dispatch_async(dispatch_get_main_queue()) {
-                        AppDelegate.instance.saveGroups(groups, downloadedBy: self.achRails.userId)
+                        AppDelegate.instance.saveGroups(groups, user: user, downloadedBy: self.achRails.userId)
                         self.done()
                     }
                 }

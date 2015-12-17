@@ -853,7 +853,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             try videosUrl.createDirectoryIfUnexisting()
             try thumbnailsUrl.createDirectoryIfUnexisting()
             
-            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, location: location)
+            let user = videoRepository.user
+            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, location: location, author: user)
             
             let realVideoUrl = try videoUrl.realUrl.unwrap()
             let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()

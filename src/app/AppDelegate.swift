@@ -64,12 +64,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HTTPClient.tempSetup()
     }
     
-    func saveGroups(groups: [Group], downloadedBy: String) {
-        let groupList = GroupList(groups: groups, downloadedBy: downloadedBy)
+    func saveGroups(groups: [Group], user: User, downloadedBy: String) {
+        let groupList = GroupList(groups: groups, user: user, downloadedBy: downloadedBy)
         NSKeyedArchiver.archiveRootObject(groupList, toFile: GroupList.ArchiveURL.path!)
     }
     
-    func loadGroups() -> [Group]? {
+    func loadGroups() -> GroupList? {
         guard let groupList = NSKeyedUnarchiver.unarchiveObjectWithFile(GroupList.ArchiveURL.path!) as? GroupList else {
             return nil
         }
@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return nil
         }
         
-        return groupList.groups
+        return groupList
     }
     
     func applicationWillResignActive(application: UIApplication) {

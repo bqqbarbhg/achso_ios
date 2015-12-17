@@ -85,7 +85,7 @@ class AchRails {
         }
     }
     
-    func getGroups(callback: Try<[Group]> -> ()) {
+    func getGroups(callback: Try<(groups: [Group], user: User)> -> ()) {
         
         let request = endpoint.request(.GET, "groups/own.json")
         http.authorizedRequestJSON(request, canRetry: true) { response in
@@ -93,16 +93,19 @@ class AchRails {
             case .Failure(let error):
                 callback(.Error(error))
             case .Success(let groupsJson):
-                if let groupsArray: JSONArray = groupsJson["groups"] as? JSONArray {
+                do {
+                    let json = try (groupsJson as? JSONObject).unwrap()
+                    let groupsArray: JSONArray = try json.castGet("groups")
+                    let user = try User(manifest: json.castGet("user"))
                     
                     let groups = groupsArray.flatMap { any -> Group? in
                         guard let jsonObject = any as? JSONObject else { return nil }
                         return try? Group(manifest: jsonObject)
                     }
                     
-                    callback(.Success(groups))
-                } else {
-                    callback(.Error(DebugError("Expected groups")))
+                    callback(.Success((groups: groups, user: user)))
+                } catch {
+                    callback(.Error(error))
                 }
             }
         }
