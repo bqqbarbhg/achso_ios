@@ -11,6 +11,12 @@ class HTTPClient {
         let oaClient = OAuth2Client(provider: oaProvider, clientId: clientId, clientSecret: clientSecret, callbackUrl: callbackUrl)
         
         self.http = AuthenticatedHTTP(oaClient: oaClient, userInfoEndpoint: endpointUrl.URLByAppendingPathComponent("userinfo"))
+        
+        if let user = AuthUser.user {
+            if user.authorizeUrl != oaProvider.authorizeUrl {
+                HTTPClient.signOut()
+            }
+        }
     }
     
     static func authenticate(fromViewController viewController: UIViewController, callback userCallback: AuthenticationResult -> ()) {
@@ -68,6 +74,13 @@ class HTTPClient {
         if let http = self.http {
             http.authenticateWithCode(code, callback: callback)
         }
+    }
+    
+    static func signOut() {
+        AuthUser.user = nil
+        videoRepository.achRails = nil
+        AppDelegate.instance.saveUserSession()
+        videoRepository.refresh()
     }
     
     static func tempSetup() {

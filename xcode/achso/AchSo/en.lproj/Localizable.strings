@@ -37,6 +37,9 @@
 /* Error fix button to sign the user in */
 "error_fix_sign_in" = "Sign in";
 
+/* Error fix that opens the settings */
+"error_fix_settings" = "Settings";
+
 /* Error title when the Layers Box URL is misconfigured */
 "error_invalid_layers_box_url" = "The Layers Box URL is invalid.";
 

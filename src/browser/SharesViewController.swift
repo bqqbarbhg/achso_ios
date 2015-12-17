@@ -36,6 +36,14 @@ class SharesViewController: UIViewController, UIWebViewDelegate {
         self.url = endpointUrl.URLByAppendingPathComponent("groups/new")
     }
     
+    func prepareForManageGroups() throws {
+        guard let endpointUrl = self.endpointUrl else {
+            throw UserError.notSignedIn
+        }
+        
+        self.url = endpointUrl.URLByAppendingPathComponent("groups")
+    }
+    
     func prepareForManageGroup(id: String) throws {
         guard let endpointUrl = self.endpointUrl else {
             throw UserError.notSignedIn

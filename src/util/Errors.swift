@@ -48,10 +48,10 @@ class UserError: ErrorType, PrintableError {
     let innerError: ErrorType?
     let fix: Fix?
 
-    init(_ description: String, innerError: ErrorType?) {
+    init(_ description: String, innerError: ErrorType?, fix: Fix?) {
         self.description = description
         self.innerError = innerError
-        self.fix = nil
+        self.fix = fix
     }
     
     init(_ description: String, fix: Fix) {
@@ -61,7 +61,7 @@ class UserError: ErrorType, PrintableError {
     }
     
     convenience init(_ description: String) {
-        self.init(description, innerError: nil)
+        self.init(description, innerError: nil, fix: nil)
     }
     
     var localizedErrorDescription: String {
@@ -75,7 +75,7 @@ class UserError: ErrorType, PrintableError {
     }
     
     func withInnerError(error: ErrorType) -> UserError {
-        return UserError(self.description, innerError: error)
+        return UserError(self.description, innerError: error, fix: fix)
     }
     
     func withDebugError(description: String) -> UserError {
@@ -83,8 +83,17 @@ class UserError: ErrorType, PrintableError {
     }
     
     static var invalidLayersBoxUrl: UserError {
+        func openSettings(viewController: UIViewController, callback: (() -> ())?) {
+            if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.sharedApplication().openURL(url)
+            }
+        }
+        
         return UserError(NSLocalizedString("error_invalid_layers_box_url",
-            comment: "Error title when the Layers Box URL is misconfigured"))
+                comment: "Error title when the Layers Box URL is misconfigured"),
+            fix: Fix(title: NSLocalizedString("error_fix_settings",
+                comment: "Error fix that opens the settings"),
+                action: openSettings))
     }
     
     static var failedToAuthenticate: UserError {
@@ -104,8 +113,13 @@ class UserError: ErrorType, PrintableError {
     
     static var notSignedIn: UserError {
         func signIn(viewController: UIViewController, callback: (() -> ())?) {
-            HTTPClient.authenticate(fromViewController: viewController, callback: {_ in
-                callback?()
+            HTTPClient.authenticate(fromViewController: viewController, callback: { result in
+                if let error = result.error {
+                    viewController.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
+                        comment: "Error title when trying to sign in"))
+                } else {
+                    callback?()
+                }
             })
         }
         

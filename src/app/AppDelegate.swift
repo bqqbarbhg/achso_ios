@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import SDWebImage
+import Alamofire
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,14 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // videosViewController.showCollection(categoriesViewController.tempGetSections().first!.collections.first)
         videosViewController.showCollection(.AllVideos)
         
-        if let
-            endpointString: String = Secrets.get("LAYERS_OIDC_URL"),
-            endpoint: NSURL = NSURL(string: endpointString),
-            clientId: String = Secrets.get("LAYERS_OIDC_CLIENT_ID"),
-            clientSecret: String = Secrets.get("LAYERS_OIDC_CLIENT_SECRET") {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
         
-                HTTPClient.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
-        }
+        setupServerConnections()
         
         loadUserSession()
         videoRepository.refresh()
@@ -46,6 +42,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SDWebImageManager.sharedManager().delegate = ImageLoader.instance
         
         return true
+    }
+    
+    func settingsChanged(notification: NSNotification) {
+        self.setupServerConnections()
+    }
+    
+    func setupServerConnections() {
+        
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        
+        if userDefaults.boolForKey("layers_public") {
+            if let
+                endpointString: String = Secrets.get("LAYERS_OIDC_URL"),
+                endpoint: NSURL = NSURL(string: endpointString),
+                clientId: String = Secrets.get("LAYERS_OIDC_CLIENT_ID"),
+                clientSecret: String = Secrets.get("LAYERS_OIDC_CLIENT_SECRET") {
+                    
+                    HTTPClient.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
+            }
+        } else {
+            HTTPClient.http = nil
+            guard let
+                endpointString: String = userDefaults.stringForKey("layers_api_url"),
+                endpoint: NSURL = NSURL(string: endpointString) else { return }
+            
+            Alamofire.request(.GET, endpoint.URLByAppendingPathComponent("achrails/oidc_tokens"))
+                .responseJSON { result in
+                do {
+                    let json = try (result.result.value as? JSONObject).unwrap()
+                    let clientId: String = try json.castGet("client_id")
+                    let clientSecret: String = try json.castGet("client_secret")
+                    
+                    let oidcEndpoint = endpoint.URLByAppendingPathComponent("/o/oauth2", isDirectory: true)
+                    HTTPClient.setupOIDC(endPointUrl: oidcEndpoint, clientId: clientId, clientSecret: clientSecret)
+                } catch {
+                    // Sign out if the Layers Box configuration is invalid
+                    HTTPClient.signOut()
+                }
+            }
+        }
     }
     
     func saveUserSession() {

@@ -51,6 +51,7 @@
 		A95E99FF1BFF5E0D001BF3E2 /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */; };
 		A96623341BFB4D3C0021A6A4 /* NSUUIDExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */; };
 		A96623361BFB4EF50021A6A4 /* OptionalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */; };
+		A969EB3C1C22EAC8009EB6D1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A969EB3B1C22EAC8009EB6D1 /* Settings.bundle */; };
 		A96AC4081C0EEFD800506B6D /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96AC4071C0EEFD800506B6D /* Tasks.swift */; };
 		A96BCB051C15A21C00F8B27C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A96BCB071C15A21C00F8B27C /* InfoPlist.strings */; };
 		A96BCB101C1600B500F8B27C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A96BCB0F1C1600B500F8B27C /* MapKit.framework */; };
@@ -141,6 +142,7 @@
 		A95E99FE1BFF5E0D001BF3E2 /* DateUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
 		A96623331BFB4D3C0021A6A4 /* NSUUIDExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSUUIDExtension.swift; sourceTree = "<group>"; };
 		A96623351BFB4EF50021A6A4 /* OptionalExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalExtension.swift; sourceTree = "<group>"; };
+		A969EB3B1C22EAC8009EB6D1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A96AC4071C0EEFD800506B6D /* Tasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		A96BCB061C15A21C00F8B27C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A96BCB081C15A21E00F8B27C /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				A94B82B51BEA3DC00017874D /* LaunchScreen.storyboard */,
 				A94B82B81BEA3DC00017874D /* Info.plist */,
 				A91D67251BFDE9A200B15A66 /* Secrets.plist */,
+				A969EB3B1C22EAC8009EB6D1 /* Settings.bundle */,
 				A94B82B01BEA3DC00017874D /* AchSo.xcdatamodeld */,
 				A946CC051C1587700020828A /* Localizable.strings */,
 				A96BCB071C15A21C00F8B27C /* InfoPlist.strings */,
@@ -443,6 +446,7 @@
 				A94B82B71BEA3DC00017874D /* LaunchScreen.storyboard in Resources */,
 				A94B82B41BEA3DC00017874D /* Assets.xcassets in Resources */,
 				A94B82AF1BEA3DC00017874D /* Main.storyboard in Resources */,
+				A969EB3C1C22EAC8009EB6D1 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

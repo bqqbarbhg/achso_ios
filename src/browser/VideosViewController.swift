@@ -747,12 +747,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func actionSignOut(action: UIAlertAction) {
-        // TODO: Extract to function
-        AuthUser.user = nil
-        videoRepository.achRails = nil
-        AppDelegate.instance.saveUserSession()
-        
-        videoRepository.refresh()
+        HTTPClient.signOut()
     }
     
     @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {

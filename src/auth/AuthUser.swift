@@ -9,14 +9,18 @@ class AuthUser: NSObject, NSCoding {
     var id: String
     var name: String
     
+    // The URL base this user was authorized from
+    var authorizeUrl: NSURL
+    
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("auth_user")
     
-    init(tokens: TokenSet, id: String, name: String) {
+    init(tokens: TokenSet, id: String, name: String, authorizeUrl: NSURL) {
         
         self.tokens = tokens
         self.id = id
         self.name = name
+        self.authorizeUrl = authorizeUrl
         
         super.init()
     }
@@ -30,8 +34,9 @@ class AuthUser: NSObject, NSCoding {
         
             let id = try (aCoder.decodeObjectForKey("id") as? String).unwrap()
             let name = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
+            let authorizeUrl = try (aCoder.decodeObjectForKey("authorizeUrl") as? NSURL).unwrap()
          
-            self.init(tokens: tokens, id: id, name: name)
+            self.init(tokens: tokens, id: id, name: name, authorizeUrl: authorizeUrl)
         } catch {
             return nil
         }
@@ -44,5 +49,6 @@ class AuthUser: NSObject, NSCoding {
         
         aCoder.encodeObject(self.id, forKey: "id")
         aCoder.encodeObject(self.name, forKey: "name")
+        aCoder.encodeObject(self.authorizeUrl, forKey: "authorizeUrl")
     }
 }

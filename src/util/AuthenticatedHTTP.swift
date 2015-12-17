@@ -98,7 +98,8 @@ class AuthenticatedHTTP {
                 let sub: String = try responseJson.castGet("sub")
                 let name: String = try responseJson.castGet("name")
                 
-                AuthUser.user = AuthUser(tokens: tokens, id: sub, name: name)
+                let authorizeUrl = self.oaClient.provider.authorizeUrl
+                AuthUser.user = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
                 
                 callback(.NewSession)
             } catch {
