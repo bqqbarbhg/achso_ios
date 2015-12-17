@@ -1,6 +1,6 @@
 import UIKit
 
-class SharesViewController: UIViewController {
+class SharesViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var webView: UIWebView!
 
     var endpointUrl: NSURL? {
@@ -14,6 +14,10 @@ class SharesViewController: UIViewController {
     }
 
     var url: NSURL?
+    
+    override func viewDidLoad() {
+        self.webView.delegate = self
+    }
     
     func prepareForShareVideos(ids: [NSUUID]) throws {
         guard let endpointUrl = self.endpointUrl else {
@@ -58,5 +62,10 @@ class SharesViewController: UIViewController {
     @IBAction func doneButtonPressed(sender: UIBarButtonItem) {
         videoRepository.refreshOnline()
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        webView.stringByEvaluatingJavaScriptFromString("iosLoaded()")
+        self.navigationItem.title = webView.stringByEvaluatingJavaScriptFromString("iosNavigationTitle()")
     }
 }
