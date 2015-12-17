@@ -11,6 +11,12 @@ extension VideoRepositoryListener {
     func videoRepositoryUpdateProgress(done: Int, total: Int) {}
 }
 
+enum CollectionIdentifier {
+    case AllVideos
+    case Group(String)
+    case QrSearch(String)
+}
+
 class VideoRepository {
     
     var achRails: AchRails?
@@ -18,10 +24,12 @@ class VideoRepository {
     var videoUploaders: [VideoUploader] = []
     var thumbnailUploaders: [ThumbnailUploader] = []
 
-    var collections: [Collection] = []
     var listeners: [VideoRepositoryListener] = []
+
+    var allVideosCollection: Collection?
     
     var groups: [Group] = []
+    var groupCollections: [String: Collection] = [:]
     
     var progressMax: Int = 0
     var progressDone: Int = 0
@@ -51,20 +59,21 @@ class VideoRepository {
         }
         
         let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
-        let generalCollection = Collection(title: allVideosTitle, type: .General)
-        generalCollection.videos = videoInfos
+        let allVideosCollection = Collection(title: allVideosTitle, type: .General)
+        allVideosCollection.videos = videoInfos
+        self.allVideosCollection = allVideosCollection
         
-        let groupCollections: [Collection] = groups.map { group in
+        var groupCollections: [String: Collection] = [:]
+        for group in groups {
             let collection = Collection(title: group.name, type: .Group, extra: group)
             
             collection.videos = group.videos.flatMap { id in
                 return self.findVideoInfo(id)
             }.sort({ $0.creationDate > $1.creationDate })
             
-            return collection
+            groupCollections[group.id] = collection
         }
-        
-        self.collections = [generalCollection] + groupCollections
+        self.groupCollections = groupCollections
         
         for listener in self.listeners {
             listener.videoRepositoryUpdated()
@@ -457,6 +466,20 @@ class VideoRepository {
                 NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate(timeIntervalSinceNow: 0.5))
             }
         }
+    }
+    
+    func retrieveCollectionByIdentifier(identifier: CollectionIdentifier) -> Collection? {
+        switch identifier {
+        case .AllVideos: return self.allVideosCollection
+        case .Group(let id): return self.groupCollections[id]
+        case .QrSearch(let code): return self.createQrCodeCollection(code)
+        }
+    }
+    
+    func createQrCodeCollection(code: String) -> Collection {
+        let collection = Collection(title: "QR: \(code)", type: .General)
+        collection.videos = self.videoInfos.filter({ $0.tag == code })
+        return collection
     }
 }
 

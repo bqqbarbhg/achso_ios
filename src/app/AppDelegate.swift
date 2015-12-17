@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // HACK: Extract video collections out of CategoriesViewController
         // Compiled crash: /usr/bin/swift -frontend -c
         // videosViewController.showCollection(categoriesViewController.tempGetSections().first!.collections.first)
-        videosViewController.showCollection(0)
+        videosViewController.showCollection(.AllVideos)
         
         if let
             endpointString: String = Secrets.get("LAYERS_OIDC_URL"),

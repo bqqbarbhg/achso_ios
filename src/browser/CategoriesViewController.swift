@@ -2,22 +2,32 @@ import UIKit
 
 class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     
+    class Section {
+        
+        var title: String?
+        
+        var collections: [CollectionIdentifier] = []
+        
+        init(title: String?) {
+            self.title = title
+        }
+    }
+    
     // Initialized in didFinishLaunch, do not use in init
     weak var videosViewController: VideosViewController!
     
-    var collections: [Collection] = []
+    var collectionIds: [CollectionIdentifier] = []
     var sections: [Section] = []
     
     var isEnabled: Bool = true
     
     func updateSections() {
-        let groupedCollections = self.collections.groupBy({ $0.type })
         
         let general = Section(title: nil)
-        general.collections = groupedCollections[.General] ?? []
+        general.collections = [.AllVideos]
         
         let groups = Section(title: NSLocalizedString("Groups", comment: "Title of a category section"))
-        groups.collections = groupedCollections[.Group] ?? []
+        groups.collections = videoRepository.groups.map { .Group($0.id) }
         
         self.sections = [general, groups]
         self.tableView.reloadData()
@@ -32,7 +42,6 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     }
     
     func videoRepositoryUpdated() {
-        self.collections = videoRepository.collections
         updateSections()
     }
     
@@ -51,18 +60,21 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("CategoryCell", forIndexPath: indexPath)
         
-        let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
-        cell.textLabel?.text = collection?.title
+        if let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item] {
+            cell.textLabel?.text = videoRepository.retrieveCollectionByIdentifier(collection)?.title
+        } else {
+            cell.textLabel?.text = nil
+        }
         cell.textLabel?.enabled = self.isEnabled
         
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
+        let maybeCollection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item]
         
-        if let index = self.collections.indexOf({ $0 === collection}) {
-            self.videosViewController.showCollection(index)
+        if let collection = maybeCollection {
+            self.videosViewController.showCollection(collection)
             self.splitViewController?.showDetailViewController(self.videosViewController.navigationController!, sender: nil)
         }
     }

@@ -87,7 +87,7 @@ class AchRails {
     
     func getGroups(callback: Try<[Group]> -> ()) {
         
-        let request = endpoint.request(.GET, "groups.json")
+        let request = endpoint.request(.GET, "groups/own.json")
         http.authorizedRequestJSON(request, canRetry: true) { response in
             switch response.result {
             case .Failure(let error):

@@ -41,9 +41,12 @@ class DebugError: ErrorType, PrintableError {
 }
 
 class UserError: ErrorType, PrintableError {
+    typealias FixAction = (UIViewController, (() -> ())?) -> ()
+    typealias Fix = (title: String, action: FixAction)
+    
     let description: String
     let innerError: ErrorType?
-    let fix: (title: String, action: UIViewController -> ())?
+    let fix: Fix?
 
     init(_ description: String, innerError: ErrorType?) {
         self.description = description
@@ -51,7 +54,7 @@ class UserError: ErrorType, PrintableError {
         self.fix = nil
     }
     
-    init(_ description: String, fix: (title: String, action: UIViewController -> ())) {
+    init(_ description: String, fix: Fix) {
         self.description = description
         self.innerError = nil
         self.fix = fix
@@ -100,15 +103,15 @@ class UserError: ErrorType, PrintableError {
     }
     
     static var notSignedIn: UserError {
-        func signIn(viewController: UIViewController) {
-            HTTPClient.authenticate(fromViewController: viewController, callback: {_ in 
-                // Nop
+        func signIn(viewController: UIViewController, callback: (() -> ())?) {
+            HTTPClient.authenticate(fromViewController: viewController, callback: {_ in
+                callback?()
             })
         }
         
         return UserError(NSLocalizedString("error_not_signed_in",
                 comment: "Error title when the user is not signed in but would need to be"),
-            fix: (title: NSLocalizedString("error_fix_sign_in",
+            fix: Fix(title: NSLocalizedString("error_fix_sign_in",
                 comment: "Error fix button to sign the user in"),
                 action: signIn))
     }

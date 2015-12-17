@@ -19,6 +19,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet var shareButton: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
+    @IBOutlet var tagToQrButton: UIBarButtonItem!
 
     @IBOutlet weak var progressBar: UIProgressView!
     
@@ -33,7 +34,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     // Initialized in didFinishLaunch, do not use in init
     weak var categoriesViewController: CategoriesViewController!
 
-    var collectionIndex: Int?
+    var collectionId: CollectionIdentifier = .AllVideos
     var collection: Collection?
     
     var filteredVideos: [VideoInfo] = []
@@ -102,9 +103,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.navigationItem.leftItemsSupplementBackButton = true
     }
     
-    func showCollection(collectionIndex: Int) {
-        self.collectionIndex = collectionIndex
-        self.collection = videoRepository.collections[safe: collectionIndex]
+    func showCollection(collectionId: CollectionIdentifier) {
+        self.collectionId = collectionId
+        self.collection = videoRepository.retrieveCollectionByIdentifier(collectionId)
         self.searchIndex = nil
         self.resetFilter()
         if let collection = self.collection {
@@ -155,9 +156,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func videoRepositoryUpdated() {
-        
-        guard let collectionIndex = self.collectionIndex else { return }
-        self.collection = videoRepository.collections[safe: collectionIndex]
+
+        self.collection = videoRepository.retrieveCollectionByIdentifier(self.collectionId)
         if let collection = self.collection {
             if !self.collectionView.allowsMultipleSelection {
                 updateCollection(collection)
@@ -167,7 +167,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         self.refreshControl.endRefreshing()
-        
         self.endProgressBar("repository_update")
     }
     
@@ -499,6 +498,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             self.shareButton.enabled = selectedCount > 0
             self.editButton.enabled = selectedCount == 1
             self.uploadButton.enabled = selectedCount > 0
+            self.tagToQrButton.enabled = selectedCount > 0
 
             self.genreButton.enabled = false
             self.searchBar.userInteractionEnabled = false
@@ -510,7 +510,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             let items = [self.cancelSelectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
             
-            let toolbarItems = [self.toolbarSpace!, self.editButton!, self.shareButton!, self.uploadButton! ]
+            let toolbarItems = [self.toolbarSpace!, self.tagToQrButton!, self.editButton!, self.shareButton!, self.uploadButton!]
             self.setToolbarItems(toolbarItems, animated: animated)
             
             self.categoriesViewController?.setEnabled(false)
@@ -616,6 +616,30 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    @IBAction func tagToQrButtonPressed(sender: UIBarButtonItem) {
+        guard let collectionView = self.collectionView else { return }
+        let indices = collectionView.indexPathsForSelectedItems() ?? []
+        let videos = indices.flatMap { self.videoForIndexPath($0) }
+        
+        func tagQrCode(code: String) {
+            let appDelegate = AppDelegate.instance
+            for video in videos {
+                video.tag = code
+                do {
+                    try appDelegate.saveVideo(video, saveToDisk: false)
+                } catch { }
+            }
+            appDelegate.saveContext()
+            videoRepository.refresh()
+        }
+        
+        let qrController = self.storyboard!.instantiateViewControllerWithIdentifier("QRScanViewController") as! QRScanViewController
+        qrController.callback = tagQrCode
+        
+        self.presentViewController(qrController, animated: true, completion: nil)
+        self.endSelectMode()
+    }
+    
     @IBAction func genreButtonPressed(sender: UIButton) {
         
         func picked(genre: String?, title: String?) {
@@ -658,6 +682,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
 
         genrePicker.addAction(UIAlertAction(title: "Import video", style: .Default, handler: self.actionImportVideo))
         
+        genrePicker.addAction(UIAlertAction(title: "Search QR code", style: .Default, handler: self.actionScanQR))
+        
         if self.collection?.type == .Group {
             genrePicker.addAction(UIAlertAction(title: "Group info", style: .Default, handler: self.actionManageGroup))
         }
@@ -682,6 +708,18 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
 
         imagePicker.delegate = self
         presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    func actionScanQR(action: UIAlertAction) {
+        
+        func showQrCodeCollection(code: String) {
+            self.showCollection(.QrSearch(code))
+        }
+        
+        let qrController = self.storyboard!.instantiateViewControllerWithIdentifier("QRScanViewController") as! QRScanViewController
+        qrController.callback = showQrCodeCollection
+        
+        self.presentViewController(qrController, animated: true, completion: nil)
     }
     
     func actionManageGroup(action: UIAlertAction) {
@@ -748,7 +786,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         // Go to all videos so the new video is shown
         self.collectionView.setContentOffset(CGPointZero, animated: false)
-        self.showCollection(0)
+        self.showCollection(.AllVideos)
         
         let date = NSDate()
         

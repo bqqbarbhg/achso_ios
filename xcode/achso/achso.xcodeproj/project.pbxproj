@@ -36,7 +36,6 @@
 		A94B82E11BEA3FB10017874D /* BrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82DD1BEA3FB10017874D /* BrowserViewController.swift */; };
 		A94B82E21BEA3FB10017874D /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82DF1BEA3FB10017874D /* PlayerViewController.swift */; };
 		A94B82E41BEA55AC0017874D /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E31BEA55AC0017874D /* CategoriesViewController.swift */; };
-		A94B82E61BEA5EA10017874D /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E51BEA5EA10017874D /* Section.swift */; };
 		A94B82E81BEA5EF70017874D /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E71BEA5EF70017874D /* Collection.swift */; };
 		A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94B82E91BEA64D60017874D /* VideosViewController.swift */; };
 		A94BCEB61C08909C00669476 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94BCEB51C08909C00669476 /* AuthUser.swift */; };
@@ -71,6 +70,7 @@
 		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
 		A99442B51BFB27C3001C6FC9 /* MiniJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B41BFB27C3001C6FC9 /* MiniJson.swift */; };
 		A99B95F31C108A3B00ECBD52 /* LocationRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */; };
+		A9A18DB31C228662003DD0B6 /* QRScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A18DB21C228661003DD0B6 /* QRScanViewController.swift */; };
 		A9AE5C5E1C1EEB6C002F7537 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5D1C1EEB6C002F7537 /* Search.swift */; };
 		A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */; };
 		A9AE5C621C1F0D88002F7537 /* GradientHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C611C1F0D88002F7537 /* GradientHelper.swift */; };
@@ -122,7 +122,6 @@
 		A94B82DD1BEA3FB10017874D /* BrowserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserViewController.swift; sourceTree = "<group>"; };
 		A94B82DF1BEA3FB10017874D /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		A94B82E31BEA55AC0017874D /* CategoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
-		A94B82E51BEA5EA10017874D /* Section.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		A94B82E71BEA5EF70017874D /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A94B82E91BEA64D60017874D /* VideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideosViewController.swift; sourceTree = "<group>"; };
 		A94BCEB51C08909C00669476 /* AuthUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
@@ -163,6 +162,7 @@
 		A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationBatch.swift; sourceTree = "<group>"; };
 		A99442B41BFB27C3001C6FC9 /* MiniJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniJson.swift; sourceTree = "<group>"; };
 		A99B95F21C108A3B00ECBD52 /* LocationRetriever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationRetriever.swift; sourceTree = "<group>"; };
+		A9A18DB21C228661003DD0B6 /* QRScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRScanViewController.swift; sourceTree = "<group>"; };
 		A9AE5C5D1C1EEB6C002F7537 /* Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientLayer.swift; sourceTree = "<group>"; };
 		A9AE5C611C1F0D88002F7537 /* GradientHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientHelper.swift; sourceTree = "<group>"; };
@@ -270,13 +270,13 @@
 			children = (
 				A94B82DD1BEA3FB10017874D /* BrowserViewController.swift */,
 				A94B82E31BEA55AC0017874D /* CategoriesViewController.swift */,
-				A94B82E51BEA5EA10017874D /* Section.swift */,
 				A94B82E71BEA5EF70017874D /* Collection.swift */,
 				A94B82E91BEA64D60017874D /* VideosViewController.swift */,
 				A98D82701BEB510800BB7263 /* VideoCellView.swift */,
 				A93A7FF41C16D46A00C193AD /* VideoDetailsViewController.swift */,
 				A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */,
 				A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */,
+				A9A18DB21C228661003DD0B6 /* QRScanViewController.swift */,
 			);
 			path = browser;
 			sourceTree = "<group>";
@@ -525,6 +525,7 @@
 				A99B95F31C108A3B00ECBD52 /* LocationRetriever.swift in Sources */,
 				A9FE30531BFC981A00746686 /* OAuth2.swift in Sources */,
 				A91D672B1BFDF42A00B15A66 /* AchRails.swift in Sources */,
+				A9A18DB31C228662003DD0B6 /* QRScanViewController.swift in Sources */,
 				A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */,
 				A973BC9D1BF1049900D07B82 /* User.swift in Sources */,
 				A94B82E11BEA3FB10017874D /* BrowserViewController.swift in Sources */,
@@ -537,7 +538,6 @@
 				A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */,
 				A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */,
 				A91D672D1BFDF50700B15A66 /* NSURLExtension.swift in Sources */,
-				A94B82E61BEA5EA10017874D /* Section.swift in Sources */,
 				A95E99FF1BFF5E0D001BF3E2 /* DateUtils.swift in Sources */,
 				A952EE281BECB3C5003B638A /* HexColor.swift in Sources */,
 				A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */,

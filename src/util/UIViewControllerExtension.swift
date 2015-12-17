@@ -1,7 +1,7 @@
 import UIKit
 
 extension UIViewController {
-    func showErrorModal(error: ErrorType, title: String) {
+    func showErrorModal(error: ErrorType, title: String, callback: (() -> ())? = nil) {
         var errorMessage = NSLocalizedString("error_unknown",
             comment: "Error title when some unknown error happened")
         
@@ -15,14 +15,16 @@ extension UIViewController {
         let alertController = UIAlertController(title: title, message: errorMessage, preferredStyle: .Alert)
         
         let dismissAction = UIAlertAction(title: errorDismissButton, style: .Default, handler: { action in
-            alertController.dismissViewControllerAnimated(true, completion: nil)
+            alertController.dismissViewControllerAnimated(true) {
+                callback?()
+            }
         })
         
         alertController.addAction(dismissAction)
         
         if let userError = error as? UserError, fix = userError.fix {
             let fixAction = UIAlertAction(title: fix.title, style: .Default, handler: { action in
-                fix.action(self)
+                fix.action(self, callback)
             })
             alertController.addAction(fixAction)
         }

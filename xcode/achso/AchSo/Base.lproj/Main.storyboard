@@ -271,6 +271,11 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="1UI-Zd-G4S"/>
+                        <barButtonItem title="Tag to QR code" id="Apy-EJ-zQ9">
+                            <connections>
+                                <action selector="tagToQrButtonPressed:" destination="7mS-Qs-HO7" id="YQl-dS-PAh"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem title="Properties" id="kk2-IL-MgQ">
                             <connections>
                                 <action selector="editButtonPressed:" destination="7mS-Qs-HO7" id="5jL-4g-QEf"/>
@@ -320,6 +325,7 @@
                         <outlet property="searchBarToParentConstraint" destination="iNl-Xc-UtB" id="Dpm-1Y-vDe"/>
                         <outlet property="selectButton" destination="36E-aZ-Ql7" id="64q-g2-TQA"/>
                         <outlet property="shareButton" destination="a7j-ye-fAj" id="1OA-8i-Lh2"/>
+                        <outlet property="tagToQrButton" destination="Apy-EJ-zQ9" id="91H-yf-jHJ"/>
                         <outlet property="toolbarSpace" destination="1UI-Zd-G4S" id="5ax-EY-mAc"/>
                         <outlet property="uploadButton" destination="Qt1-aa-4Mu" id="Rm2-1f-AkU"/>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="qKB-CJ-Qn9"/>
@@ -530,6 +536,65 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QsS-ls-Y9m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="716" y="817"/>
+        </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="qZd-ZT-BRe">
+            <objects>
+                <viewController storyboardIdentifier="QRScanViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c5b-LG-zja" customClass="QRScanViewController" customModule="AchSo" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="afz-Wv-25V"/>
+                        <viewControllerLayoutGuide type="bottom" id="JdG-ZE-AQZ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dis-Jd-Xn0">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="80A-vF-156">
+                                <rect key="frame" x="0.0" y="550" width="600" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scan a QR code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Nx-KW-IDV">
+                                        <rect key="frame" x="56" y="14" width="488" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zY4-to-Ib3">
+                                        <rect key="frame" x="8" y="10" width="48" height="30"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="c5b-LG-zja" eventType="touchUpInside" id="H33-Zf-6mP"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="zY4-to-Ib3" firstAttribute="leading" secondItem="80A-vF-156" secondAttribute="leadingMargin" id="3us-OB-bx6"/>
+                                    <constraint firstItem="1Nx-KW-IDV" firstAttribute="leading" secondItem="zY4-to-Ib3" secondAttribute="trailing" id="E4V-79-dy4"/>
+                                    <constraint firstAttribute="height" constant="50" id="Pew-RB-gqD"/>
+                                    <constraint firstItem="zY4-to-Ib3" firstAttribute="centerY" secondItem="80A-vF-156" secondAttribute="centerY" id="Zks-M0-WHp"/>
+                                    <constraint firstItem="1Nx-KW-IDV" firstAttribute="centerY" secondItem="80A-vF-156" secondAttribute="centerY" id="lQn-mC-GUV"/>
+                                    <constraint firstItem="1Nx-KW-IDV" firstAttribute="centerX" secondItem="80A-vF-156" secondAttribute="centerX" id="tn8-gT-4LJ"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="JdG-ZE-AQZ" firstAttribute="top" secondItem="80A-vF-156" secondAttribute="bottom" id="Pha-ph-WOA"/>
+                            <constraint firstItem="80A-vF-156" firstAttribute="leading" secondItem="dis-Jd-Xn0" secondAttribute="leading" id="dD3-bj-ZvN"/>
+                            <constraint firstAttribute="trailing" secondItem="80A-vF-156" secondAttribute="trailing" id="njt-IB-Cgf"/>
+                        </constraints>
+                    </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="zY4-to-Ib3" id="fwA-1x-Hxo"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lff-nK-PTE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1079" y="1628"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="gS9-hE-9Oc">

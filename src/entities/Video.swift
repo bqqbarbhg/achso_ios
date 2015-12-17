@@ -15,6 +15,7 @@ class Video {
     var rotation: Int
     var location: Location?
     var author: User
+    var tag: String?
     
     var hasLocalModifications: Bool
     var downloadedBy: String?
@@ -32,6 +33,7 @@ class Video {
         self.rotation = 0
         self.location = location
         self.author = User()
+        self.tag = nil
         
         self.hasLocalModifications = true
         self.downloadedBy = nil
@@ -50,6 +52,7 @@ class Video {
         self.rotation = video.rotation
         self.location = video.location
         self.author = video.author
+        self.tag = video.tag
         
         self.hasLocalModifications = video.hasLocalModifications
         self.downloadedBy = video.downloadedBy
@@ -66,6 +69,7 @@ class Video {
             self.creationDate = iso8601DateFormatter.dateFromString(try manifest.castGet("date")) ?? NSDate(timeIntervalSince1970: 0)
             self.genre = try manifest.castGet("genre")
             self.rotation = (manifest["rotation"] as? Int) ?? 0
+            self.tag = manifest["tag"] as? String
             
             if let location = manifest["location"] as? JSONObject {
                 self.location = try? Location(
@@ -97,6 +101,7 @@ class Video {
             self.genre = ""
             self.rotation = 0
             self.author = User()
+            self.tag = nil
             
             self.hasLocalModifications = false
             self.downloadedBy = nil
@@ -106,7 +111,7 @@ class Video {
     }
     
     func toManifest() -> JSONObject {
-        return [
+        var base = [
             "title": self.title,
             "annotations": self.annotations.map({ $0.toManifest() }),
             "videoUri": self.videoUri.absoluteString,
@@ -126,6 +131,10 @@ class Video {
             } ?? NSNull(),
             "author": self.author.toManifest(),
         ]
+        if let tag = self.tag {
+            base["tag"] = tag
+        }
+        return base
     }
     
     func toSearchObject() -> SearchObject {

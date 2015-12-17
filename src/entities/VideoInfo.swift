@@ -8,6 +8,7 @@ class VideoInfo {
     var thumbnailUri: NSURL
     var creationDate: NSDate
     var genre: String
+    var tag: String?
     
     var isLocal: Bool
     var hasLocalModifications: Bool
@@ -21,6 +22,7 @@ class VideoInfo {
         self.isLocal = video.videoUri.isLocal
         self.creationDate = video.creationDate
         self.genre = video.genre
+        self.tag = video.tag
         
         self.hasLocalModifications = video.hasLocalModifications
         self.downloadedBy = video.downloadedBy
@@ -34,6 +36,7 @@ class VideoInfo {
             self.thumbnailUri = try NSURL(string: (object.valueForKey("thumbnailUri") as? String).unwrap()).unwrap()
             self.creationDate = try (object.valueForKey("creationDate") as? NSDate).unwrap()
             self.genre = try (object.valueForKey("genre") as? String).unwrap()
+            self.tag = object.valueForKey("tag") as? String
             
             self.isLocal = try (object.valueForKey("isLocal") as? Bool).unwrap()
             self.hasLocalModifications = try (object.valueForKey("hasLocalModifications") as? Bool).unwrap()
@@ -46,6 +49,7 @@ class VideoInfo {
             self.thumbnailUri = NSURL()
             self.creationDate = NSDate(timeIntervalSince1970: 0)
             self.genre = ""
+            self.tag = nil
             
             self.isLocal = false
             self.hasLocalModifications = false
@@ -65,5 +69,6 @@ class VideoInfo {
         object.setValue(self.hasLocalModifications, forKey: "hasLocalModifications")
         object.setValue(self.genre, forKey: "genre")
         object.setValue(self.downloadedBy, forKey: "downloadedBy")
+        object.setValue(self.tag, forKey: "tag")
     }
 }
