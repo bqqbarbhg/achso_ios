@@ -60,8 +60,12 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("CategoryCell", forIndexPath: indexPath)
         
-        if let collection = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item] {
-            cell.textLabel?.text = videoRepository.retrieveCollectionByIdentifier(collection)?.title
+        if let collectionId = self.sections[safe: indexPath.section]?.collections[safe: indexPath.item],
+                collection = videoRepository.retrieveCollectionByIdentifier(collectionId) {
+            cell.textLabel?.text = collection.title
+            cell.detailTextLabel?.text = collection.subtitle
+            cell.detailTextLabel?.numberOfLines = 2
+            cell.detailTextLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
         } else {
             cell.textLabel?.text = nil
         }

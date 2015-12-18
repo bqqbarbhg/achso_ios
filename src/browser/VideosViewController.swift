@@ -172,6 +172,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func updateCollection(collection: Collection) {
         self.title = collection.title
+        
         self.collection = collection
         
         // Invalidate the search index (will be rebuilt if needed)
@@ -261,6 +262,12 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        
+        // The user is probably going to search after focusing the search bar, start building the index already.
+        if self.searchIndex == nil {
+            self.buildSearchIndex()
+        }
+        
         searchBar.setShowsCancelButton(true, animated: true)
         refreshSearchBarViewState(animated: true)
     }

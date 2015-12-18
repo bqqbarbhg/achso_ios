@@ -4,7 +4,8 @@ func keywordsFromText(text: String) -> Set<String> {
     
     // Note: This uses the current locale
     let lowercase = text.lowercaseStringWithLocale(NSLocale.currentLocale())
-    let tokens = lowercase.componentsSeparatedByCharactersInSet(NSCharacterSet.alphanumericCharacterSet().invertedSet)
+    let tokensAndEmpty = lowercase.componentsSeparatedByCharactersInSet(NSCharacterSet.alphanumericCharacterSet().invertedSet)
+    let tokens = tokensAndEmpty.filter { !$0.isEmpty }
     
     // TODO: Stop words?
     

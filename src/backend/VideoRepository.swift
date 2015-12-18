@@ -63,13 +63,13 @@ class VideoRepository {
         }
         
         let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
-        let allVideosCollection = Collection(title: allVideosTitle, type: .General)
+        let allVideosCollection = Collection(title: allVideosTitle, subtitle: nil, type: .General)
         allVideosCollection.videos = videoInfos
         self.allVideosCollection = allVideosCollection
         
         var groupCollections: [String: Collection] = [:]
         for group in groups {
-            let collection = Collection(title: group.name, type: .Group, extra: group)
+            let collection = Collection(title: group.name, subtitle: group.groupDescription, type: .Group, extra: group)
             
             collection.videos = group.videos.flatMap { id in
                 return self.findVideoInfo(id)
@@ -481,7 +481,7 @@ class VideoRepository {
     }
     
     func createQrCodeCollection(code: String) -> Collection {
-        let collection = Collection(title: "QR: \(code)", type: .General)
+        let collection = Collection(title: "QR: \(code)", subtitle: nil, type: .General)
         collection.videos = self.videoInfos.filter({ $0.tag == code })
         return collection
     }

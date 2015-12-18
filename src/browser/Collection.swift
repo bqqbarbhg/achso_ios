@@ -8,6 +8,7 @@ class Collection {
     }
     
     var title: String
+    var subtitle: String?
     var type: Type
     
     // Cleanup: This should be in the enum but doesn't go there cleanly
@@ -15,8 +16,9 @@ class Collection {
     
     var videos: [VideoInfo] = []
 
-    init(title: String, type: Type, extra: AnyObject? = nil) {
+    init(title: String, subtitle: String?, type: Type, extra: AnyObject? = nil) {
         self.title = title
+        self.subtitle = subtitle
         self.type = type
         self.extra = extra
     }
