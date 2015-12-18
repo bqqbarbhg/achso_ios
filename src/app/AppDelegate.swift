@@ -68,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 endpointString: String = userDefaults.stringForKey("layers_api_url"),
                 endpoint: NSURL = NSURL(string: endpointString) else { return }
             
+            // TODO: Cache the OIDC tokens
             Alamofire.request(.GET, endpoint.URLByAppendingPathComponent("achrails/oidc_tokens"))
                 .responseJSON { result in
                 do {
@@ -98,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func loadUserSession() {
         AuthUser.user = NSKeyedUnarchiver.unarchiveObjectWithFile(AuthUser.ArchiveURL.path!) as? AuthUser
-        HTTPClient.tempSetup()
+        HTTPClient.setupApiWrappers()
     }
     
     func saveGroups(groups: [Group], user: User, downloadedBy: String) {

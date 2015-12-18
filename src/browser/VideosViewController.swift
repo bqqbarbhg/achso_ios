@@ -5,6 +5,8 @@ import CoreLocation
 
 class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchBarDelegate, VideoRepositoryListener {
     
+    // MARK: - connections
+    
     @IBOutlet var collectionView: UICollectionView!
     
     @IBOutlet var actionButton: UIBarButtonItem!
@@ -25,75 +27,102 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     @IBOutlet var searchBarToGenreButtonConstraint: NSLayoutConstraint!
     @IBOutlet var searchBarToParentConstraint: NSLayoutConstraint!
-    /*
-    @IBOutlet var manageGroupButton: UIBarButtonItem!
-    */
 
     var refreshControl: UIRefreshControl!
-    
-    // Initialized in didFinishLaunch, do not use in init
     weak var categoriesViewController: CategoriesViewController!
-
+    
+    // MARK: - state
+    
+    // Current selected collection, the identifier is persistent but the collection is reloaded as necessary.
     var collectionId: CollectionIdentifier = .AllVideos
     var collection: Collection?
-    
-    var filteredVideos: [VideoInfo] = []
-    
-    var itemSize: CGSize?
-    
-    // Used to pass the video from selection to the segue callback
-    var chosenVideo: Video?
     
     // If the repository updates while in select mode, apply the changes after the user stops selecting.
     var pendingCollectionUpdateAfterSelect: Collection? = nil
     
+    // List of currently visible videos
+    var filteredVideos: [VideoInfo] = []
+    
+    // Used to pass the video from selection to the segue callback
+    var chosenVideo: Video?
+    
+    // Search index used for filtering videos. It is built dynamically when the user starts typing.
     var searchIndex: SearchIndex?
     var isBuildingSearchIndex: Bool = false
     
+    // Filters for the videos.
     var genreFilter: String?
     var searchFilter: String?
     
+    // Token for the task which has the control over the progress bar, the newest one is given the control of the bar.
     var currentProgressBarOwner: String?
+    
+    // Cached size of the thumbnail views.
+    var itemSize: CGSize?
+    
+    // MARK: - Setup
     
     override func viewDidLoad() {
         refreshSelectedViewState(animated: false)
         
-        // Refresh control
+        // Add the refresh control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "startRefresh:", forControlEvents: .ValueChanged)
         self.refreshControl = refreshControl
         self.collectionView.addSubview(refreshControl)
         
+        // Setup delegates
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-        
+
         self.searchBar.delegate = self
         
+        // Clear the filter parameters
         self.resetFilter()
-        
-        // Long press recognizer
-        // NOTE: Removed, maybe this was a bad idea...
-        /*
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress:")
-        self.collectionView?.addGestureRecognizer(longPressRecognizer)
-        */
     }
     
+    // Listen to the video repository events when visible
     override func viewWillAppear(animated: Bool) {
         videoRepository.addListener(self)
         self.splitViewControllerDidChangeDisplayMode()
     }
-    
     override func viewWillDisappear(animated: Bool) {
         videoRepository.removeListener(self)
     }
     
-    func resetFilter() {
-        self.genreFilter = nil
-        self.genreButton?.setTitle(NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), forState: .Normal)
+    // MARK: - Top progress bar
+    
+    // Begin a task showing in the progress bar, use the same identifier in all calls.
+    func beginProgressBar(identifier: String) {
+        guard let progressBar = self.progressBar else { return }
         
-        self.searchFilter = nil
-        self.searchBar?.text = nil
+        self.currentProgressBarOwner = identifier
+        progressBar.setProgress(0.0, animated: false)
+        self.progressBar.alpha = 0.0
+        self.progressBar.hidden = false
+        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
+                self.progressBar.alpha = 1.0
+            },
+            completion: nil)
+        
+    }
+    
+    // Set the progress bar progress.
+    func updateProgressBar(identifier: String, progress: Float) {
+        if identifier != self.currentProgressBarOwner { return }
+        self.progressBar?.setProgress(progress, animated: true)
+    }
+    
+    // Clear the progress bar.
+    func endProgressBar(identifier: String) {
+        if identifier != self.currentProgressBarOwner { return }
+        self.currentProgressBarOwner = nil
+        
+        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
+            self.progressBar.alpha = 0.0
+            }, completion: { _ in
+                self.progressBar.hidden = true
+        })
     }
     
     func splitViewControllerDidChangeDisplayMode() {
@@ -113,34 +142,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
-    func beginProgressBar(identifier: String) {
-        guard let progressBar = self.progressBar else { return }
-        
-        self.currentProgressBarOwner = identifier
-        progressBar.setProgress(0.0, animated: false)
-        self.progressBar.alpha = 0.0
-        self.progressBar.hidden = false
-        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
-                self.progressBar.alpha = 1.0
-            }, completion: nil)
-        
-    }
-
-    func updateProgressBar(identifier: String, progress: Float) {
-        if identifier != self.currentProgressBarOwner { return }
-        self.progressBar?.setProgress(progress, animated: true)
-    }
-    
-    func endProgressBar(identifier: String) {
-        if identifier != self.currentProgressBarOwner { return }
-        self.currentProgressBarOwner = nil
-        
-        UIView.transitionWithView(self.progressBar, duration: 0.2, options: .CurveEaseOut, animations: {
-                self.progressBar.alpha = 0.0
-            }, completion: { _ in
-                self.progressBar.hidden = true
-        })
-    }
+    // MARK: - VideoRepositoryListener
     
     func videoRepositoryUpdateStart() {
         self.beginProgressBar("repository_update")
@@ -170,87 +172,103 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.endProgressBar("repository_update")
     }
     
+    // MARK: - Collections and video filtering
+    
+    // Replace the current set of videos with `collection`
     func updateCollection(collection: Collection) {
         self.title = collection.title
-        
         self.collection = collection
         
         // Invalidate the search index (will be rebuilt if needed)
         self.searchIndex = nil
-        self.filterContent()
+        self.filterCollection()
     }
 
-    func buildSearchIndex() {
-        if self.isBuildingSearchIndex {
-            return
-        }
-        
-        self.isBuildingSearchIndex = true
-        
-        self.beginProgressBar("search_index")
-        
-        let videoInfos = collection?.videos ?? []
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let appDelegate = AppDelegate.instance
-            
-            let searchIndex = SearchIndex()
-            for (index, videoInfo) in videoInfos.enumerate() {
-                do {
-                    if let video = try appDelegate.getVideo(videoInfo.id) {
-                        searchIndex.add(video.toSearchObject())
-                    }
-                    
-                    if index % 10 == 0 {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            let progress = Float(index) / Float(videoInfos.count)
-                            self.updateProgressBar("search_index", progress: progress)
-                        }
-                    }
-                } catch {
-                }
-            }
-            
-            dispatch_async(dispatch_get_main_queue()) {
-                
-                self.endProgressBar("search_index")
-                self.searchIndex = searchIndex
-                self.isBuildingSearchIndex = false
-                self.filterContent()
-            }
-        }
-    }
-    
-    func filterContent() {
+    // Produce and show `self.filteredVideos` which contains videos from the current collection matching the filter settings.
+    func filterCollection() {
         guard let collection = self.collection else { return }
         var videos = collection.videos
         
+        // Genre filter: Allow only videos with a matching genre
         if let genreFilter = self.genreFilter {
             videos = videos.filter({ $0.genre == genreFilter })
         }
         
+        // Search filter: Allow only videos containing keywords
         if let searchFilter = self.searchFilter where !searchFilter.isEmpty {
             
-            
             if let searchIndex = self.searchIndex {
+                
+                // If the search index exists query it and sort the results by score.
                 let results = searchIndex.search(searchFilter)
                 let uuids = results.sort({ $0.score > $1.score }).flatMap({ $0.object.tag as? NSUUID })
                 
-                var foundVideos = [VideoInfo]()
-                for uuid in uuids {
-                    if let index = videos.indexOf({ $0.id == uuid }) {
-                        foundVideos.append(videos[index])
-                    }
-                }
-                videos = foundVideos
+                // Map the IDs to videos
+                let oldVideos = videos
+                videos = uuids.flatMap { uuid in oldVideos.find { $0.id == uuid }  }
+                
             } else {
+                // The search index does not exist: Create one and filter when done.
                 // This will re-call to filterContent()
                 self.buildSearchIndex()
+                
+                // Return no results meanwhile.
                 videos = []
             }
         }
         
         self.filteredVideos = videos
         self.collectionView.reloadData()
+    }
+    
+    // Create a search index that can map keywords to videos.
+    func buildSearchIndex() {
+        
+        // Only build it one time.
+        if self.isBuildingSearchIndex { return }
+        self.isBuildingSearchIndex = true
+        
+        self.beginProgressBar("search_index")
+        
+        // Build in background thread.
+        let videoInfos = collection?.videos ?? []
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let appDelegate = AppDelegate.instance
+            let searchIndex = SearchIndex()
+            
+            // Add all the videos to the index.
+            for (num, videoInfo) in videoInfos.enumerate() {
+                
+                if let video = (try? appDelegate.getVideo(videoInfo.id))?.flatMap({ $0 }) {
+                    searchIndex.add(video.toSearchObject())
+                }
+                
+                // Broadcast update notifications every now and then.
+                if num % 10 == 0 {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        let progress = Float(num) / Float(videoInfos.count)
+                        self.updateProgressBar("search_index", progress: progress)
+                    }
+                }
+            }
+            
+            // Finish it on the main thread.
+            dispatch_async(dispatch_get_main_queue()) {
+                self.endProgressBar("search_index")
+                self.searchIndex = searchIndex
+                self.isBuildingSearchIndex = false
+                self.filterCollection()
+            }
+        }
+    }
+    
+    // Resets the filter options (genre and search query)
+    func resetFilter() {
+        self.genreFilter = nil
+        self.genreButton?.setTitle(NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), forState: .Normal)
+        
+        self.searchFilter = nil
+        self.searchBar?.text = nil
     }
     
     func startRefresh(sender: UIRefreshControl) {
@@ -261,6 +279,39 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    @IBAction func genreButtonPressed(sender: UIButton) {
+        
+        func picked(genre: String?, title: String?) {
+            self.genreButton.setTitle(title, forState: .Normal)
+            self.genreFilter = genre
+            self.filterCollection()
+        }
+        
+        let pickerTitle = NSLocalizedString("filter_genre_title", comment: "Title of the genre picker")
+        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
+        
+        if let popover = genrePicker.popoverPresentationController {
+            popover.sourceView = self.genreButton
+            popover.sourceRect = CGRect(x: self.genreButton.bounds.midX, y: self.genreButton.bounds.maxY, width: 0.0, height: 0.0)
+        }
+        
+        let button = UIAlertAction(title: NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), style: .Default) { action in
+            picked(nil, title: action.title)
+        }
+        genrePicker.addAction(button)
+        
+        for genre in Genre.genres {
+            let button = UIAlertAction(title: genre.localizedName, style: .Default) { action in
+                picked(genre.id, title: action.title)
+            }
+            genrePicker.addAction(button)
+        }
+        
+        self.presentViewController(genrePicker, animated: true, completion: nil)
+    }
+    
+    // MARK: - Search bar
+    
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         
         // The user is probably going to search after focusing the search bar, start building the index already.
@@ -269,12 +320,14 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         searchBar.setShowsCancelButton(true, animated: true)
-        refreshSearchBarViewState(animated: true)
+        
+        self.refreshSearchBarViewState(animated: true)
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(false, animated: true)
-        refreshSearchBarViewState(animated: true)
+        
+        self.refreshSearchBarViewState(animated: true)
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
@@ -287,31 +340,42 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
 
         self.searchFilter = searchText
-        self.filterContent()
+        self.filterCollection()
     }
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        // Searching is real time, just hide the keyboard.
         self.searchBar.resignFirstResponder()
     }
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         self.searchFilter = nil
         self.searchBar.text = nil
-        self.filterContent()
+        self.filterCollection()
         self.searchBar.resignFirstResponder()
+        
+        self.refreshSearchBarViewState(animated: true)
     }
     
-    func longPress(sender: UILongPressGestureRecognizer) {
-        guard let collectionView = self.collectionView else { return }
-        if sender.state != .Began { return }
+    func refreshSearchBarViewState(animated animated: Bool) {
         
-        let point = sender.locationInView(collectionView)
-        if let indexPath = collectionView.indexPathForItemAtPoint(point) {
-            collectionView.allowsMultipleSelection = true
-            collectionView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-            refreshSelectedViewState(animated: true)
+        let compact = self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact
+        let hideGenreButton = compact && searchBar.isFirstResponder()
+        
+        self.searchBarToGenreButtonConstraint.active = !hideGenreButton
+        self.searchBarToParentConstraint.active = hideGenreButton
+        
+        if animated {
+            UIView.animateWithDuration(0.2) {
+                self.searchBar.layoutIfNeeded()
+                self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
+            }
+        } else {
+            self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
         }
     }
+    
+    // MARK: - Collection view data source and layout
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1;
@@ -319,10 +383,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch (section) {
-        case 0:
-            return self.filteredVideos.count
-        default:
-            return 0
+        case 0: return self.filteredVideos.count
+        default: return 0
         }
     }
     
@@ -425,6 +487,20 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    // MARK: - Video selection
+    
+    @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
+        guard let collectionView = self.collectionView else { return }
+        
+        if collectionView.allowsMultipleSelection {
+            self.endSelectMode()
+        } else {
+            collectionView.allowsMultipleSelection = true
+        }
+        
+        refreshSelectedViewState(animated: true)
+    }
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if collectionView.allowsMultipleSelection {
 
@@ -448,51 +524,18 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
-    func deselectAllItems() {
+    func endSelectMode() {
         guard let collectionView = self.collectionView else { return }
         for indexPath in collectionView.indexPathsForSelectedItems() ?? [] {
             collectionView.deselectItemAtIndexPath(indexPath, animated: true)
         }
-    }
-    
-    @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
-        guard let collectionView = self.collectionView else { return }
-        
-        if collectionView.allowsMultipleSelection {
-            self.endSelectMode()
-        } else {
-            collectionView.allowsMultipleSelection = true
-        }
-        
-        refreshSelectedViewState(animated: true)
-    }
-    
-    func endSelectMode() {
-        self.deselectAllItems()
+
         collectionView.allowsMultipleSelection = false
         self.refreshSelectedViewState(animated: true)
         
         if let collection = self.pendingCollectionUpdateAfterSelect {
             self.updateCollection(collection)
             self.pendingCollectionUpdateAfterSelect = nil
-        }
-    }
-    
-    func refreshSearchBarViewState(animated animated: Bool) {
-        
-        let compact = self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact
-        let hideGenreButton = compact && searchBar.isFirstResponder()
-        
-        self.searchBarToGenreButtonConstraint.active = !hideGenreButton
-        self.searchBarToParentConstraint.active = hideGenreButton
-     
-        if animated {
-            UIView.animateWithDuration(0.2) {
-                self.searchBar.layoutIfNeeded()
-                self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
-            }
-        } else {
-            self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
         }
     }
     
@@ -511,17 +554,17 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             self.searchBar.userInteractionEnabled = false
             self.searchBar.alpha = 0.6
             
-            self.navigationItem.setHidesBackButton(true, animated: animated)
+            // self.navigationItem.setHidesBackButton(true, animated: animated)
             self.cameraButton.enabled = false
             
             let items = [self.cancelSelectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
             
+            self.navigationItem.leftBarButtonItem = nil
+            self.splitViewController?.presentsWithGesture = false
+            
             let toolbarItems = [self.toolbarSpace!, self.tagToQrButton!, self.editButton!, self.shareButton!, self.uploadButton!]
             self.setToolbarItems(toolbarItems, animated: animated)
-            
-            self.categoriesViewController?.setEnabled(false)
-            self.navigationController?.setToolbarHidden(false, animated: animated)
             
         } else {
             self.genreButton.enabled = true
@@ -534,14 +577,15 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             let items = [self.selectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
             
-            self.categoriesViewController?.setEnabled(true)
+            self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+            self.splitViewController?.presentsWithGesture = true
             
             let toolbarItems = [self.actionButton!, self.toolbarSpace!, self.cameraButton!]
             self.setToolbarItems(toolbarItems, animated: animated)
-            
-            self.navigationController?.setToolbarHidden(false, animated: animated)
         }
     }
+    
+    // MARK: - Toolbar actions
     
     func uploadVideo(atIndexPath indexPath: NSIndexPath) {
         guard let collectionView = self.collectionView else { return }
@@ -561,7 +605,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             }
             
             switch tryVideo {
-            case .Success(let video): break
+            case .Success: break
             case .Error(let error): self.showErrorModal(error, title: NSLocalizedString("error_on_upload",
                 comment: "Error title when the upload failed"))
             }
@@ -647,38 +691,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.endSelectMode()
     }
     
-    @IBAction func genreButtonPressed(sender: UIButton) {
-        
-        func picked(genre: String?, title: String?) {
-            self.genreButton.setTitle(title, forState: .Normal)
-            self.genreFilter = genre
-            self.filterContent()
-        }
-
-        let pickerTitle = NSLocalizedString("filter_genre_title", comment: "Title of the genre picker")
-        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
-
-        if let popover = genrePicker.popoverPresentationController {
-            popover.sourceView = self.genreButton
-            popover.sourceRect = CGRect(x: self.genreButton.bounds.midX, y: self.genreButton.bounds.maxY, width: 0.0, height: 0.0)
-        }
-        
-        let button = UIAlertAction(title: NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), style: .Default) { action in
-            picked(nil, title: action.title)
-        }
-        genrePicker.addAction(button)
-        
-        // Todo: enum?
-        let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
-        for genre in genres {
-            let button = UIAlertAction(title: NSLocalizedString(genre, comment: "Genre"), style: .Default) { action in
-                picked(genre, title: action.title)
-            }
-            genrePicker.addAction(button)
-        }
-        
-        self.presentViewController(genrePicker, animated: true, completion: nil)
-    }
+    // MARK: - Action buttons
     
     @IBAction func actionButtonPressed(sender: UIBarButtonItem) {
         let genrePicker = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
@@ -691,8 +704,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         genrePicker.addAction(UIAlertAction(title: "Search QR code", style: .Default, handler: self.actionScanQR))
         
-        if self.collection?.type == .Group {
+        switch self.collectionId {
+        case .Group:
             genrePicker.addAction(UIAlertAction(title: "Group info", style: .Default, handler: self.actionManageGroup))
+        default:
+            break
         }
         
         if AuthUser.user == nil {
@@ -730,11 +746,18 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func actionManageGroup(action: UIAlertAction) {
-        guard let group = self.collection?.extra as? Group else { return }
+        
+        guard let groupId: String = {
+            switch self.collectionId {
+            case .Group(let id): return id
+            default: return nil
+            }
+        }() else { return }
+
         do {
             let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
             let sharesController = sharesNav.topViewController as! SharesViewController
-            try sharesController.prepareForManageGroup(group.id)
+            try sharesController.prepareForManageGroup(groupId)
             self.presentViewController(sharesNav, animated: true) {
             }
         } catch {
@@ -756,6 +779,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     func actionSignOut(action: UIAlertAction) {
         HTTPClient.signOut()
     }
+    
+    // MARK: - Video recording
     
     @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {
         
@@ -806,8 +831,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 }
             )
         } else {
-            
-            
             
             if let location = LocationRetriever.instance.finishRetrievingLocation() {
                 self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: location)
@@ -900,11 +923,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     }
                 }
                 
-                // Todo: enum?
-                let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
-                for genre in genres {
-                    let button = UIAlertAction(title: NSLocalizedString(genre, comment: "Genre"), style: .Default) { _ in
-                        picked(genre)
+                for genre in Genre.genres {
+                    let button = UIAlertAction(title: genre.localizedName, style: .Default) { _ in
+                        picked(genre.id)
                     }
                     genrePicker.addAction(button)
                 }

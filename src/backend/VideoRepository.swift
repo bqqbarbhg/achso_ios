@@ -19,34 +19,26 @@ enum CollectionIdentifier {
 
 class VideoRepository {
     
+    // APIs
     var achRails: AchRails?
-    var videoInfos: [VideoInfo] = []
     var videoUploaders: [VideoUploader] = []
     var thumbnailUploaders: [ThumbnailUploader] = []
-
-    var listeners: [VideoRepositoryListener] = []
-
-    var allVideosCollection: Collection?
     
+    // Cached entities
+    var videoInfos: [VideoInfo] = []
     var groups: [Group] = []
-    var groupCollections: [String: Collection] = [:]
-    
     var user: User = User.localUser
     
+    // Collections
+    var allVideosCollection: Collection?
+    var groupCollections: [String: Collection] = [:]
+    
+    // Listeners
+    var listeners: [VideoRepositoryListener] = []
     var progressMax: Int = 0
     var progressDone: Int = 0
     
-    func addListener(listener: VideoRepositoryListener) {
-        self.listeners.append(listener)
-        listener.videoRepositoryUpdated()
-    }
-    
-    func removeListener(listener: VideoRepositoryListener) {
-        if let index = self.listeners.indexOf({ $0 === listener}) {
-            self.listeners.removeAtIndex(index)
-        }
-    }
-    
+    // Load the persisted entities.
     func refresh() {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
@@ -62,44 +54,24 @@ class VideoRepository {
             self.user = User.localUser
         }
         
-        let allVideosTitle = NSLocalizedString("all_videos", comment: "Category for all videos")
-        let allVideosCollection = Collection(title: allVideosTitle, subtitle: nil, type: .General)
-        allVideosCollection.videos = videoInfos
-        self.allVideosCollection = allVideosCollection
+        self.allVideosCollection = Collection(videos: videoInfos,
+            title: NSLocalizedString("all_videos", comment: "Category for all videos"))
         
         var groupCollections: [String: Collection] = [:]
         for group in groups {
-            let collection = Collection(title: group.name, subtitle: group.groupDescription, type: .Group, extra: group)
             
-            collection.videos = group.videos.flatMap { id in
+            let videos = group.videos.flatMap { id in
                 return self.findVideoInfo(id)
             }.sort({ $0.creationDate > $1.creationDate })
             
-            groupCollections[group.id] = collection
+            groupCollections[group.id] = Collection(videos: videos,
+                title: group.name,
+                subtitle: group.groupDescription)
         }
         self.groupCollections = groupCollections
         
         for listener in self.listeners {
             listener.videoRepositoryUpdated()
-        }
-    }
-    
-    func progressBegin(count: Int) {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.progressDone = 0
-            self.progressMax = count
-            for listener in self.listeners {
-                listener.videoRepositoryUpdateStart()
-            }
-        }
-    }
-    
-    func progressAdvance() {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.progressDone += 1
-            for listener in self.listeners {
-                listener.videoRepositoryUpdateProgress(self.progressDone, total: self.progressMax)
-            }
         }
     }
     
@@ -301,6 +273,7 @@ class VideoRepository {
         
     }
     
+    // Download and persist new entities from the server.
     func refreshOnline() -> Bool {
         guard let achRails = self.achRails else { return false }
         let ctx = RepoContext(achRails: achRails, videoRepository: self)
@@ -319,11 +292,13 @@ class VideoRepository {
         return true
     }
     
+    // Persists a video.
     func saveVideo(video: Video) throws {
         try AppDelegate.instance.saveVideo(video)
         refresh()
     }
     
+    // Find a video by id.
     func findVideoInfo(id: NSUUID) -> VideoInfo? {
         for info in self.videoInfos {
             if info.id == id {
@@ -333,6 +308,8 @@ class VideoRepository {
         return nil
     }
     
+    // Checks if there has been changes to the video in the server and downloads them if necessary.
+    // `callback` is called with a Video object if updated, nil if old.
     func refreshVideo(video: Video, callback: Video? -> ()) {
         guard let achRails = self.achRails else {
             callback(nil)
@@ -355,6 +332,7 @@ class VideoRepository {
         }
     }
     
+    // Upload a video to servers.
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
         
         guard let achRails = self.achRails else {
@@ -362,6 +340,7 @@ class VideoRepository {
             return
         }
         
+        // The uploading is done as many sequential asynchronous calls so do the work on background thread and block until the asynchronous callback is called to get better structure.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let semaphore = dispatch_semaphore_create(0)
             
@@ -370,11 +349,13 @@ class VideoRepository {
             
             var progressBase: Float = 0.0
             
+            // Iterate through possible video uploader services and try to upload, break out on first success.
             for videoUploader in self.videoUploaders {
                 
                 videoUploader.uploadVideo(video,
                     progressCallback:  { value in
                         
+                        // Do progress updates on the main thread.
                         dispatch_async(dispatch_get_main_queue()) {
                             progressCallback(value * 0.7, animated: false)
                         }
@@ -385,9 +366,11 @@ class VideoRepository {
                             maybeThumbnailUrl = result.thumbnail
                         }
                         
+                        // Continue in the background thread.
                         dispatch_semaphore_signal(semaphore)
                     })
     
+                // Block until the asynchronous upload is done.
                 while dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0 {
                     NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate(timeIntervalSinceNow: 1))
                 }
@@ -399,11 +382,13 @@ class VideoRepository {
             
             progressBase = 0.7
             
+            // Iterate through possible thumbnail uploaders if the video upload didn't also produce a thumbnail.
             if maybeThumbnailUrl == nil {
                 for thumbnailUploader in self.thumbnailUploaders {
                     thumbnailUploader.uploadThumbnail(video,
                         progressCallback:  { value in
                             
+                            // Do progress updates on the main thread.
                             dispatch_async(dispatch_get_main_queue()) {
                                 progressCallback(progressBase + value * 0.1, animated: false)
                             }
@@ -413,10 +398,13 @@ class VideoRepository {
                             if let result = result {
                                 maybeThumbnailUrl = result
                             }
+                            
+                            // Continue in the background thread.
                             dispatch_semaphore_signal(semaphore)
                         }
                     )
-                    
+
+                    // Block until the asynchronous upload is done.
                     while dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0 {
                         NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate(timeIntervalSinceNow: 1))
                     }
@@ -429,7 +417,7 @@ class VideoRepository {
                 progressBase = 0.8
             }
             
-            
+            // Check that the video has now remote video and thumbnail URLs.
             guard let videoUrl = maybeVideoUrl, thumbnailUrl = maybeThumbnailUrl else {
                 dispatch_async(dispatch_get_main_queue()) {
                     doneCallback(.Error(UserError.failedToUploadVideo.withDebugError("Failed to upload media")))
@@ -437,15 +425,20 @@ class VideoRepository {
                 return
             }
             
+            // Create a new video with the remote URLs.
             let newVideo = Video(copyFrom: video)
             newVideo.videoUri = videoUrl
             newVideo.thumbnailUri = thumbnailUrl
             
             achRails.uploadVideo(newVideo) { tryUploadedVideo in
+                
+                // Stop looping in the background thread.
                 dispatch_semaphore_signal(semaphore)
                 
+                // Save the video in the main thread.
                 dispatch_async(dispatch_get_main_queue()) {
                     progressCallback(1.0, animated: true)
+                    
                     switch tryUploadedVideo {
                     case .Success(let uploadedVideo):
                         do {
@@ -460,6 +453,7 @@ class VideoRepository {
                 }
             }
             
+            // Spin this loop once per 0.5s and give some fake progress reports to indicate uploading.
             while dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0 && progressBase <= 0.90 {
                 progressBase += 0.05
                 
@@ -472,6 +466,7 @@ class VideoRepository {
         }
     }
     
+    // Returns a collection of videos described by `identifier`
     func retrieveCollectionByIdentifier(identifier: CollectionIdentifier) -> Collection? {
         switch identifier {
         case .AllVideos: return self.allVideosCollection
@@ -480,10 +475,44 @@ class VideoRepository {
         }
     }
     
+    // Create a temporary collection containing videos tagged with the QR code `code`
     func createQrCodeCollection(code: String) -> Collection {
-        let collection = Collection(title: "QR: \(code)", subtitle: nil, type: .General)
-        collection.videos = self.videoInfos.filter({ $0.tag == code })
-        return collection
+        let videos = self.videoInfos.filter({ $0.tag == code })
+        return Collection(videos: videos, title: "QR: \(code)")
+    }
+    
+    // MARK: - listeners
+
+    func addListener(listener: VideoRepositoryListener) {
+        self.listeners.append(listener)
+        listener.videoRepositoryUpdated()
+    }
+    
+    func removeListener(listener: VideoRepositoryListener) {
+        if let index = self.listeners.indexOf({ $0 === listener}) {
+            self.listeners.removeAtIndex(index)
+        }
+    }
+    
+    // Start reporting update progress to the listeners with `count` units.
+    func progressBegin(count: Int) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressDone = 0
+            self.progressMax = count
+            for listener in self.listeners {
+                listener.videoRepositoryUpdateStart()
+            }
+        }
+    }
+    
+    // Report the completion of one unit of progress to the listeners.
+    func progressAdvance() {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressDone += 1
+            for listener in self.listeners {
+                listener.videoRepositoryUpdateProgress(self.progressDone, total: self.progressMax)
+            }
+        }
     }
 }
 

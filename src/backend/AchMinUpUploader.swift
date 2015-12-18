@@ -1,5 +1,6 @@
 import Alamofire
 
+// API wrapper for https://github.com/bqqbarbhg/achminup
 class AchMinUpUploader: VideoUploader, ThumbnailUploader {
     
     let endpoint: NSURL

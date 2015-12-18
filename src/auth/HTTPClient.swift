@@ -5,6 +5,7 @@ class HTTPClient {
     static let callbackUrl: NSURL = NSURL(string: "app://achso.legroup.aalto.fi")!
     static var http: AuthenticatedHTTP?
     
+    // Setup the OpenID Connect API
     static func setupOIDC(endPointUrl endpointUrl: NSURL, clientId: String, clientSecret: String) {
         
         let oaProvider = OAuth2Provider(baseUrl: endpointUrl, authorizePath: "authorize", tokenPath: "token")
@@ -19,21 +20,25 @@ class HTTPClient {
         }
     }
     
+    // Opens the LoginWebViewController and present the authentication page and creates a session if successful.
     static func authenticate(fromViewController viewController: UIViewController, callback userCallback: AuthenticationResult -> ()) {
 
         func callback(result: AuthenticationResult) {
             switch result {
-            case .OldSession:
-                userCallback(result)
-                
-            case .NewSession:
-                // Delegate to get user info (name and id)
-                tempSetup()
-                userCallback(result)
-                
-            case .Error(let error):
-                // TODO: Something
-                userCallback(result)
+            case .NewSession: setupApiWrappers()
+            default: break
+            }
+            
+            userCallback(result)
+        }
+
+        func loginRedirected(request: NSURLRequest) {
+            
+            guard let url = request.URL else { return }
+            guard let code = OAuth2Client.parseCodeFromCallbackUrl(url) else { return }
+            
+            if let http = self.http {
+                http.authenticateWithCode(code, callback: callback)
             }
         }
         
@@ -52,11 +57,12 @@ class HTTPClient {
         
         let loginNav = viewController.storyboard!.instantiateViewControllerWithIdentifier("LoginWebViewController") as! UINavigationController
         let loginController = loginNav.topViewController as! LoginWebViewController
-        loginController.prepareForLogin(url: authUrl, trapUrlPrefix: "app://", callback: self.loginRedirected(callback: callback))
+        loginController.prepareForLogin(url: authUrl, trapUrlPrefix: "app://", callback: loginRedirected)
         
         viewController.presentViewController(loginNav, animated: true, completion: nil)
     }
     
+    // Validate and possibly refresh the user session and call `callback` with the status.
     static func doAuthenticated(callback: AuthenticationResult -> ()) {
         guard let http = self.http else {
             callback(.Error(UserError.invalidLayersBoxUrl.withDebugError("HTTP client not initialized")))
@@ -66,16 +72,7 @@ class HTTPClient {
         http.refreshIfNecessary(callback)
     }
     
-    static func loginRedirected(callback callback: AuthenticationResult -> ())(request: NSURLRequest) {
-        
-        guard let url = request.URL else { return }
-        guard let code = OAuth2Client.parseCodeFromCallbackUrl(url) else { return }
-        
-        if let http = self.http {
-            http.authenticateWithCode(code, callback: callback)
-        }
-    }
-    
+    // End the current session.
     static func signOut() {
         AuthUser.user = nil
         videoRepository.achRails = nil
@@ -83,7 +80,9 @@ class HTTPClient {
         videoRepository.refresh()
     }
     
-    static func tempSetup() {
+    // Setup the API wrappers after authenticating.
+    // TODO: Update this to work with the Layers Box.
+    static func setupApiWrappers() {
         guard let http = HTTPClient.http else { return }
         guard let user = AuthUser.user else { return }
         

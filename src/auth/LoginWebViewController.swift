@@ -4,7 +4,10 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
     
     @IBOutlet weak var webView: UIWebView!
     
+    // URL the web view loads when the view appears
     var loginUrl: NSURL?
+    
+    // If the web view tries to load an URL beginning with `trapUrlPrefix` `trapCallback` will be called.
     var trapUrlPrefix: String?
     var trapCallback: (NSURLRequest -> Void)?
     
@@ -20,7 +23,7 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         guard let loginUrl = self.loginUrl else {
-            // TODO: Error message
+            debugError("prepareForLogin was not called before opening LoginWebViewController")
             self.dismissViewControllerAnimated(true, completion: nil)
             return
         }
@@ -36,6 +39,7 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
             self.trapCallback?(request)
             self.dismissViewControllerAnimated(true, completion: nil)
             return false
+            
         } else {
             return true
         }

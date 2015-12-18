@@ -2,25 +2,15 @@ import Foundation
 
 class Collection {
     
-    enum Type {
-        case General
-        case Group
-    }
+    let videos: [VideoInfo]
     
-    var title: String
-    var subtitle: String?
-    var type: Type
-    
-    // Cleanup: This should be in the enum but doesn't go there cleanly
-    var extra: AnyObject?
-    
-    var videos: [VideoInfo] = []
+    let title: String
+    let subtitle: String?
 
-    init(title: String, subtitle: String?, type: Type, extra: AnyObject? = nil) {
+    init(videos: [VideoInfo], title: String, subtitle: String? = nil) {
+        self.videos = videos
         self.title = title
         self.subtitle = subtitle
-        self.type = type
-        self.extra = extra
     }
     
 }

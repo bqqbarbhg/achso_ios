@@ -150,3 +150,11 @@ enum Try<T> {
     }
 }
 
+func debugError(description: String) {
+    #if DEBUG
+        assertionFailure(description)
+    #else
+        // TODO: Log error
+    #endif
+}
+

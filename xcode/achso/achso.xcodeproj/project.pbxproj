@@ -43,6 +43,7 @@
 		A952EE241BECA154003B638A /* SeekBarLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE231BECA154003B638A /* SeekBarLayer.swift */; };
 		A952EE261BECA354003B638A /* CGRectExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE251BECA354003B638A /* CGRectExtension.swift */; };
 		A952EE281BECB3C5003B638A /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952EE271BECB3C5003B638A /* HexColor.swift */; };
+		A955140C1C244AE100D8EE0F /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = A955140B1C244AE100D8EE0F /* Genre.swift */; };
 		A95E99F31BFF10BB001BF3E2 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95E99F21BFF10BB001BF3E2 /* Async.swift */; };
 		A95E99F51BFF1334001BF3E2 /* AVHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95E99F41BFF1334001BF3E2 /* AVHelpers.swift */; };
 		A95E99F71BFF2348001BF3E2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95E99F61BFF2348001BF3E2 /* Errors.swift */; };
@@ -130,6 +131,7 @@
 		A952EE231BECA154003B638A /* SeekBarLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekBarLayer.swift; sourceTree = "<group>"; };
 		A952EE251BECA354003B638A /* CGRectExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtension.swift; sourceTree = "<group>"; };
 		A952EE271BECB3C5003B638A /* HexColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
+		A955140B1C244AE100D8EE0F /* Genre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
 		A956FBFC1C19D75900F0C3DE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		A956FC001C19D76500F0C3DE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		A956FC021C19D76700F0C3DE /* et */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = et; path = et.lproj/Main.strings; sourceTree = "<group>"; };
@@ -203,9 +205,9 @@
 			isa = PBXGroup;
 			children = (
 				A91D672A1BFDF42A00B15A66 /* AchRails.swift */,
-				A91D672E1BFE007C00B15A66 /* VideoRepository.swift */,
 				A95E99F81BFF4495001BF3E2 /* Uploader.swift */,
 				A95E99FA1BFF456C001BF3E2 /* AchMinUpUploader.swift */,
+				A91D672E1BFE007C00B15A66 /* VideoRepository.swift */,
 			);
 			path = backend;
 			sourceTree = "<group>";
@@ -317,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				A98D82741BEB52F100BB7263 /* Video.swift */,
+				A955140B1C244AE100D8EE0F /* Genre.swift */,
 				A91D67301BFE016900B15A66 /* VideoInfo.swift */,
 				A93AE77B1C0CB7EC000C5D62 /* Group.swift */,
 				A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */,
@@ -508,6 +511,7 @@
 				A9167FBB1BEB8B110018BEC4 /* VideoView.swift in Sources */,
 				A9167FC51BEBA73D0018BEC4 /* Vector2.swift in Sources */,
 				A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */,
+				A955140C1C244AE100D8EE0F /* Genre.swift in Sources */,
 				A9BCADB81C196BEE0075976E /* UIViewControllerExtension.swift in Sources */,
 				A98101EC1BF49441003352FF /* CGColorExtension.swift in Sources */,
 				A94B82E01BEA3FB10017874D /* AppDelegate.swift in Sources */,

@@ -10,6 +10,7 @@ struct VideoRevision {
     }
 }
 
+// API wrapper for https://github.com/learning-layers/achrails
 class AchRails {
     
     let http: AuthenticatedHTTP

@@ -27,10 +27,8 @@ class VideoDetailsViewController: XLFormViewController {
         title.value = video.title
         section.addFormRow(title)
 
-        // TODO: enum?
         let genreTitle = NSLocalizedString("details_genre", comment: "Genre label shown in the video details form")
-        let genres = ["good_work", "problem", "site_overview", "trick_of_trade"]
-        let genreOptions = genres.map { XLFormOptionsObject(value: $0, displayText: NSLocalizedString($0, comment: "Genre")) }
+        let genreOptions = Genre.genres.map { XLFormOptionsObject(value: $0.id, displayText: $0.localizedName) }
         let index = genreOptions.indexOf { $0.valueData() as? String == video.genre }
         
         let genre = XLFormRowDescriptor(tag: "genre", rowType: XLFormRowDescriptorTypeSelectorPush, title: genreTitle)

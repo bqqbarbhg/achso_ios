@@ -2,14 +2,14 @@ import UIKit
 
 class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     
+    // Represents a section in the table view with related collections of videos.
     class Section {
+        let title: String?
+        let collections: [CollectionIdentifier]
         
-        var title: String?
-        
-        var collections: [CollectionIdentifier] = []
-        
-        init(title: String?) {
+        init(title: String?, collections: [CollectionIdentifier]) {
             self.title = title
+            self.collections = collections
         }
     }
     
@@ -19,18 +19,20 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
     var collectionIds: [CollectionIdentifier] = []
     var sections: [Section] = []
     
-    var isEnabled: Bool = true
-    
     func updateSections() {
         
-        let general = Section(title: nil)
-        general.collections = [.AllVideos]
-        
-        let groups = Section(title: NSLocalizedString("Groups", comment: "Title of a category section"))
-        groups.collections = videoRepository.groups.map { .Group($0.id) }
+        let general = Section(title: nil, collections: [.AllVideos])
+
+        let groups = Section(
+            title: NSLocalizedString("Groups", comment: "Title of a category section"),
+            collections: videoRepository.groups.map { .Group($0.id) })
         
         self.sections = [general, groups]
         self.tableView.reloadData()
+    }
+    
+    func videoRepositoryUpdated() {
+        updateSections()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -41,9 +43,7 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         videoRepository.removeListener(self)
     }
     
-    func videoRepositoryUpdated() {
-        updateSections()
-    }
+    // MARK: - table view
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return self.sections.count;
@@ -69,7 +69,6 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         } else {
             cell.textLabel?.text = nil
         }
-        cell.textLabel?.enabled = self.isEnabled
         
         return cell
     }
@@ -83,20 +82,7 @@ class CategoriesViewController: UITableViewController, VideoRepositoryListener {
         }
     }
     
-    func setEnabled(enabled: Bool) {
-        self.isEnabled = enabled
-        
-        self.view.userInteractionEnabled = enabled
-        self.navigationItem.rightBarButtonItem?.enabled = enabled
-        self.navigationItem.leftBarButtonItem?.enabled = enabled
-        for cell in self.tableView.visibleCells {
-            cell.textLabel?.enabled = enabled
-        }
-        let sections = self.numberOfSectionsInTableView(self.tableView)
-        for header in (0..<sections).flatMap(self.tableView.headerViewForSection) {
-            header.textLabel?.enabled = enabled
-        }
-    }
+    // MARK: - buttons
     
     @IBAction func editButtonPressed(sender: UIBarButtonItem) {
         

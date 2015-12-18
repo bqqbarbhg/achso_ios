@@ -23,4 +23,11 @@ extension SequenceType {
         }
         return result
     }
+    
+    func find(@noescape predicate: (Self.Generator.Element) throws -> Bool) rethrows -> Self.Generator.Element? {
+        for element in self {
+            if try predicate(element) { return element }
+        }
+        return nil
+    }
 }
