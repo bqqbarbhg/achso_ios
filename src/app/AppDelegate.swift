@@ -52,7 +52,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let userDefaults = NSUserDefaults.standardUserDefaults()
         
-        if userDefaults.boolForKey("layers_public") {
+        let usePublic = userDefaults.objectForKey("layers_public") as? Bool
+        if usePublic ?? true {
             if let
                 endpointString: String = Secrets.get("LAYERS_OIDC_URL"),
                 endpoint: NSURL = NSURL(string: endpointString),

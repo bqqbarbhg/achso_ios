@@ -30,7 +30,7 @@
 			<key>Key</key>
 			<string>layers_api_url</string>
 			<key>DefaultValue</key>
-			<string>https://api.learning-layers.eu</string>
+			<string></string>
 			<key>KeyboardType</key>
 			<string>URL</string>
 			<key>AutocapitalizationType</key>
