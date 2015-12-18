@@ -16,18 +16,19 @@ class VideoDetailsViewController: XLFormViewController {
     func initializeForm(video: Video) {
         self.video = Video(copyFrom: video)
         
-        let form = XLFormDescriptor(title: "Video Details")
+        let formTitle = NSLocalizedString("details_form_title", comment: "Title shown in the video details form")
+        let form = XLFormDescriptor(title: formTitle)
         form.delegate = self
         
         let section = XLFormSectionDescriptor.formSection()
         form.addFormSection(section)
         
-        let titleTitle = NSLocalizedString("details_title", comment: "Title label shown in the video details form")
+        let titleTitle = NSLocalizedString("details_title", comment: "Title field label shown in the video details form")
         let title = XLFormRowDescriptor(tag: "title", rowType: XLFormRowDescriptorTypeText, title: titleTitle)
         title.value = video.title
         section.addFormRow(title)
 
-        let genreTitle = NSLocalizedString("details_genre", comment: "Genre label shown in the video details form")
+        let genreTitle = NSLocalizedString("details_genre", comment: "Genre field label shown in the video details form")
         let genreOptions = Genre.genres.map { XLFormOptionsObject(value: $0.id, displayText: $0.localizedName) }
         let index = genreOptions.indexOf { $0.valueData() as? String == video.genre }
         

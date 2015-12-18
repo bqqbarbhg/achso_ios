@@ -73,14 +73,35 @@
 /* Genre label shown in the video details form */
 "details_creator" = "Creator";
 
-/* Genre label shown in the video details form */
+/* Genre field label shown in the video details form */
 "details_genre" = "Genre";
 
-/* Title label shown in the video details form */
+/* Title field label shown in the video details form */
 "details_title" = "Title";
+
+/* Title shown in the video details form */
+"details_form_title" = "Video info";
 
 /* Title of the genre picker */
 "filter_genre_title" = "Filter by genre";
 
 /* Any genre filter option */
 "filter_any_genre" = "Any genre";
+
+/* Action for cancel */
+"action_cancel" = "Cancel";
+
+/* Action for group info */
+"action_group_info" = "Group info";
+
+/* Action for import video */
+"action_import_video" = "Import video";
+
+/* Action for search QR code */
+"action_search_qr" = "Search QR code";
+
+/* Action for sign in */
+"action_sign_in" = "Sign in";
+
+/* Action for sign out */
+"action_sign_out" = "Sign out";

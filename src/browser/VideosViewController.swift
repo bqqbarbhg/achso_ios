@@ -700,24 +700,30 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             popover.barButtonItem = sender
         }
 
-        genrePicker.addAction(UIAlertAction(title: "Import video", style: .Default, handler: self.actionImportVideo))
+        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_import_video", comment: "Action for import video"),
+                              style: .Default, handler: self.actionImportVideo))
         
-        genrePicker.addAction(UIAlertAction(title: "Search QR code", style: .Default, handler: self.actionScanQR))
+        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_search_qr", comment: "Action for search QR code"),
+                              style: .Default, handler: self.actionScanQR))
         
         switch self.collectionId {
         case .Group:
-            genrePicker.addAction(UIAlertAction(title: "Group info", style: .Default, handler: self.actionManageGroup))
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_group_info", comment: "Action for group info"),
+                                  style: .Default, handler: self.actionManageGroup))
         default:
             break
         }
         
         if AuthUser.user == nil {
-            genrePicker.addAction(UIAlertAction(title: "Sign in", style: .Default, handler: self.actionSignIn))
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
+                                  style: .Default, handler: self.actionSignIn))
         } else {
-            genrePicker.addAction(UIAlertAction(title: "Sign out", style: .Destructive, handler: self.actionSignOut))
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
+                                  style: .Destructive, handler: self.actionSignOut))
         }
         
-        genrePicker.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_cancel", comment: "Action for cancel"),
+                              style: .Cancel, handler: nil))
         
         self.presentViewController(genrePicker, animated: true, completion: nil)
         

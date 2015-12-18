@@ -73,14 +73,35 @@
 /* Genre label shown in the video details form */
 "details_creator" = "Tekijä";
 
-/* Genre label shown in the video details form */
+/* Genre field label shown in the video details form */
 "details_genre" = "Lajityyppi";
 
-/* Title label shown in the video details form */
+/* Title field label shown in the video details form */
 "details_title" = "Otsikko";
+
+/* Title shown in the video details form */
+"details_form_title" = "Video info";
 
 /* Title of the genre picker */
 "filter_genre_title" = "Suodata lajityypin mukaan";
 
 /* Any genre filter option */
 "filter_any_genre" = "Kaikki lajityypit";
+
+/* Action for cancel */
+"action_cancel" = "Peruuta";
+
+/* Action for group info */
+"action_group_info" = "Ryhmän tiedot";
+
+/* Action for import video */
+"action_import_video" = "Tuo video";
+
+/* Action for search QR code */
+"action_search_qr" = "Etsi QR-koodilla";
+
+/* Action for sign in */
+"action_sign_in" = "Kirjaudu sisään";
+
+/* Action for sign out */
+"action_sign_out" = "Kirjaudu ulos";
