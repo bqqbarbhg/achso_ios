@@ -58,7 +58,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EKb-me-Mj3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1528" y="156"/>
+            <point key="canvasLocation" x="716" y="-517"/>
         </scene>
         <!--Shares View Controller-->
         <scene sceneID="s5V-eX-Mq5">
@@ -334,7 +334,10 @@
                         <outlet property="cancelSelectButton" destination="ZKM-1O-c4n" id="vpa-Or-Bko"/>
                         <outlet property="collectionView" destination="iBZ-gs-2rj" id="rAX-mp-DeS"/>
                         <outlet property="editButton" destination="kk2-IL-MgQ" id="MeX-qH-hr6"/>
+                        <outlet property="generalEmptyView" destination="t9P-2Z-UWX" id="chM-q3-zks"/>
+                        <outlet property="generalEmptyViewLabel" destination="PK2-u3-MRu" id="oI5-kp-pcJ"/>
                         <outlet property="genreButton" destination="74M-Qb-l8s" id="Pfy-GJ-Z4h"/>
+                        <outlet property="loadingEmptyView" destination="b5x-Xt-etR" id="068-R9-emx"/>
                         <outlet property="progressBar" destination="y6w-a6-tHo" id="nka-Wt-mVq"/>
                         <outlet property="searchBar" destination="ooS-nt-Pt4" id="0RL-0b-P2X"/>
                         <outlet property="searchBarToGenreButtonConstraint" destination="PKC-1X-E0t" id="hhd-Sv-FXb"/>
@@ -348,8 +351,40 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mxf-qv-J5p" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="t9P-2Z-UWX">
+                    <rect key="frame" x="0.0" y="0.0" width="304" height="437"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$Message$" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PK2-u3-MRu">
+                            <rect key="frame" x="0.0" y="208" width="304" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="PK2-u3-MRu" secondAttribute="trailing" id="fZW-V9-t5A"/>
+                        <constraint firstItem="PK2-u3-MRu" firstAttribute="leading" secondItem="t9P-2Z-UWX" secondAttribute="leading" id="n5d-Nj-ykn"/>
+                        <constraint firstItem="PK2-u3-MRu" firstAttribute="centerY" secondItem="t9P-2Z-UWX" secondAttribute="centerY" id="y5q-yl-41Q"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" id="b5x-Xt-etR">
+                    <rect key="frame" x="0.0" y="0.0" width="304" height="437"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="qOv-o7-LSi">
+                            <rect key="frame" x="142" y="209" width="20" height="20"/>
+                        </activityIndicatorView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="qOv-o7-LSi" firstAttribute="centerX" secondItem="b5x-Xt-etR" secondAttribute="centerX" id="8Ya-eS-4my"/>
+                        <constraint firstItem="qOv-o7-LSi" firstAttribute="centerY" secondItem="b5x-Xt-etR" secondAttribute="centerY" id="er7-x1-Zah"/>
+                    </constraints>
+                </view>
             </objects>
-            <point key="canvasLocation" x="1380" y="817"/>
+            <point key="canvasLocation" x="1559" y="817"/>
         </scene>
         <!--Player View Controller-->
         <scene sceneID="2F0-QL-T2o">

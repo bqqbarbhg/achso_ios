@@ -27,6 +27,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     @IBOutlet var searchBarToGenreButtonConstraint: NSLayoutConstraint!
     @IBOutlet var searchBarToParentConstraint: NSLayoutConstraint!
+    
+    @IBOutlet var generalEmptyView: UIView!
+    @IBOutlet var loadingEmptyView: UIView!
+    
+    @IBOutlet var generalEmptyViewLabel: UILabel!
 
     var refreshControl: UIRefreshControl!
     weak var categoriesViewController: CategoriesViewController!
@@ -74,7 +79,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Setup delegates
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-
+        
         self.searchBar.delegate = self
         
         // Clear the filter parameters
@@ -218,6 +223,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         self.filteredVideos = videos
+        self.updateEmptyPlaceholder()
         self.collectionView.reloadData()
     }
     
@@ -227,6 +233,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         // Only build it one time.
         if self.isBuildingSearchIndex { return }
         self.isBuildingSearchIndex = true
+        
+        self.updateEmptyPlaceholder()
         
         self.beginProgressBar("search_index")
         
@@ -277,6 +285,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             showErrorModal(UserError.notSignedIn, title: NSLocalizedString("error_on_refresh",
                 comment: "Error title when refreshing failed"))
         }
+        self.updateEmptyPlaceholder()
     }
     
     @IBAction func genreButtonPressed(sender: UIButton) {
@@ -485,6 +494,49 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         } catch {
             return nil
         }
+    }
+    
+    // Sets the correct empty placeholder for the collection if necessary
+    func updateEmptyPlaceholder() {
+        
+        // Remove the old background view
+        if let oldBackgroundView = self.collectionView.backgroundView {
+            oldBackgroundView.removeFromSuperview()
+            self.collectionView.backgroundView = nil
+        }
+        
+        // No background view if there are videos
+        if !filteredVideos.isEmpty { return }
+        
+        // Collection expected
+        guard let collection = self.collection else { return }
+        
+        self.collectionView.backgroundView = {
+        
+            if self.isBuildingSearchIndex || videoRepository.isOnlineRefreshing {
+                return self.loadingEmptyView
+            }
+            
+            if collection.videos.isEmpty {
+                // The collection itself is empty
+                switch self.collectionId {
+                case .AllVideos:
+                    self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_all", comment: "Placeholder when there are no videos at all in the app.")
+                    return self.generalEmptyView
+                case .Group(let id):
+                    self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_group", comment: "Placeholder when the group does not contain any videos")
+                    return self.generalEmptyView
+                case .QrSearch(let code):
+                    self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_qr", comment: "Placeholder when a scanner QR code does not match any videos")
+                    return self.generalEmptyView
+                }
+            } else {
+                // The filters have hidden all the videos
+                self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_filtered", comment: "Placeholder when a filter excludes all the videos")
+                return self.generalEmptyView
+            }
+            
+        }()
     }
     
     // MARK: - Video selection
@@ -778,6 +830,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     comment: "Error title when trying to sign in"))
             } else {
                 videoRepository.refreshOnline()
+                self.updateEmptyPlaceholder()
             }
         }
     }

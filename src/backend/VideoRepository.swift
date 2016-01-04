@@ -38,6 +38,9 @@ class VideoRepository {
     var progressMax: Int = 0
     var progressDone: Int = 0
     
+    // State
+    var isOnlineRefreshing: Bool = false
+    
     // Load the persisted entities.
     func refresh() {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -281,9 +284,12 @@ class VideoRepository {
         // TODO: Count these if many?
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
+        self.isOnlineRefreshing = true
+        
         let task = RefreshOnlineTask(ctx)
         task.completionHandler = {
             AppDelegate.instance.saveContext()
+            self.isOnlineRefreshing = false
             self.refresh()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }

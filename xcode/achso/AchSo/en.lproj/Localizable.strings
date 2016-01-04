@@ -105,3 +105,15 @@
 
 /* Action for sign out */
 "action_sign_out" = "Sign out";
+
+/* Placeholder when there are no videos at all in the app. */
+"empty_videos_all" = "No videos yet, take a new one or sign in.";
+
+/* Placeholder when a filter excludes all the videos */
+"empty_videos_filtered" = "The filter does not match any videos.";
+
+/* Placeholder when the group does not contain any videos */
+"empty_videos_group" = "The group does not have any videos yet.";
+
+/* Placeholder when a scanner QR code does not match any videos */
+"empty_videos_qr" = "The QR code does not have any videos tagged to it.";

@@ -105,3 +105,16 @@
 
 /* Action for sign out */
 "action_sign_out" = "Kirjaudu ulos";
+
+/* Placeholder when there are no videos at all in the app. */
+"empty_videos_all" = "Ei videoita, ota video tai kirjaudu sisään.";
+
+/* Placeholder when a filter excludes all the videos */
+"empty_videos_filtered" = "Haulla ei löytynyt videoita.";
+
+/* Placeholder when the group does not contain any videos */
+"empty_videos_group" = "Ryhmään ei ole vielä jaettu videoita.";
+
+/* Placeholder when a scanner QR code does not match any videos */
+"empty_videos_qr" = "QR koodilla ei löytynyt yhtään videota.";
+
