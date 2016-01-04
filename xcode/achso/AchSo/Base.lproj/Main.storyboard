@@ -507,12 +507,12 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem enabled="NO" systemItem="redo" id="yHf-CE-z1E">
+                            <barButtonItem enabled="NO" image="redo" id="yHf-CE-z1E">
                                 <connections>
                                     <action selector="redoButtonPressed:" destination="uj0-XH-hhR" id="e9B-RS-M7k"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem enabled="NO" systemItem="undo" id="9KN-RR-pfL">
+                            <barButtonItem enabled="NO" image="undo" id="9KN-RR-pfL">
                                 <connections>
                                     <action selector="undoButtonPressed:" destination="uj0-XH-hhR" id="5RN-rU-Ag7"/>
                                 </connections>
@@ -753,5 +753,7 @@
     </scenes>
     <resources>
         <image name="CloudLocal" width="32" height="32"/>
+        <image name="redo" width="22" height="22"/>
+        <image name="undo" width="22" height="22"/>
     </resources>
 </document>
