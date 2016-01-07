@@ -1,7 +1,9 @@
 import UIKit
+import WebKit
 
-class SharesViewController: UIViewController, UIWebViewDelegate {
-    @IBOutlet weak var webView: UIWebView!
+class SharesViewController: UIViewController, WKScriptMessageHandler {
+    
+    var webView: WKWebView!
 
     var endpointUrl: NSURL? {
         let baseUrl = videoRepository.achRails.map { $0.endpoint }
@@ -16,7 +18,23 @@ class SharesViewController: UIViewController, UIWebViewDelegate {
     var url: NSURL?
     
     override func viewDidLoad() {
-        self.webView.delegate = self
+        
+        let source = "iosLoaded();"
+        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        
+        let userContentController = WKUserContentController()
+        userContentController.addUserScript(userScript)
+        userContentController.addScriptMessageHandler(self, name: "setTitle")
+        
+        let configuration = WKWebViewConfiguration()
+        configuration.userContentController = userContentController
+        
+        self.webView = WKWebView(frame: self.view.bounds, configuration: configuration)
+        self.view.addSubview(self.webView)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        self.webView.frame = self.view.bounds
     }
     
     func prepareForShareVideos(ids: [NSUUID]) throws {
@@ -72,8 +90,12 @@ class SharesViewController: UIViewController, UIWebViewDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
-        webView.stringByEvaluatingJavaScriptFromString("iosLoaded()")
-        self.navigationItem.title = webView.stringByEvaluatingJavaScriptFromString("iosNavigationTitle()")
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        switch message.name {
+        case "setTitle":
+            self.navigationItem.title = message.body as? String
+        default:
+            break
+        }
     }
 }

@@ -69,22 +69,11 @@
                         <viewControllerLayoutGuide type="bottom" id="LJ1-jB-kDG"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gko-Ng-Oxb">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bxh-lu-Dss">
-                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
-                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
-                            </webView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="Bxh-lu-Dss" firstAttribute="top" secondItem="nlw-a5-RoP" secondAttribute="bottom" id="Jc1-st-aim"/>
-                            <constraint firstItem="Bxh-lu-Dss" firstAttribute="leading" secondItem="gko-Ng-Oxb" secondAttribute="leading" id="LHJ-V0-1PA"/>
-                            <constraint firstItem="LJ1-jB-kDG" firstAttribute="top" secondItem="Bxh-lu-Dss" secondAttribute="bottom" id="Mzb-OJ-fIv"/>
-                            <constraint firstAttribute="trailing" secondItem="Bxh-lu-Dss" secondAttribute="trailing" id="irX-P7-rdH"/>
-                        </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="EZ1-it-LGU">
                         <barButtonItem key="leftBarButtonItem" systemItem="done" id="Hqp-6d-YcY">
                             <connections>
@@ -92,9 +81,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <connections>
-                        <outlet property="webView" destination="Bxh-lu-Dss" id="28E-iJ-cxc"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xBx-bJ-Gfl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
