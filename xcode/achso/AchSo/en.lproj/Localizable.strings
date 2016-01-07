@@ -61,6 +61,12 @@
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Can't create group";
 
+/* Error title when the group info could not be found */
+"error_on_manage_group" = "Can't manage group";
+
+/* Error title shown when capturing a QR code fails. */
+"error_on_qr_capture" = "Can't scan QR code";
+
 /* Error title when trying to share videos to groups was interrupted */
 "error_on_share" = "Can't share videos";
 

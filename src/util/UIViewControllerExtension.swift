@@ -15,9 +15,7 @@ extension UIViewController {
         let alertController = UIAlertController(title: title, message: errorMessage, preferredStyle: .Alert)
         
         let dismissAction = UIAlertAction(title: errorDismissButton, style: .Default, handler: { action in
-            alertController.dismissViewControllerAnimated(true) {
-                callback?()
-            }
+            callback?()
         })
         
         alertController.addAction(dismissAction)

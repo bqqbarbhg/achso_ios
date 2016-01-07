@@ -61,6 +61,12 @@
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Ryhmää ei voi luoda";
 
+/* Error title when the group info could not be found */
+"error_on_manage_group" = "Ryhmää ei voida hallinnoida";
+
+/* Error title shown when capturing a QR code fails. */
+"error_on_qr_capture" = "QR-koodia ei voi skannata";
+
 /* Error title when trying to share videos to groups was interrupted */
 "error_on_share" = "Videoita ei voida jakaa";
 
