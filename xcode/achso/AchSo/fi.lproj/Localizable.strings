@@ -34,6 +34,9 @@
 /* Error title when something stopped them from uploading a video */
 "error_failed_to_upload_video" = "Virhe lähettäessä videota palvelimelle.";
 
+/* Error title when something stopped them from deleting a remote video */
+"error_failed_to_delete_remote_video" = "Virhe poistaessa videota palvelimelta.";
+
 /* Error fix button to sign the user in */
 "error_fix_sign_in" = "Kirjaudu";
 
@@ -54,6 +57,9 @@
 
 /* Error title when the upload failed */
 "error_on_upload" = "Videon lataaminen palvelimelle epäonnistui";
+
+/* Error title when trying to delete video */
+"error_on_video_delete" = "Videon poistaminen epäonnistui";
 
 /* Error title when trying to save video */
 "error_on_video_save" = "Videon tallentaminen epäonnistui";
@@ -83,10 +89,16 @@
 "details_genre" = "Lajityyppi";
 
 /* Title field label shown in the video details form */
-"details_title" = "Otsikko";
+"details_title" = "Nimi";
+
+/* Title field label shown when mutliple videos are selected */
+"details_title_multiple" = "Monta videota";
 
 /* Title shown in the video details form */
-"details_form_title" = "Video info";
+"details_form_title" = "Videon tiedot";
+
+/* Title shown in the video details form with multiple selection */
+"details_form_title_multiple" = "Videoiden tiedot";
 
 /* Title of the genre picker */
 "filter_genre_title" = "Suodata lajityypin mukaan";
@@ -111,6 +123,27 @@
 
 /* Action for sign out */
 "action_sign_out" = "Kirjaudu ulos";
+
+/* Action for tagging video(s) to a QR code */
+"action_tag_to_qr" = "Liitä QR-koodiin";
+
+/* Action for deleting video(s) */
+"action_delete" = "Poista";
+
+/* Title for the delete confirmation box */
+"delete_confirmation_title" = "Poista valitut videot ja niiden annotaatiot pysyvästi";
+
+/* Button that cancels video deletion */
+"delete_confirmation_cancel" = "Peruuta";
+
+/* Button that confirms to delete videos */
+"delete_confirmation_delete" = "Poista";
+
+/* Upload button text when it only shares previously uploaded videos */
+"upload_button_share" = "Jaa";
+
+/* Upload button text when it uploads videos */
+"upload_button_upload" = "Lataa palvelimelle";
 
 /* Placeholder when there are no videos at all in the app. */
 "empty_videos_all" = "Ei videoita, ota video tai kirjaudu sisään.";

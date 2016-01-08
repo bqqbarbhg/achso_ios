@@ -111,6 +111,11 @@ class UserError: ErrorType, PrintableError {
             comment: "Error title when something stopped them from uploading a video"))
     }
     
+    static var failedToDeleteRemoteVideo: UserError {
+        return UserError(NSLocalizedString("error_failed_to_delete_remote_video",
+            comment: "Error title when something stopped them from deleting a remote video"))
+    }
+    
     static var notSignedIn: UserError {
         func signIn(viewController: UIViewController, callback: (() -> ())?) {
             HTTPClient.authenticate(fromViewController: viewController, callback: { result in

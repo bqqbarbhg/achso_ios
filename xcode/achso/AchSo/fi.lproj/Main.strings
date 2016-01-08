@@ -39,7 +39,7 @@
 "a7j-ye-fAj.title" = "Jaa";
 
 /* Class = "UIBarButtonItem"; title = "Properties"; ObjectID = "kk2-IL-MgQ"; */
-"kk2-IL-MgQ.title" = "Ominaisuudet";
+"kk2-IL-MgQ.title" = "Tiedot";
 
 /* Class = "UISearchBar"; placeholder = "Filter"; ObjectID = "ooS-nt-Pt4"; */
 "ooS-nt-Pt4.placeholder" = "Hae";

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -267,28 +267,18 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="action" id="OQC-eN-3hL">
+                        <barButtonItem image="dots" id="OQC-eN-3hL">
                             <connections>
                                 <action selector="actionButtonPressed:" destination="7mS-Qs-HO7" id="4nz-jg-0tw"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="1UI-Zd-G4S"/>
-                        <barButtonItem title="Tag to QR code" id="Apy-EJ-zQ9">
-                            <connections>
-                                <action selector="tagToQrButtonPressed:" destination="7mS-Qs-HO7" id="YQl-dS-PAh"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem title="Properties" id="kk2-IL-MgQ">
                             <connections>
                                 <action selector="editButtonPressed:" destination="7mS-Qs-HO7" id="5jL-4g-QEf"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem title="Share" id="a7j-ye-fAj">
-                            <connections>
-                                <action selector="shareButtonPressed:" destination="7mS-Qs-HO7" id="3bD-fo-G6D"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem title="Upload" id="Qt1-aa-4Mu">
+                        <barButtonItem title="$Upload$" id="Qt1-aa-4Mu">
                             <connections>
                                 <action selector="uploadButtonPressed:" destination="7mS-Qs-HO7" id="csf-Hd-161"/>
                             </connections>
@@ -329,8 +319,6 @@
                         <outlet property="searchBarToGenreButtonConstraint" destination="PKC-1X-E0t" id="hhd-Sv-FXb"/>
                         <outlet property="searchBarToParentConstraint" destination="iNl-Xc-UtB" id="Dpm-1Y-vDe"/>
                         <outlet property="selectButton" destination="36E-aZ-Ql7" id="64q-g2-TQA"/>
-                        <outlet property="shareButton" destination="a7j-ye-fAj" id="1OA-8i-Lh2"/>
-                        <outlet property="tagToQrButton" destination="Apy-EJ-zQ9" id="91H-yf-jHJ"/>
                         <outlet property="toolbarSpace" destination="1UI-Zd-G4S" id="5ax-EY-mAc"/>
                         <outlet property="uploadButton" destination="Qt1-aa-4Mu" id="Rm2-1f-AkU"/>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="qKB-CJ-Qn9"/>
@@ -739,6 +727,7 @@
     </scenes>
     <resources>
         <image name="CloudLocal" width="32" height="32"/>
+        <image name="dots" width="22" height="22"/>
         <image name="redo" width="22" height="22"/>
         <image name="undo" width="22" height="22"/>
     </resources>

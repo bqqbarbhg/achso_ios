@@ -34,6 +34,9 @@
 /* Error title when something stopped them from uploading a video */
 "error_failed_to_upload_video" = "An error occurred while uploading the video.";
 
+/* Error title when something stopped them from deleting a remote video */
+"error_failed_to_delete_remote_video" = "An error occurred while deleting the video.";
+
 /* Error fix button to sign the user in */
 "error_fix_sign_in" = "Sign in";
 
@@ -54,6 +57,9 @@
 
 /* Error title when the upload failed */
 "error_on_upload" = "Couldn't upload video";
+
+/* Error title when trying to delete video */
+"error_on_video_delete" = "Couldn't delete video";
 
 /* Error title when trying to save video */
 "error_on_video_save" = "Couldn't save video";
@@ -85,8 +91,14 @@
 /* Title field label shown in the video details form */
 "details_title" = "Title";
 
+/* Title field label shown when mutliple videos are selected */
+"details_title_multiple" = "Multiple videos";
+
 /* Title shown in the video details form */
 "details_form_title" = "Video info";
+
+/* Title shown in the video details form with multiple selection */
+"details_form_title_multiple" = "Video info";
 
 /* Title of the genre picker */
 "filter_genre_title" = "Filter by genre";
@@ -111,6 +123,27 @@
 
 /* Action for sign out */
 "action_sign_out" = "Sign out";
+
+/* Action for tagging video(s) to a QR code */
+"action_tag_to_qr" = "Tag to QR code";
+
+/* Action for deleting video(s) */
+"action_delete" = "Delete";
+
+/* Title for the delete confirmation box */
+"delete_confirmation_title" = "Delete selected videos and their annotations permanently";
+
+/* Button that cancels video deletion */
+"delete_confirmation_cancel" = "Cancel";
+
+/* Button that confirms to delete videos */
+"delete_confirmation_delete" = "Delete";
+
+/* Upload button text when it only shares previously uploaded videos */
+"upload_button_share" = "Share";
+
+/* Upload button text when it uploads videos */
+"upload_button_upload" = "Upload";
 
 /* Placeholder when there are no videos at all in the app. */
 "empty_videos_all" = "No videos yet, take a new one or sign in.";

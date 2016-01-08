@@ -18,10 +18,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet var searchBar: UISearchBar!
     
     @IBOutlet var toolbarSpace: UIBarButtonItem!
-    @IBOutlet var shareButton: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
-    @IBOutlet var tagToQrButton: UIBarButtonItem!
 
     @IBOutlet weak var progressBar: UIProgressView!
     
@@ -597,11 +595,17 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         if collectionView.allowsMultipleSelection {
             let selectedCount = collectionView.indexPathsForSelectedItems()?.count ?? 0
             
-            self.shareButton.enabled = selectedCount > 0
-            self.editButton.enabled = selectedCount == 1
+            self.editButton.enabled = selectedCount > 0
             self.uploadButton.enabled = selectedCount > 0
-            self.tagToQrButton.enabled = selectedCount > 0
+            self.actionButton.enabled = selectedCount > 0
 
+            let selectedVideos = getSelectedVideoInfos()
+            if selectedVideos.isEmpty || selectedVideos.contains({ $0.isLocal }) {
+                self.uploadButton.title = NSLocalizedString("upload_button_upload", comment: "Upload button text when it uploads videos")
+            } else {
+                self.uploadButton.title = NSLocalizedString("upload_button_share", comment: "Upload button text when it only shares previously uploaded videos")
+            }
+            
             self.genreButton.enabled = false
             self.searchBar.userInteractionEnabled = false
             self.searchBar.alpha = 0.6
@@ -614,8 +618,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             self.navigationItem.leftBarButtonItem = nil
             self.splitViewController?.presentsWithGesture = false
+            self.navigationItem.hidesBackButton = true
             
-            let toolbarItems = [self.toolbarSpace!, self.tagToQrButton!, self.editButton!, self.shareButton!, self.uploadButton!]
+            let toolbarItems = [self.actionButton!, self.toolbarSpace!, self.uploadButton!, self.editButton!]
             self.setToolbarItems(toolbarItems, animated: animated)
             
         } else {
@@ -631,20 +636,32 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
             self.splitViewController?.presentsWithGesture = true
+            self.navigationItem.hidesBackButton = false
             
+            self.actionButton.enabled = true
             let toolbarItems = [self.actionButton!, self.toolbarSpace!, self.cameraButton!]
             self.setToolbarItems(toolbarItems, animated: animated)
         }
     }
     
+    func getSelectedVideoInfos() -> [VideoInfo] {
+        let indices = self.collectionView.indexPathsForSelectedItems() ?? []
+        return indices.flatMap { self.filteredVideos[safe: $0.item] }
+    }
+    
+    func loadSelectedVideos() -> [Video] {
+        let indices = self.collectionView.indexPathsForSelectedItems() ?? []
+        return indices.flatMap { self.videoForIndexPath($0) }
+    }
+    
     // MARK: - Toolbar actions
     
-    func uploadVideo(atIndexPath indexPath: NSIndexPath) {
-        guard let collectionView = self.collectionView else { return }
-        guard let video = videoForIndexPath(indexPath) else { return }
+    func uploadVideo(atIndexPath indexPath: NSIndexPath, callback: Try<Video> -> ()) -> Bool {
+        guard let collectionView = self.collectionView else { return false }
+        guard let video = videoForIndexPath(indexPath) else { return false }
         
         if !video.videoUri.isLocal {
-            return
+            return false
         }
         
         videoRepository.uploadVideo(video, progressCallback: { value, animated in
@@ -661,86 +678,75 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             case .Error(let error): self.showErrorModal(error, title: NSLocalizedString("error_on_upload",
                 comment: "Error title when the upload failed"))
             }
+            
+            callback(tryVideo)
         })
+        
+        return true
     }
     
     @IBAction func uploadButtonPressed(sender: UIBarButtonItem) {
         guard let collectionView = self.collectionView else { return }
         
-        if collectionView.allowsMultipleSelection {
-            let selectedIndices = collectionView.indexPathsForSelectedItems() ?? []
+        if !collectionView.allowsMultipleSelection { return }
+        
+        let videos = getSelectedVideoInfos()
+        
+        func shareVideos() {
+            let ids = videos.map { $0.id }
+            if ids.isEmpty { return }
             
-            let errorTitle = NSLocalizedString("error_before_upload",
-                comment: "Error title if something prevented the user from uploading")
-            self.doAuthenticated(errorTitle: errorTitle) {
-                for indexPath in selectedIndices {
-                    self.uploadVideo(atIndexPath: indexPath)
+            do {
+                let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
+                let sharesController = sharesNav.topViewController as! SharesViewController
+                try sharesController.prepareForShareVideos(ids)
+                self.presentViewController(sharesNav, animated: true) {
                 }
-                
-                self.endSelectMode()
+            } catch {
+                self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
             }
         }
+        
+        let selectedIndices = collectionView.indexPathsForSelectedItems() ?? []
+        
+        // Make sure all videos are pending upload before the callback has a chance to run, so there needs to be one more callback, which is placed after all the videos have been queued for upload.
+        // This also starts the sharing even if all the videos have been previously uploaded.
+        var totalCount = 1
+        var uploadedCount = 0
+        
+        func callback() {
+            uploadedCount += 1
+            if uploadedCount == totalCount {
+                shareVideos()
+            }
+        }
+        
+        let errorTitle = NSLocalizedString("error_before_upload",
+            comment: "Error title if something prevented the user from uploading")
+        self.doAuthenticated(errorTitle: errorTitle) {
+            for indexPath in selectedIndices {
+                if self.uploadVideo(atIndexPath: indexPath, callback: { _ in callback() }) {
+                    totalCount += 1
+                }
+            }
+            
+            callback()
+        }
+        
+        self.endSelectMode()
     }
     
     @IBAction func editButtonPressed(sender: UIBarButtonItem) {
-        guard let collectionView = self.collectionView else { return }
-        guard let selectedList = collectionView.indexPathsForSelectedItems() else { return }
-        guard let selected = selectedList.first else { return }
-        guard let video = videoForIndexPath(selected) else { return }
+        
+        let videos = loadSelectedVideos()
         
         let detailsNav = self.storyboard!.instantiateViewControllerWithIdentifier("VideoDetailsViewController") as! UINavigationController
         let detailsController = detailsNav.topViewController as! VideoDetailsViewController
-        detailsController.initializeForm(video)
+        detailsController.initializeForm(videos)
         
         self.endSelectMode()
         
         self.presentViewController(detailsNav, animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func shareButtonPressed(sender: UIBarButtonItem) {
-        guard let collectionView = self.collectionView else { return }
-        let indices = collectionView.indexPathsForSelectedItems() ?? []
-        let videos = indices.flatMap { self.videoForIndexPath($0) }
-        let ids = videos.map { $0.id }
-        
-        self.endSelectMode()
-        
-        if ids.count == 0 { return }
-        
-        do {
-            let sharesNav = self.storyboard!.instantiateViewControllerWithIdentifier("SharesViewController") as! UINavigationController
-            let sharesController = sharesNav.topViewController as! SharesViewController
-            try sharesController.prepareForShareVideos(ids)
-            self.presentViewController(sharesNav, animated: true) {
-            }
-        } catch {
-            self.showErrorModal(error, title: NSLocalizedString("error_on_share", comment: "Error title when trying to share videos to groups was interrupted"))
-        }
-    }
-    
-    @IBAction func tagToQrButtonPressed(sender: UIBarButtonItem) {
-        guard let collectionView = self.collectionView else { return }
-        let indices = collectionView.indexPathsForSelectedItems() ?? []
-        let videos = indices.flatMap { self.videoForIndexPath($0) }
-        
-        func tagQrCode(code: String) {
-            let appDelegate = AppDelegate.instance
-            for video in videos {
-                video.tag = code
-                do {
-                    try appDelegate.saveVideo(video, saveToDisk: false)
-                } catch { }
-            }
-            appDelegate.saveContext()
-            videoRepository.refresh()
-        }
-        
-        let qrController = self.storyboard!.instantiateViewControllerWithIdentifier("QRScanViewController") as! QRScanViewController
-        qrController.callback = tagQrCode
-        
-        self.presentViewController(qrController, animated: true, completion: nil)
-        self.endSelectMode()
     }
     
     // MARK: - Action buttons
@@ -752,26 +758,42 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             popover.barButtonItem = sender
         }
 
-        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_import_video", comment: "Action for import video"),
-                              style: .Default, handler: self.actionImportVideo))
-        
-        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_search_qr", comment: "Action for search QR code"),
-                              style: .Default, handler: self.actionScanQR))
-        
-        switch self.collectionId {
-        case .Group:
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_group_info", comment: "Action for group info"),
-                                  style: .Default, handler: self.actionManageGroup))
-        default:
-            break
-        }
-        
-        if AuthUser.user == nil {
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
-                                  style: .Default, handler: self.actionSignIn))
+        if self.collectionView.allowsMultipleSelection {
+            
+            // Selected mode
+            
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_tag_to_qr", comment: "Action for tagging video(s) to a QR code"),
+                style: .Default, handler: self.actionTagToQrCode))
+            
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_delete", comment: "Action for deleting video(s)"),
+                style: .Destructive, handler: self.actionDelete))
+            
         } else {
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
-                                  style: .Destructive, handler: self.actionSignOut))
+            
+            // Normal mode
+         
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_import_video", comment: "Action for import video"),
+                style: .Default, handler: self.actionImportVideo))
+            
+            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_search_qr", comment: "Action for search QR code"),
+                style: .Default, handler: self.actionScanQR))
+            
+            switch self.collectionId {
+            case .Group:
+                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_group_info", comment: "Action for group info"),
+                    style: .Default, handler: self.actionManageGroup))
+            default:
+                break
+            }
+            
+            if AuthUser.user == nil {
+                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
+                    style: .Default, handler: self.actionSignIn))
+            } else {
+                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
+                    style: .Destructive, handler: self.actionSignOut))
+            }
+            
         }
         
         genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_cancel", comment: "Action for cancel"),
@@ -837,6 +859,83 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func actionSignOut(action: UIAlertAction) {
         HTTPClient.signOut()
+    }
+    
+    func actionTagToQrCode(action: UIAlertAction) {
+        let videos = loadSelectedVideos()
+        
+        func tagQrCode(code: String) {
+            let appDelegate = AppDelegate.instance
+            for video in videos {
+                video.tag = code
+                do {
+                    try appDelegate.saveVideo(video, saveToDisk: false)
+                } catch { }
+            }
+            appDelegate.saveContext()
+            videoRepository.refresh()
+        }
+        
+        let qrController = self.storyboard!.instantiateViewControllerWithIdentifier("QRScanViewController") as! QRScanViewController
+        qrController.callback = tagQrCode
+        
+        self.presentViewController(qrController, animated: true, completion: nil)
+        self.endSelectMode()
+    }
+    
+    func actionDelete(action: UIAlertAction) {
+        let videos = loadSelectedVideos()
+
+        let fileManager = NSFileManager.defaultManager()
+        let appDelegate = AppDelegate.instance
+        
+        var skipped = false
+        
+        func deleteVideos(action: UIAlertAction) {
+            for video in videos {
+                // Hack: Skip remote videos
+                if !video.thumbnailUri.isLocal {
+                    skipped = true
+                    continue
+                }
+                
+                do {
+                    try fileManager.removeItemAtURL(video.thumbnailUri.realUrl.unwrap())
+                } catch {
+                }
+                
+                do {
+                    try fileManager.removeItemAtURL(video.videoUri.realUrl.unwrap())
+                } catch {
+                }
+                
+                do {
+                    try appDelegate.deleteVideo(video.id, saveToDisk: false)
+                } catch {
+                }
+            }
+            
+            if skipped {
+                let error = UserError.failedToDeleteRemoteVideo.withDebugError("not implemented")
+                showErrorModal(error, title: NSLocalizedString("error_on_video_delete", comment: "Error title when trying to delete video"))
+            }
+            
+            appDelegate.saveContext()
+            
+            videoRepository.refresh()
+            self.endSelectMode()
+        }
+        
+        func cancelDelete(action: UIAlertAction) {
+            self.endSelectMode()
+        }
+        
+        let confirmDialog = UIAlertController(title: NSLocalizedString("delete_confirmation_title", comment: "Title for the delete confirmation box"), message: nil, preferredStyle: .Alert)
+        
+        confirmDialog.addAction(UIAlertAction(title: NSLocalizedString("delete_confirmation_delete", comment: "Button that confirms to delete videos"), style: .Destructive, handler: deleteVideos))
+        confirmDialog.addAction(UIAlertAction(title: NSLocalizedString("delete_confirmation_cancel", comment: "Button that cancels video deletion"), style: .Cancel, handler: cancelDelete))
+        
+        self.presentViewController(confirmDialog, animated: true, completion: nil)
     }
     
     // MARK: - Video recording

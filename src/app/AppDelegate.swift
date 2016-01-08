@@ -276,5 +276,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             hasLocalModifications: locallyModified,
             downloadedBy: downloadedBy)
     }
+    
+    func deleteVideo(id: NSUUID, saveToDisk: Bool = true) throws {
+        guard let videoModel = try findVideoModel(id) else {
+            throw DebugError("Trying to delete video that does not exist")
+        }
+        
+        self.managedObjectContext.deleteObject(videoModel)
+        
+        if saveToDisk {
+            try self.managedObjectContext.save()
+        }
+    }
 }
 

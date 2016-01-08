@@ -449,6 +449,12 @@ class VideoRepository {
                     case .Success(let uploadedVideo):
                         do {
                             try videoRepository.saveVideo(uploadedVideo)
+                            
+                            // Delete old video and thumbnail
+                            let fileManager = NSFileManager.defaultManager()
+                            try fileManager.removeItemAtURL(video.thumbnailUri.realUrl.unwrap())
+                            try fileManager.removeItemAtURL(video.videoUri.realUrl.unwrap())
+                            
                             doneCallback(.Success(uploadedVideo))
                         } catch {
                             doneCallback(.Error(UserError.failedToSaveVideo.withInnerError(error)))
