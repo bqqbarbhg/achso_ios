@@ -401,6 +401,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         if let video = self.filteredVideos[safe: indexPath.item] {
             cell.update(video)
+            cell.setSelectable(collectionView.allowsMultipleSelection)
         }
         
         return cell
@@ -591,6 +592,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func refreshSelectedViewState(animated animated: Bool) {
         guard let collectionView = self.collectionView else { return }
+        
+        let selectable = collectionView.allowsMultipleSelection
+        for cell in collectionView.visibleCells() {
+            (cell as? VideoViewCell)?.setSelectable(selectable)
+        }
         
         if collectionView.allowsMultipleSelection {
             let selectedCount = collectionView.indexPathsForSelectedItems()?.count ?? 0

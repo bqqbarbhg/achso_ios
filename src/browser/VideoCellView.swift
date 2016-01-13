@@ -10,6 +10,7 @@ class VideoViewCell: UICollectionViewCell {
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var sharedCloudImage: UIImageView!
+    @IBOutlet weak var selectImage: UIImageView!
  
     // This is should reduce the amount the collection view relayouts when scrolling. Should be removed if the root cause of the relayouting is fixed.
     override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -60,14 +61,14 @@ class VideoViewCell: UICollectionViewCell {
                 
                 if cacheType == .Memory {
                     // Set the alpha immediately if the image was already in memory. This stops flickering on refresh.
-                    self.thumbnailImageView.alpha = 1.0
+                    self.thumbnailImageView.alpha = self.selected ? 0.5 : 1.0
                 } else {
                 
                     // Fade in the image.
                     self.layer.shouldRasterize = false
                     UIView.transitionWithView(self.thumbnailImageView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut,
                         animations: {
-                            self.thumbnailImageView.alpha = 1.0
+                            self.thumbnailImageView.alpha = self.selected ? 0.5 : 1.0
                         }, completion: { _ in
                             self.layer.shouldRasterize = true
                     })
@@ -79,6 +80,10 @@ class VideoViewCell: UICollectionViewCell {
         
         progressView.hidden = true
         progressView.progress = 0.0
+    }
+    
+    func setSelectable(selectable: Bool) {
+        self.selectImage.hidden = !selectable
     }
     
     func setProgress(progress: Float, animated: Bool) {
@@ -104,8 +109,10 @@ class VideoViewCell: UICollectionViewCell {
             super.selected = newValue
             if newValue {
                 self.thumbnailImageView.alpha = 0.5
+                self.selectImage.image = UIImage(named: "checkcircle_filled_checked")
             } else {
                 self.thumbnailImageView.alpha = 1.0
+                self.selectImage.image = UIImage(named: "checkcircle_hollow")
             }
         }
     }
