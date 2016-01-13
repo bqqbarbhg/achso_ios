@@ -8,26 +8,26 @@
 /* Class = "UIBarButtonItem"; title = "Select"; ObjectID = "36E-aZ-Ql7"; */
 "36E-aZ-Ql7.title" = "Select";
 
-/* Class = "UILabel"; text = "Title"; ObjectID = "4aM-RV-SCx"; */
-"4aM-RV-SCx.text" = "Title";
+/* Class = "UILabel"; text = "$Title$"; ObjectID = "4aM-RV-SCx"; */
+"4aM-RV-SCx.text" = "$Title$";
 
 /* Class = "UIButton"; normalTitle = "$Any genre$"; ObjectID = "74M-Qb-l8s"; */
 "74M-Qb-l8s.normalTitle" = "$Any genre$";
 
-/* Class = "UILabel"; text = "Detail"; ObjectID = "8Xp-DF-Lme"; */
-"8Xp-DF-Lme.text" = "Detail";
-
-/* Class = "UIBarButtonItem"; title = "Tag to QR code"; ObjectID = "Apy-EJ-zQ9"; */
-"Apy-EJ-zQ9.title" = "Tag to QR code";
+/* Class = "UILabel"; text = "$Detail$"; ObjectID = "8Xp-DF-Lme"; */
+"8Xp-DF-Lme.text" = "$Detail$";
 
 /* Class = "UIButton"; normalTitle = "Save"; ObjectID = "IHP-Zo-LNN"; */
 "IHP-Zo-LNN.normalTitle" = "Save";
 
-/* Class = "UILabel"; text = "Genre"; ObjectID = "JxI-n0-WES"; */
-"JxI-n0-WES.text" = "Genre";
+/* Class = "UILabel"; text = "$Genre$"; ObjectID = "JxI-n0-WES"; */
+"JxI-n0-WES.text" = "$Genre$";
 
-/* Class = "UIBarButtonItem"; title = "Upload"; ObjectID = "Qt1-aa-4Mu"; */
-"Qt1-aa-4Mu.title" = "Upload";
+/* Class = "UILabel"; text = "$Message$"; ObjectID = "PK2-u3-MRu"; */
+"PK2-u3-MRu.text" = "$Message$";
+
+/* Class = "UIBarButtonItem"; title = "$Upload$"; ObjectID = "Qt1-aa-4Mu"; */
+"Qt1-aa-4Mu.title" = "$Upload$";
 
 /* Class = "UIButton"; normalTitle = "Delete"; ObjectID = "VPh-OM-Uzl"; */
 "VPh-OM-Uzl.normalTitle" = "Delete";
@@ -35,17 +35,14 @@
 /* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "ZKM-1O-c4n"; */
 "ZKM-1O-c4n.title" = "Cancel";
 
-/* Class = "UIBarButtonItem"; title = "Share"; ObjectID = "a7j-ye-fAj"; */
-"a7j-ye-fAj.title" = "Share";
-
 /* Class = "UIBarButtonItem"; title = "Properties"; ObjectID = "kk2-IL-MgQ"; */
 "kk2-IL-MgQ.title" = "Properties";
 
 /* Class = "UISearchBar"; placeholder = "Filter"; ObjectID = "ooS-nt-Pt4"; */
 "ooS-nt-Pt4.placeholder" = "Filter";
 
-/* Class = "UILabel"; text = "Title"; ObjectID = "vqb-1S-Vua"; */
-"vqb-1S-Vua.text" = "Title";
+/* Class = "UILabel"; text = "$Title$"; ObjectID = "vqb-1S-Vua"; */
+"vqb-1S-Vua.text" = "$Title$";
 
 /* Class = "UIButton"; normalTitle = "Cancel"; ObjectID = "zY4-to-Ib3"; */
 "zY4-to-Ib3.normalTitle" = "Cancel";
