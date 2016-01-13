@@ -61,14 +61,14 @@ class VideoViewCell: UICollectionViewCell {
                 
                 if cacheType == .Memory {
                     // Set the alpha immediately if the image was already in memory. This stops flickering on refresh.
-                    self.thumbnailImageView.alpha = self.selected ? 0.5 : 1.0
+                    self.thumbnailImageView.alpha = self.currentImageAlpha
                 } else {
                 
                     // Fade in the image.
                     self.layer.shouldRasterize = false
                     UIView.transitionWithView(self.thumbnailImageView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut,
                         animations: {
-                            self.thumbnailImageView.alpha = self.selected ? 0.5 : 1.0
+                            self.thumbnailImageView.alpha = self.currentImageAlpha
                         }, completion: { _ in
                             self.layer.shouldRasterize = true
                     })
@@ -101,19 +101,18 @@ class VideoViewCell: UICollectionViewCell {
         self.layer.shouldRasterize = true
     }
     
+    var currentImageAlpha: CGFloat {
+        return self.selected ? 0.5 : 1.0
+    }
+    
     override var selected: Bool {
         get {
             return super.selected
         }
         set {
             super.selected = newValue
-            if newValue {
-                self.thumbnailImageView.alpha = 0.5
-                self.selectImage.image = UIImage(named: "checkcircle_filled_checked")
-            } else {
-                self.thumbnailImageView.alpha = 1.0
-                self.selectImage.image = UIImage(named: "checkcircle_hollow")
-            }
+            self.thumbnailImageView.alpha = self.currentImageAlpha
+            self.selectImage.image = UIImage(named: newValue ? "checkcircle_filled_checked" : "checkcircle_hollow")
         }
     }
 }
