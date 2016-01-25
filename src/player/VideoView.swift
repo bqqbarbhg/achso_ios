@@ -32,19 +32,21 @@ class VideoView: UIView {
         self.addSubview(self.avPlayerView)
     }
     
-    override func layoutSubviews() {
-        
-        super.layoutSubviews()
-        
+    func doLayoutSubviews(animated animated: Bool) {
         let containerSize = self.frame.size
         guard let videoSize = self.player?.videoSize else { return }
         
         let fittedSize = videoSize.fitInside(containerSize)
-
+        
         let frame = self.frame.pinToCenter(fittedSize)
         self.avPlayerView.frame = frame
         
-        layoutAnnotationLayers(animated: true)
+        layoutAnnotationLayers(animated: animated)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.doLayoutSubviews(animated: true)
     }
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

@@ -19,6 +19,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var videoPlayer: VideoPlayer?
     var playerController: PlayerController?
     
+    var video: Video?
     var activeVideo: ActiveVideo?
     var keyboardVisible: Bool = false
     
@@ -112,15 +113,16 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         // Show as pause button during segue
         self.playButton.setModeNoAniamtion(.Pause)
         self.title = self.activeVideo?.video.title
-    }
-    
-    override func viewDidAppear(animated: Bool) {
+        
+        self.videoView.alpha = 0.0
         
         if let videoPlayer = self.videoPlayer {
             self.videoView?.attachPlayer(videoPlayer)
             videoPlayer.delegate = self
-            videoPlayer.play()
         }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         
         // No animation when setting the button mode later
         self.playButton.buttonMode = .Initial
@@ -389,6 +391,30 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     func setVideo(video: Video) throws {
         
         let videoPlayer = VideoPlayer(url: try video.videoUri.realUrl.unwrap())
+        
+        self.videoPlayer = videoPlayer
+        self.video = video
+    }
+    
+    func videoLoaded() {
+        self.view.setNeedsLayout()
+        self.videoView.setNeedsLayout()
+        self.videoView.doLayoutSubviews(animated: false)
+        self.refreshView()
+        
+        
+        UIView.transitionWithView(self.videoView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut, animations: {
+            self.videoView.alpha = 1.0
+        }, completion: { _ in
+            self.videoPlayer?.play()
+        })
+        
+        guard let videoPlayer = self.videoPlayer, video = self.video else { return  }
+        
+        if self.playerController?.state == .Some(.Playing) {
+            videoPlayer.play()
+        }
+        
         let playerController = PlayerController(player: videoPlayer)
         
         let activeVideo = ActiveVideo(video: video, user: videoRepository.user)
@@ -405,8 +431,15 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.activeVideo = activeVideo
         playerController.activeVideo = activeVideo
         
-        self.videoPlayer = videoPlayer
+        
         self.playerController = playerController
+    }
+    
+    func videoFailedToLoad() {
+        self.showErrorModal(self.videoPlayer?.playerItem?.error ?? DebugError("Player item error not found"),
+            title: NSLocalizedString("error_on_video_play", comment: "Error title when the video fails to play")) {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     func videoDidUpdate(video: Video?) {

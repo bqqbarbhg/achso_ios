@@ -64,6 +64,9 @@
 /* Error title when trying to save video */
 "error_on_video_save" = "Videon tallentaminen epäonnistui";
 
+/* Error title when the video fails to play */
+"error_on_video_play" = "Videota ei voida toistaa";
+
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Ryhmää ei voi luoda";
 

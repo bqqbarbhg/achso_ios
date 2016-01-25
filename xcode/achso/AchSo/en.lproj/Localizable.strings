@@ -64,6 +64,9 @@
 /* Error title when trying to save video */
 "error_on_video_save" = "Couldn't save video";
 
+/* Error title when the video fails to play */
+"error_on_video_play" = "Can't play video";
+
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Can't create group";
 

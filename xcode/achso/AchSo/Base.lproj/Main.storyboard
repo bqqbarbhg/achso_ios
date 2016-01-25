@@ -462,7 +462,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="lZ8-eS-y0K" firstAttribute="leading" secondItem="lSG-84-dvt" secondAttribute="leading" id="1iO-dj-a2j"/>
                             <constraint firstAttribute="trailing" secondItem="lZ8-eS-y0K" secondAttribute="trailing" id="7di-zA-BTr"/>

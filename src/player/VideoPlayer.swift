@@ -5,17 +5,36 @@ import AVFoundation
 import CoreGraphics
 
 protocol VideoPlayerDelegate {
+    func videoLoaded()
+    func videoFailedToLoad()
     func timeUpdate(time: Double)
     func videoEnded()
 }
 
 class VideoPlayer: NSObject {
     
+    var kvoContext: UInt8 = 1
+    
     var avPlayer: AVPlayer
+    var asset: AVURLAsset?
+    var playerItem: AVPlayerItem?
     var videoSize: CGSize?
     var videoDuration: Double?
     
-    var delegate: VideoPlayerDelegate?
+    var delegate: VideoPlayerDelegate? {
+        didSet {
+            if let playerItem = self.playerItem {
+                switch playerItem.status {
+                case .ReadyToPlay:
+                    self.onLoaded()
+                case .Failed:
+                    self.onFailed()
+                default:
+                    break
+                }
+            }
+        }
+    }
     
     init(url: NSURL) {
         self.avPlayer = AVPlayer()
@@ -27,19 +46,55 @@ class VideoPlayer: NSObject {
         let asset = AVURLAsset(URL: url, options: .None)
         let playerItem = AVPlayerItem(asset: asset)
         
-        self.videoSize = getVideoSizeFromAsset(asset)
-        self.videoDuration = asset.duration.seconds
+        playerItem.addObserver(self, forKeyPath: "status", options: .New, context: &self.kvoContext)
         
         let avPlayer = AVPlayer(playerItem: playerItem)
         avPlayer.addPeriodicTimeObserverForInterval(CMTimeMake(1, 60), queue: nil, usingBlock: timeUpdate)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "videoEnded:", name: AVPlayerItemDidPlayToEndTimeNotification, object: playerItem)
         
         self.avPlayer = avPlayer
+        self.asset = asset
+        self.playerItem = playerItem
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        self.playerItem?.removeObserver(self, forKeyPath: "status")
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if context != &self.kvoContext {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            return
+        }
+        
+        if keyPath == "status" {
+            guard let status = change![NSKeyValueChangeNewKey]?.integerValue else { return }
+            switch AVPlayerItemStatus(rawValue: status)! {
+            case .Unknown:
+                break
+            case .ReadyToPlay:
+                self.onLoaded()
+            case .Failed:
+                self.onFailed()
+            }
+        }
+    }
+    
+    func onLoaded()
+    {
+        guard let asset = self.asset else { return }
+        self.videoSize = getVideoSizeFromAsset(asset)
+        self.videoDuration = asset.duration.seconds
+        
+        self.delegate?.videoLoaded()
+    }
+    
+    func onFailed()
+    {
+        self.delegate?.videoFailedToLoad()
     }
     
     func getVideoSizeFromAsset(asset: AVURLAsset) -> CGSize? {
