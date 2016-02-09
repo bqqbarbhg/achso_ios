@@ -1,6 +1,8 @@
 import UIKit
 
 extension UIViewController {
+    
+    // Present an error dialog, see Errors.swift
     func showErrorModal(error: ErrorType, title: String, callback: (() -> ())? = nil) {
         var errorMessage = NSLocalizedString("error_unknown",
             comment: "Error title when some unknown error happened")

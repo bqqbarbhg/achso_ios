@@ -2,6 +2,7 @@ import UIKit
 
 extension CGRect {
     
+    // Create a rectangle with `size` that is centered in this rectangle
     func pinToCenter(size: CGSize) -> CGRect {
         let selfCenter = CGPoint(
             x: self.origin.x + self.size.width / 2.0,

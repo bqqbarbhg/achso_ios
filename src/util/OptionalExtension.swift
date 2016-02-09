@@ -9,6 +9,8 @@ class UnwrapError: ErrorType {
 }
 
 extension Optional {
+    
+    // Throwing unwrap, like opt! but safer
     func unwrap() throws -> Wrapped {
         switch (self) {
         case .None: throw UnwrapError(target: String(Wrapped.self))
