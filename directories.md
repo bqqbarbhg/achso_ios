@@ -1,3 +1,8 @@
+# achso\_ios file overview
+
+This is an overview over the files in achso\_ios.
+
+Note: This is automatically generated from `directories.md` so changes may get overwritten.
 
 ## entities/
 
