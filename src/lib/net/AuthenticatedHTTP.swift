@@ -37,8 +37,10 @@ class AuthenticatedHTTP {
     let oaClient: OAuth2Client
     let userInfoEndpoint: NSURL
     
+    var authUser: AuthUser?
+    
     var tokens: TokenSet? {
-        return AuthUser.user?.tokens
+        return authUser?.tokens
     }
     
     init(oaClient: OAuth2Client, userInfoEndpoint: NSURL) {
@@ -87,7 +89,7 @@ class AuthenticatedHTTP {
                 let name: String = try responseJson.castGet("name")
                 
                 let authorizeUrl = self.oaClient.provider.authorizeUrl
-                AuthUser.user = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
+                self.authUser = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
                 
                 callback(.NewSession)
             } catch {

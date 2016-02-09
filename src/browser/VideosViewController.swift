@@ -808,7 +808,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 break
             }
             
-            if AuthUser.user == nil {
+            if Session.user == nil {
                 genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
                     style: .Default, handler: self.actionSignIn))
             } else {
@@ -868,7 +868,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func actionSignIn(action: UIAlertAction) {
-        HTTPClient.authenticate(fromViewController: self) { result in
+        Session.authenticate(fromViewController: self) { result in
             if let error = result.error {
                 self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
                     comment: "Error title when trying to sign in"))
@@ -880,7 +880,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func actionSignOut(action: UIAlertAction) {
-        HTTPClient.signOut()
+        Session.signOut()
     }
     
     func actionTagToQrCode(action: UIAlertAction) {
@@ -1025,8 +1025,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         let dateText = NSDateFormatter.localizedStringFromDate(date, dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
         
         if let location = location {
-            LocationRetriever.instance.reverseGeocodeLocation(location) { street in
-                if let street = street {
+            LocationRetriever.instance.reverseGeocodeLocation(location) { placemark in
+                if let street = placemark?.thoroughfare {
                     let videoLocation = Video.Location(latitude: location.coordinate.latitude,
                         longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy)
                     
@@ -1154,7 +1154,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func doAuthenticated(errorTitle errorTitle: String, callback: () -> ()) {
-        HTTPClient.doAuthenticated() { result in
+        Session.doAuthenticated() { result in
             if let error = result.error {
                 self.showErrorModal(error, title: errorTitle)
             } else {

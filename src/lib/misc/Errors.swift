@@ -130,7 +130,7 @@ class UserError: ErrorType, PrintableError {
     
     static var notSignedIn: UserError {
         func signIn(viewController: UIViewController, callback: (() -> ())?) {
-            HTTPClient.authenticate(fromViewController: viewController, callback: { result in
+            Session.authenticate(fromViewController: viewController, callback: { result in
                 if let error = result.error {
                     viewController.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
                         comment: "Error title when trying to sign in"))

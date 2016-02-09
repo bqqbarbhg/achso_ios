@@ -84,7 +84,7 @@ class SharesViewController: UIViewController, WKScriptMessageHandler {
         if let url = self.url {
             
             let request = NSMutableURLRequest(URL: url)
-            if let user = AuthUser.user {
+            if let user = Session.user {
                 request.addValue("Bearer \(user.tokens.access)", forHTTPHeaderField: "Authorization")
                 if let refresh = user.tokens.refresh {
                     request.addValue(refresh, forHTTPHeaderField: "X-Refresh-Token")

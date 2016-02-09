@@ -8,6 +8,12 @@ Note: This is automatically generated from `directories.md` so changes may get o
 
 #### @parse(src/app/*.swift)
 
+## auth/
+
+Things related to the setup
+
+#### @parse(src/auth/*.swift)
+
 ## entities/
 
 These are data structures used in the code.

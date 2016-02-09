@@ -40,9 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
         
+        Session.load()
         setupServerConnections()
         
-        loadUserSession()
         videoRepository.refresh()
         
         SDWebImageManager.sharedManager().delegate = ImageLoader.instance
@@ -60,54 +60,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let usePublic = userDefaults.objectForKey("layers_public") as? Bool
         if usePublic ?? true {
-            if let
-                endpointString: String = Secrets.get("LAYERS_OIDC_URL"),
-                endpoint: NSURL = NSURL(string: endpointString),
-                clientId: String = Secrets.get("LAYERS_OIDC_CLIENT_ID"),
-                clientSecret: String = Secrets.get("LAYERS_OIDC_CLIENT_SECRET") {
-                    
-                    HTTPClient.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
-            }
+            Session.connectToPublicServers()
         } else {
-            HTTPClient.http = nil
             guard let
                 endpointString: String = userDefaults.stringForKey("layers_api_url"),
                 endpoint: NSURL = NSURL(string: endpointString) else { return }
             
-            // TODO: Cache the OIDC tokens
-            Alamofire.request(.GET, endpoint.URLByAppendingPathComponent("achrails/oidc_tokens"))
-                .responseJSON { result in
-                do {
-                    let json = try (result.result.value as? JSONObject).unwrap()
-                    let clientId: String = try json.castGet("client_id")
-                    let clientSecret: String = try json.castGet("client_secret")
-                    
-                    let oidcEndpoint = endpoint.URLByAppendingPathComponent("/o/oauth2", isDirectory: true)
-                    HTTPClient.setupOIDC(endPointUrl: oidcEndpoint, clientId: clientId, clientSecret: clientSecret)
-                } catch {
-                    // Sign out if the Layers Box configuration is invalid
-                    HTTPClient.signOut()
-                }
-            }
+            Session.connectToPrivateLayersBox(endpoint)
         }
     }
-    
-    func saveUserSession() {
-        if let user = AuthUser.user {
-            NSKeyedArchiver.archiveRootObject(user, toFile: AuthUser.ArchiveURL.path!)
-        } else {
-            do {
-                try NSFileManager.defaultManager().removeItemAtURL(AuthUser.ArchiveURL)
-            } catch {
-            }
-        }
-    }
-    
-    func loadUserSession() {
-        AuthUser.user = NSKeyedUnarchiver.unarchiveObjectWithFile(AuthUser.ArchiveURL.path!) as? AuthUser
-        HTTPClient.setupApiWrappers()
-    }
-    
+ 
     func saveGroups(groups: [Group], user: User, downloadedBy: String) {
         let groupList = GroupList(groups: groups, user: user, downloadedBy: downloadedBy)
         NSKeyedArchiver.archiveRootObject(groupList, toFile: GroupList.ArchiveURL.path!)
@@ -118,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return nil
         }
         
-        if groupList.downloadedBy != AuthUser.user?.id {
+        if groupList.downloadedBy != Session.user?.id {
             return nil
         }
         
@@ -131,11 +93,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        saveUserSession()
+        Session.save()
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
-        loadUserSession()
+        Session.load()
+        setupServerConnections()
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
@@ -145,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        saveUserSession()
+        Session.save()
         self.saveContext()
     }
     
@@ -256,7 +219,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let fetch = NSFetchRequest(entityName: "Video")
         fetch.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-        if let user = AuthUser.user {
+        if let user = Session.user {
             fetch.predicate = NSPredicate(format: "downloadedBy == %@ OR isLocal == TRUE", argumentArray: [user.id])
         } else {
             fetch.predicate = NSPredicate(format: "isLocal == TRUE")

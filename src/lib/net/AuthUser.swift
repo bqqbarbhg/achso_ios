@@ -10,9 +10,6 @@ import Foundation
 
 // Represents an authenticated OIDC user.
 class AuthUser: NSObject, NSCoding {
-
-    // The currently authenticated user (if exists).
-    static var user: AuthUser?
     
     // OIDC tokens of the user.
     var tokens: TokenSet
@@ -23,10 +20,6 @@ class AuthUser: NSObject, NSCoding {
     
     // The URL base this user was authorized from
     var authorizeUrl: NSURL
-    
-    // Serialization
-    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("auth_user")
     
     init(tokens: TokenSet, id: String, name: String, authorizeUrl: NSURL) {
         

@@ -21,7 +21,6 @@
 		A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77B1C0CB7EC000C5D62 /* Group.swift */; };
 		A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE77D1C0CBD6B000C5D62 /* GroupList.swift */; };
 		A946CC031C1587700020828A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A946CC051C1587700020828A /* Localizable.strings */; };
-		A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A946FECB1BFDD38000F53003 /* HTTPClient.swift */; };
 		A94B82AF1BEA3DC00017874D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A94B82AD1BEA3DC00017874D /* Main.storyboard */; };
 		A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A94B82B01BEA3DC00017874D /* AchSo.xcdatamodeld */; };
 		A94B82B41BEA3DC00017874D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A94B82B31BEA3DC00017874D /* Assets.xcassets */; };
@@ -80,6 +79,7 @@
 		A9D6687D1C6A23330053A3E4 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668781C6A23330053A3E4 /* Search.swift */; };
 		A9D6687E1C6A23330053A3E4 /* LocationRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668791C6A23330053A3E4 /* LocationRetriever.swift */; };
 		A9D6687F1C6A23330053A3E4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D6687A1C6A23330053A3E4 /* Errors.swift */; };
+		A9D668831C6A4E9A0053A3E4 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668821C6A4E9A0053A3E4 /* Session.swift */; };
 		A9FA26EF1C1729C90079B8F8 /* SharesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */; };
 		A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */; };
 /* End PBXBuildFile section */
@@ -105,7 +105,6 @@
 		A946CC041C1587700020828A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A946CC061C1587720020828A /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A946CC071C1587730020828A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A946FECB1BFDD38000F53003 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		A94B82A61BEA3DC00017874D /* AchSo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AchSo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A94B82AE1BEA3DC00017874D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A94B82B11BEA3DC00017874D /* AchSo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AchSo.xcdatamodel; sourceTree = "<group>"; };
@@ -170,6 +169,7 @@
 		A9D668781C6A23330053A3E4 /* Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Search.swift; path = lib/misc/Search.swift; sourceTree = "<group>"; };
 		A9D668791C6A23330053A3E4 /* LocationRetriever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationRetriever.swift; path = lib/misc/LocationRetriever.swift; sourceTree = "<group>"; };
 		A9D6687A1C6A23330053A3E4 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Errors.swift; path = lib/misc/Errors.swift; sourceTree = "<group>"; };
+		A9D668821C6A4E9A0053A3E4 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharesViewController.swift; sourceTree = "<group>"; };
 		A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginWebViewController.swift; sourceTree = "<group>"; };
 		ABC9A50BCF0F09E8DF39B446 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -304,8 +304,8 @@
 		A95C80F71BFC819100CFEA43 /* auth */ = {
 			isa = PBXGroup;
 			children = (
+				A9D668821C6A4E9A0053A3E4 /* Session.swift */,
 				A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */,
-				A946FECB1BFDD38000F53003 /* HTTPClient.swift */,
 			);
 			path = auth;
 			sourceTree = "<group>";
@@ -330,10 +330,10 @@
 		A9D668431C69DE1A0053A3E4 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				A9D668441C69DE290053A3E4 /* net */,
 				A9D668751C6A23290053A3E4 /* misc */,
 				A9D668621C6A22B20053A3E4 /* extensions */,
 				A9D668511C6A22A50053A3E4 /* helpers */,
-				A9D668441C69DE290053A3E4 /* net */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -548,7 +548,6 @@
 				A98101EA1BF48F14003352FF /* AnnotationImages.swift in Sources */,
 				A9167FBF1BEB96CE0018BEC4 /* AVPlayerView.swift in Sources */,
 				A91D672F1BFE007C00B15A66 /* VideoRepository.swift in Sources */,
-				A946FECC1BFDD38000F53003 /* HTTPClient.swift in Sources */,
 				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
 				A9D668461C69DE430053A3E4 /* Alamotypes.swift in Sources */,
 				A91D672B1BFDF42A00B15A66 /* AchRails.swift in Sources */,
@@ -587,6 +586,7 @@
 				A973BC971BF0F02F00D07B82 /* SeekAnnotationLayer.swift in Sources */,
 				A9D668701C6A22BD0053A3E4 /* NSUUIDExtension.swift in Sources */,
 				A9D6686F1C6A22BD0053A3E4 /* NSDateExtension.swift in Sources */,
+				A9D668831C6A4E9A0053A3E4 /* Session.swift in Sources */,
 				A95E99F91BFF4495001BF3E2 /* Uploader.swift in Sources */,
 				A9D6687B1C6A23330053A3E4 /* Tasks.swift in Sources */,
 				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
