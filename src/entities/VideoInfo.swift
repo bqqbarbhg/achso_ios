@@ -1,3 +1,13 @@
+/*
+
+`VideoInfo` is a lightweight video structure. It has enough data to be used in the browsing screen, but not enough for usage.
+
+When an user selects a video for some purpose a full `Video` object is fetched by the `id`, see Video.swift.
+
+Serializable to Core Data for quick loading and storing.
+
+*/
+
 import Foundation
 import CoreData
 

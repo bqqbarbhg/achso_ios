@@ -1,3 +1,25 @@
+/*
+
+Simple task graph implementaiton. Tasks can dynamically spawn subtasks and defer to them when completed.
+
+Tasks need to be completed or failed explcitly, which allows using asynchronous APIs inside the task processing.
+
+    class GetAllThingsTask: Task {
+        func run() {
+            getAllThingsAsync() { tryThings in
+                guard let things = tryThings else { self.fail(tryThings.error) }
+
+                for thing in things {
+                    self.addSubtask(GetOneThingTask(thing))
+                }
+
+                self.done()
+            }
+        }
+    }
+
+*/
+
 import Foundation
 
 class Task {

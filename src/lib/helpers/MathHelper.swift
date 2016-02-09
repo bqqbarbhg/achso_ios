@@ -1,3 +1,9 @@
+/*
+
+Miscellanious math helper functions.
+
+*/
+
 import Foundation
 
 func clamp<T : Comparable>(value: T, minVal: T, maxVal: T) -> T {

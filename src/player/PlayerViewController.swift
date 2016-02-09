@@ -1,3 +1,13 @@
+/*
+
+`PlayerViewController` is the view controller for the video player activity.
+
+It mostly just loads the video into an `AVPlayerView` (see AVPlayerView.swift) and bridges the UI to the `PlayerController` (see PlayerController.swift).
+
+The UI is mostly updated in a single function `refreshView()` which moves the data from the `PlayerController` to the interface components.
+
+*/
+
 import UIKit
 
 class PlayerViewController: UIViewController, VideoPlayerDelegate {

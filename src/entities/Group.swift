@@ -1,3 +1,10 @@
+/*
+
+A group in achrails.
+Contains some info and a list of video IDs.
+
+*/
+
 import Foundation
 import CoreData
 

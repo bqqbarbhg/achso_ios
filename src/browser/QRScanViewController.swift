@@ -1,3 +1,11 @@
+/*
+
+`QRScanViewController` handles the scanning of QR codes for both tagging and searching videos.
+
+It uses `AVCaptureMetadataOutput` internally for recognizing the QR code from a video feed.
+
+*/
+
 import UIKit
 import AVFoundation
 

@@ -1,3 +1,12 @@
+/*
+
+`Video` maps to the video manifest JSON format and exposes all the data.
+It has some extra data such as if the video is modified or which user downloaded it.
+
+This is not used for playback or editing purposes, see ActiveVideo.swift.
+
+*/
+
 import Foundation
 
 class Video {
@@ -17,6 +26,7 @@ class Video {
     var author: User
     var tag: String?
     
+    // Local data
     var hasLocalModifications: Bool
     var downloadedBy: String?
     

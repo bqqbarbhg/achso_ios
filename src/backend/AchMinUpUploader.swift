@@ -1,6 +1,16 @@
+/*
+
+API wrapper for achminup, see https://github.com/bqqbarbhg/achminup
+
+Achminup or "acsho minimal uploader" is just a simple PHP script that receives files, so it does not generate thumbnails. Uploading is done using simple HTTP post.
+
+Note: This has no authentication.
+
+*/
+
+
 import Alamofire
 
-// API wrapper for https://github.com/bqqbarbhg/achminup
 class AchMinUpUploader: VideoUploader, ThumbnailUploader {
     
     let endpoint: NSURL

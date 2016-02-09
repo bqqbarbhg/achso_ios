@@ -1,6 +1,13 @@
-import Foundation
+/*
 
-// A snapshot of the state of an `ActiveVideo`
+ActiveVideoState is a snapshot of the state of an `ActiveVideo` (ActiveVideo.swift).
+It is stored in a more compact way (contiguous arrays) than the video itself to make it less memory intensive to store many states.
+
+Used to implament undo in the editing.
+
+*/
+
+import Foundation
 
 class ActiveVideoState {
     typealias BatchPoint = (begin: Int, end: Int, time: Double)

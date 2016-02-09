@@ -1,3 +1,10 @@
+/*
+
+`AnnotationBatch` is a batch of Annotations in a single time point.
+See ActiveVideo.swift and Annotation.swift.
+
+*/
+
 import Foundation
 
 class AnnotationBatch {

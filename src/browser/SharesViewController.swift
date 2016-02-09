@@ -1,3 +1,13 @@
+/*
+
+`SharesViewController` wraps an `WKWebView` and displays the achrails web UI for some group management related functions.
+
+Authentication is done with OAuth2 by passing Bearer token manually to the requests with a custom `X-Refresh-Token` header in case the token expires.
+
+It has some Javascript bridging to modify the look of the site a little bit.
+
+*/
+
 import UIKit
 import WebKit
 

@@ -1,3 +1,10 @@
+/*
+
+`GradientLayer` is just a simple `CALayer` that just fills the area with a gradient.
+It is used in VideoCellView.swift to make the dark gradient over the thumbnail.
+
+*/
+
 import UIKit
 
 class GradientLayer: CALayer {

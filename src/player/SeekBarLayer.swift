@@ -1,3 +1,11 @@
+/*
+
+`SeekAnnotationLayer` is a `CALayer` responsible for drawing the seek bar itself, that is the background, the filled area and the ball.
+
+See SeekBarView.swift.
+
+*/
+
 import UIKit
 import CoreGraphics
 

@@ -1,3 +1,12 @@
+/*
+
+`VideoDetailsViewController` is used to display the info of one or multiple videos.
+Currently it's a pretty bare bones form view.
+
+Uses [XLForm](https://github.com/xmartlabs/XLForm) internally.
+
+*/
+
 import Foundation
 import XLForm
 

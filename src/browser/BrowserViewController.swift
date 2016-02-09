@@ -1,3 +1,9 @@
+/*
+
+`BrowserViewController` is the parent view controller that contains both CategoriesViewController.swift and VideosViewController.swift .
+
+*/
+
 import UIKit
 
 class BrowserViewController: UISplitViewController, UISplitViewControllerDelegate {

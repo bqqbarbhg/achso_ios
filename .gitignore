@@ -24,3 +24,6 @@ xcode/AchSo/Pods/
 # Secrets property list
 xcode/AchSo/AchSo/Secrets.plist
 
+# Documentation output
+docs.md
+

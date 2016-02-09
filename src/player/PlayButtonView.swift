@@ -1,3 +1,12 @@
+/*
+
+`PlayButtonView` is the play/pause button in the player view.
+Most of the functionality is handled by the base class `UIControl`, so this handles mostly the state changing.
+
+Uses PlayButtonLayer.swift for display.
+
+*/
+
 import UIKit
 
 class PlayButtonView: UIControl {

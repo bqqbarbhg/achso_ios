@@ -1,3 +1,12 @@
+/*
+
+`VideoCellView` represents one cell in the grid.
+
+Uses [SDWebImage](https://github.com/rs/SDWebImage) to fetch and display the image.
+Uses GradientLayer.swift for the gradient.
+
+*/
+
 import UIKit
 import AVKit
 import AVFoundation

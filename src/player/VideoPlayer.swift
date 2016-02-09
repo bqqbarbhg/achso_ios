@@ -1,3 +1,9 @@
+/*
+
+`VideoPlayer` wraps an `AVPlayer` and hides most of the complexity providing a simple `VideoPlayerDelegate` API.
+
+*/
+
 import UIKit
 import AVKit
 import Foundation

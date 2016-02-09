@@ -1,3 +1,9 @@
+/*
+
+`User` maps to the user objects used in the manifest JSON format.
+
+*/
+
 import UIKit
 
 class User: NSObject, NSCoding {

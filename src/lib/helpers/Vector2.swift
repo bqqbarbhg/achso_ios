@@ -1,3 +1,9 @@
+/*
+
+Vector2 some common vector math operations that are more cumbersome to do with CGPoint or CGSize objects.
+
+*/
+
 import Foundation
 import UIKit
 

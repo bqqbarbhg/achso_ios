@@ -1,3 +1,9 @@
+/*
+
+`AVPlayerView` is just a view wrapping an `AVPlayer` for playback.
+
+*/
+
 import UIKit
 import AVKit
 import Foundation

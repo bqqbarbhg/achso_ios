@@ -1,3 +1,12 @@
+/*
+
+Manages Secrets.plist that contains sensitive data that is kept out of version control.
+
+    let apiKey: String = Secrets.get("API_KEY")
+    let apiUrl = Secrets.getUrl("API_URL")
+
+*/
+
 import Foundation
 
 class Secrets {

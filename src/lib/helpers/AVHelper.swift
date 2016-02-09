@@ -1,3 +1,11 @@
+/*
+
+Audiovisual helper functions.
+
+Contains functions for creating and saving thumbnails from videos specified by an URL.
+
+*/
+
 import AVKit
 import AVFoundation
 

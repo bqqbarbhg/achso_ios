@@ -1,3 +1,13 @@
+/*
+
+`VideoView` is the view in the player that actually contains the video with the annotations.
+
+The annotations are done as separate `CALayer`s to reduce overdraw.
+
+Uses AVPlayerView.swift and AnnotationImages.swift for display.
+
+*/
+
 import UIKit
 import AVKit
 import Foundation

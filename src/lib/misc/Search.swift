@@ -1,3 +1,23 @@
+/*
+
+Simple keyword search implementation.
+
+`SearchIndex` manages an database of keywords that map to `SearchObject`s that is potentially slow to build but fast to query.
+
+    let searchIndex = SearchIndex()
+
+    for document in documents {
+        let searchObject = SearchObject(tag: document.id)
+        searchObject.feed(document.title)
+        searchObject.feed(document.author.name)
+        searchObject.feed(document.bodyText)
+        searchIndex.add(searchObject)
+    }
+
+    let results = searchIndex.search("simple query")
+
+*/
+
 import Foundation
 
 func keywordsFromText(text: String) -> Set<String> {

@@ -1,3 +1,19 @@
+/*
+
+LocationRetriever manages an CLLocationManager instance. Handles prompting the user for permission transparently.
+
+    LocationRetriever.instance.startRetrievingLocation(doStuffWhileLocating)
+
+    if let location = LocationRetriever.instance.finishRetrievingLocation() {
+        LocationRetriever.instance.reverseGeocodeLocation(location) { placemark in
+            if placemark {
+                print(placemark.thoroughfare)
+            }
+        }
+    }
+
+*/
+
 import Foundation
 import CoreLocation
 
@@ -7,6 +23,7 @@ class LocationRetriever: NSObject, CLLocationManagerDelegate {
     var locationManager: CLLocationManager? = nil
     var callback: (() -> ())? = nil
     
+    // Calls the callback after the user has potentially accepted/rejected the permission request.
     func startRetrievingLocation(callback: () -> ()) {
         
         switch CLLocationManager.authorizationStatus() {
@@ -52,11 +69,11 @@ class LocationRetriever: NSObject, CLLocationManagerDelegate {
         return locationManager.location
     }
     
-    func reverseGeocodeLocation(location: CLLocation, callback: String? -> ()) {
+    func reverseGeocodeLocation(location: CLLocation, callback: CLPlacemark? -> ()) {
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: { placemarks, error in
             if let placemark = placemarks?.first {
-                callback(placemark.thoroughfare)
+                callback(placemark)
             } else {
                 callback(nil)
             }

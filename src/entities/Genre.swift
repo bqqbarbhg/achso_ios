@@ -1,3 +1,11 @@
+/*
+
+Genres exist in two forms, a culture-invariant ID such as "good_work" or "problem" and a localized string such as "Good work" or "Ongelma".
+
+This mapping is often required so the localizations are defined here.
+
+*/
+
 import Foundation
 
 struct Genre {

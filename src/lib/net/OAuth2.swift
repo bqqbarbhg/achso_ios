@@ -1,9 +1,8 @@
-import Foundation
-
-// A simple OAuth2 utility for creating API calls.
-// NOTE: This does not actually do any HTTP requests! Use an external client for that.
-
 /*
+
+A simple OAuth2 utility for creating API calls.
+
+NOTE: This does not actually do any HTTP requests! Use an external client for that.
 
 Initialization:
 
@@ -32,6 +31,8 @@ Refreshing tokens:
     let newTokens = OAuth2Tokens(responseJson)
 
 */
+
+import Foundation
 
 // An OAuth2 API descriptor
 class OAuth2Provider {

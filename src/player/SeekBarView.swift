@@ -1,3 +1,12 @@
+/*
+
+`SeekBarView` is the seek bar in the player view.
+Most of the functionality is handled by the base class `UIControl`, so this handles mostly the state changing.
+
+Uses SeekBarLayer.swift and SeekAnnotationLayer.swift for display.
+
+*/
+
 import UIKit
 
 class SeekBarView: UIControl {

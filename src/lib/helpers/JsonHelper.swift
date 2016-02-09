@@ -1,3 +1,14 @@
+/*
+
+Defines `JSONObject` and `JSONArray` and wrappers for parsing and stringifying JSON data.
+
+Also contains an extension `castGet` for naturally handling JSON with thrown errors.
+
+    let json = parseJson(jsonString)
+    let intValue: Int = json.castGet("someInt")
+
+*/
+
 import Foundation
 
 typealias JSONObject = [String : AnyObject]

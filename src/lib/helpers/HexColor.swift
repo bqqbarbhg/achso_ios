@@ -1,3 +1,11 @@
+/*
+
+Functions for creating colors from hex values. Handy for inline declarations.
+
+    let color = hexCgColor(0x6495ED)
+
+*/
+
 import UIKit
 
 func rgbaCgColor(r: Int, _ g: Int, _ b: Int, _ alpha: CGFloat) -> CGColor {

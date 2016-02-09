@@ -1,3 +1,9 @@
+/*
+
+Implements SDWebImageManagerDelegate that crops downloaded images into 4:3 aspect ratio.
+
+*/
+
 import SDWebImage
 
 class ImageLoader: NSObject, SDWebImageManagerDelegate {

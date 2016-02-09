@@ -1,3 +1,9 @@
+/*
+
+`CategoriesViewController` is the left-hand side view in the browsing activity. It manages a list view of the groups and changes the data source of VideosViewController.swift .
+
+*/
+
 import UIKit
 
 class CategoriesViewController: UITableViewController, VideoRepositoryListener {

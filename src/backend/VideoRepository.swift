@@ -1,3 +1,23 @@
+/*
+
+VideoRepository manages the uploading and downloading of videos and groups.
+
+`refresh()` performs a local update that is quite fast and simple. It just loads the entities from core data.
+
+`refreshOnline()` does a full online sync which is complicated and slow (asynchronously).
+It uses Tasks.swift to break the operation into smaller chunks. The operations are roughly as follows:
+
+- Download a list of all groups
+- Donwload a list of all videos and compare their versions to the local ones
+- Upload videos which are modified locally (server handles merging conflicts)
+- Download videos that are more recent on the server
+
+`uploadVideo(...)` uploads the video and thumbnail data in addition to the manifest data. The asynchronous HTTP methods make this function more complicated than it should be and it ended up as a delicate dance between background threads, callbacks and semaphores.
+
+Uses AchRails.swift and Uploader.swift for connecting to the servers.
+
+*/
+
 import UIKit
 
 protocol VideoRepositoryListener: class {

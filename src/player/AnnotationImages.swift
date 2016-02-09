@@ -1,3 +1,12 @@
+/*
+
+Manages the annotation ring graphics.
+
+Request an image by parameters with `getAnnotationImage`.
+It renders a new image using gradients or returns a cached copy.
+
+*/
+
 import UIKit
 
 struct AnnotationParameters: Equatable, Hashable {

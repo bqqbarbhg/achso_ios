@@ -1,3 +1,11 @@
+/*
+
+`GroupList` is a list of `Group` objects that supports serialization and deserialization for caching the groups locally.
+
+See Group.swift.
+
+*/
+
 import Foundation
 
 class GroupList: NSObject, NSCoding {

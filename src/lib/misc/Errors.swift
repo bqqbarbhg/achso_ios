@@ -1,3 +1,15 @@
+/*
+
+This file defines error types and makes a framework for presenting users with helpful errors.
+
+Any errors that implement `PrintableError` can be displayed to the user. User facing errors should be localized and if possible provided with fix actions. Errors originating from failing code logic or servers should use internal error types which don't need to be localized.
+
+    throw UserError.failedToSaveVideo.withDebugError("Could not connect to the server")
+
+Also defines a Rust-like `Try<T>` that contains either a result or an error.
+
+*/
+
 import UIKit
 
 protocol PrintableError {
@@ -24,7 +36,7 @@ class AssertionError: ErrorType, PrintableError {
     }
     
     var localizedErrorDescription: String {
-        return "Assertion failed: \(self.description)"
+        return "[assertion failed: \(self.description)]"
     }
 }
 

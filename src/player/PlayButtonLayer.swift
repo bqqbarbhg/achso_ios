@@ -1,3 +1,9 @@
+/*
+
+`PlayButtonLayer` draws the morphing play/pause button. See PlayButtonView.swift.
+
+*/
+
 import UIKit
 import CoreGraphics
 

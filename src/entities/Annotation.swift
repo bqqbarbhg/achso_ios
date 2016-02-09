@@ -1,3 +1,13 @@
+/*
+
+A single annotation object is defined here.
+
+`AnnotationBase` is a memory-efficent storage of an Annotation, because it's a struct instead of a class.
+However it's more convenient to work with classes in Swift as struct references don't really exist so
+`Annotation` is used in general, while `AnnotationBase` is used only when required (ActiveVideoState.swift).
+
+*/
+
 import Foundation
 
 struct AnnotationBase {

@@ -1,3 +1,11 @@
+/*
+
+AuthUser is an object describing an OIDC user session. It owns the `TokenSet` used to make authenticated HTTP requests.
+
+It also defines serialization and deserialization methods for storing user state when closing the app.
+
+*/
+
 import Foundation
 
 // Represents an authenticated OIDC user.

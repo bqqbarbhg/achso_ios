@@ -1,3 +1,9 @@
+/*
+
+Aliases for common Alamofire types.
+
+*/
+
 import Alamofire
 
 typealias AResponse = Response<AnyObject, NSError>

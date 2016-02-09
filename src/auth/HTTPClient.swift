@@ -1,3 +1,9 @@
+/*
+
+`HTTPClient` manages some configuration things for services. It's not very good right now and is ripe for refactoring.
+
+*/
+
 import UIKit
 
 class HTTPClient {

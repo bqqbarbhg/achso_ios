@@ -1,3 +1,10 @@
+/*
+
+`LoginWebViewController` is a simple view controller containing one web view. It is used to display the OIDC logging in or registering page.
+The view controller tries to "trap" the login redirect and return the control to the app.
+
+*/
+
 import UIKit
 
 class LoginWebViewController: UIViewController, UIWebViewDelegate {

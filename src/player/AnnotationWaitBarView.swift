@@ -1,3 +1,9 @@
+/*
+
+`AnnotationWaitBarView` is the progress bar in the bottom of the screen when annotations are displayed while playing.
+
+*/
+
 import UIKit
 
 class AnnotationWaitBarView: UIView {

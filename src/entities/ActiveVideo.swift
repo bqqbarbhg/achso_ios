@@ -1,6 +1,16 @@
+/*
+
+`ActiveVideo` is an video that is currently played or edited, in a better data structure.
+
+Modifications to the video can be solidified with `toVideo()`
+
+Annotations are separated to batches by time, so that ones that are displayed at once are contained in one batch.
+This is the data structure that is used with playing and editing.
+
+*/
+
 import Foundation
 
-// Video that is currently played or edited, in a better data structure
 class ActiveVideo {
     
     var video: Video

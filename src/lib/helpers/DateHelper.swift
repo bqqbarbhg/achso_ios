@@ -1,3 +1,11 @@
+/*
+
+Miscellanious date and time helper functions.
+
+Defines `iso8601DateFormatter` for parsing and writing to the Ach so! manifest format.
+
+*/
+
 import Foundation
 
 var iso8601DateFormatter: NSDateFormatter = {

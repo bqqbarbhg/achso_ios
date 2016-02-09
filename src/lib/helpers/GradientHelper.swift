@@ -1,3 +1,9 @@
+/*
+
+Wraps `CGCreateGradientWithColors` with a simpler and more natural Swift API.
+
+*/
+
 import UIKit
 
 struct GradientPoint {

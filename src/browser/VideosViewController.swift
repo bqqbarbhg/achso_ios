@@ -1,3 +1,19 @@
+/*
+
+`VideosViewController` is the right-hand side view of the browsing activity that contains the video thumbnail grid.
+
+This is a complicated view and has a lot of logic.
+
+It handles these:
+
+- Delegating to different view controllers
+- Displaying the video thumbnails using VideoCellView.swift
+- Filtering the videos based on genre and search query using Search.swift
+- Changing the UI depending on the state (selecting or not)
+- Creates the video objects from recorded videos
+
+*/
+
 import UIKit
 import MobileCoreServices
 import AssetsLibrary

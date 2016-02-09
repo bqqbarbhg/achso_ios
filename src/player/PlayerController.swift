@@ -1,3 +1,17 @@
+/*
+
+This implements the logic for the player.
+
+This is separated to 4 states: `Playing`, `ManualPause`, `AnnotationPause`, `AnnotationEdit`.
+The states implement `PlayerHandler` which has a response to 5 different events `start`, `timeUpdate`, `userPlay`, `userSeek`, `annotationEdit`.
+This defines a matrix of responses to events which is very predictable.
+
+If some state has no response for an event it may switch into another and delegate the event to that.
+
+This file also contains the logic for editing the annotations in the `AnnotationEditHandler.annotationEdit` function.
+
+*/
+
 import Foundation
 
 enum PlayerState {

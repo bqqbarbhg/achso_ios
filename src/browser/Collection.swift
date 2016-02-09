@@ -1,3 +1,9 @@
+/*
+
+`Collection` is a filtered collection of videos by some criteria.
+
+*/
+
 import Foundation
 
 class Collection {

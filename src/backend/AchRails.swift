@@ -1,3 +1,17 @@
+/*
+
+API wrapper for achrails, see https://github.com/learning-layers/achrails
+
+Note: This is only for wrapping the API. All the real logic relating to the syncing of the video and group data is handled in VideoRepository.swift.
+
+achrails is used as the general backend for Ach so!. Authentication is done with OIDC as is with to the other Layers backends.
+
+The server does not store actual video data, but only references to data uploaded to other services. Groups and video sharing are fully stored in achrails.
+
+All communication to the Social Semantic Server is done through achrails.
+
+*/
+
 import Foundation
 
 struct VideoRevision {
@@ -10,7 +24,6 @@ struct VideoRevision {
     }
 }
 
-// API wrapper for https://github.com/learning-layers/achrails
 class AchRails {
     
     let http: AuthenticatedHTTP

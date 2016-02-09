@@ -1,3 +1,11 @@
+/*
+
+`SeekAnnotationLayer` is a `CALayer` responsible for drawing the annotation markers on the seek bar.
+
+See SeekBarView.swift.
+
+*/
+
 import UIKit
 
 class SeekAnnotationLayer: CALayer {

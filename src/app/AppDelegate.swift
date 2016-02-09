@@ -1,3 +1,9 @@
+/*
+
+`AppDelegate` is the main entry point of the application. Other than some initialization stuff it handles the low level connection to the Core Data.
+
+*/
+
 import UIKit
 import CoreData
 import SDWebImage

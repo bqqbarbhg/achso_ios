@@ -1,24 +1,12 @@
-import Alamofire
+/*
 
-struct HTTPRequest {
-    let method: Method
-    let url: URLStringConvertible
-    let parameters: [String: AnyObject]?
-    let encoding: ParameterEncoding
-    let headers: [String: String]?
-    
-    init(_ method: Method, _ url: URLStringConvertible, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil) {
-        self.method = method
-        self.url = url
-        self.parameters = parameters
-        self.encoding = encoding
-        self.headers = headers
-    }
-    
-    init(_ method: Method, _ url: URLStringConvertible, json: [String: AnyObject], headers: [String: String]? = nil) {
-        self.init(method, url, parameters: json, encoding: .JSON, headers: headers)
-    }
-}
+`AuthenticatedHTTP` is a HTTP client that can make requests using OAuth2 Bearer authentication. It retrieves the authentication tokens and tries to refresh them if they have expired.
+
+Uses OAuth2.swift internally.
+
+*/
+
+import Alamofire
 
 enum AuthenticationResult {
     case OldSession
