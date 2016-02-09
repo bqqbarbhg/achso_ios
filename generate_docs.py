@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import sys, re
+import sys, re, glob
 
-RE_PARSE = re.compile(r'@parse\(([a-zA-Z0-9_./]+)\)')
+RE_PARSE = re.compile(r'@parse\(([a-zA-Z0-9_./*]+)\)')
 RE_FILENAME = re.compile(r'[A-Za-z0-9_]+\.swift')
 
 def makelink(match):
@@ -20,29 +20,31 @@ with open(sys.argv[1], 'r') as basefile:
             output.append(line)
             continue
 
-        path = match.group(1)
-        filename = path.split('/')[-1]
-        output.append(RE_PARSE.sub(filename, line))
+        paths = glob.glob(match.group(1))
 
-        with open(path, 'r') as parsefile:
-            try:
-                lineit = iter(parsefile)
-                if next(lineit).strip() != '/*':
-                    continue
-                if next(lineit).strip() != '':
-                    continue
+        for path in paths:
+            filename = path.split('/')[-1]
+            output.append(RE_PARSE.sub(filename, line))
 
-                for line in lineit:
-                    line = line.rstrip()
-                    if line == '*/':
-                        break
+            with open(path, 'r') as parsefile:
+                try:
+                    lineit = iter(parsefile)
+                    if next(lineit).strip() != '/*':
+                        continue
+                    if next(lineit).strip() != '':
+                        continue
 
-                    line = RE_FILENAME.sub(makelink, line)
+                    for pline in lineit:
+                        pline = pline.rstrip()
+                        if pline == '*/':
+                            break
 
-                    output.append(line)
+                        pline = RE_FILENAME.sub(makelink, pline)
 
-            except StopIteration:
-                pass
+                        output.append(pline)
+
+                except StopIteration:
+                    pass
             
 
 with open(sys.argv[2], 'w') as outfile:
