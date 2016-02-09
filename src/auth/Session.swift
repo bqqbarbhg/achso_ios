@@ -110,6 +110,8 @@ class Session {
         
         self.achrailsUrl = Secrets.getUrl("ACHRAILS_URL")
         self.achminupUrl = Secrets.getUrl("ACHMINUP_URL")
+        
+        self.layersBoxUrl = nil
         self.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
         
     }
@@ -182,6 +184,8 @@ class Session {
             default: break
             }
             
+            self.save()
+            
             userCallback(result)
         }
         
@@ -229,7 +233,7 @@ class Session {
     }
     
     static func signOut() {
-        self.http = nil
+        self.http?.authUser = nil
         videoRepository.achRails = nil
         videoRepository.videoUploaders = []
         Session.save()
