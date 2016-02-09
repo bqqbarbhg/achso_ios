@@ -4,6 +4,10 @@ This is an overview over the files in achso\_ios.
 
 Note: This is automatically generated from `directories.md` so changes may get overwritten.
 
+## app/
+
+#### @parse(src/app/*.swift)
+
 ## entities/
 
 These are data structures used in the code.
@@ -28,9 +32,7 @@ Here is code that communicates with external servers. `VideoRepository` contains
 
 #### @parse(src/backend/*.swift)
 
-## lib/
-
-### net/
+## lib/net/
 
 Defines functionality for connecting to remote servers securely.
 
@@ -38,20 +40,20 @@ HTTP requests are done with [Alamofire](https://github.com/Alamofire/Alamofire) 
 
 #### @parse(src/lib/net/*.swift)
 
-### misc/
+## lib/misc/
 
 Miscellaneous classes and utilities that are mostly contained in a single source file.
 
 #### @parse(src/lib/misc/*.swift)
 
-### helpers/
+## lib/helpers/
 
 These are _helper_ files, that mostly wrap verbose or otherwise lousy APIs with simpler ones.
 These should not define any big concepts or behaviour.
 
 #### @parse(src/lib/helpers/*.swift)
 
-### extensions/
+## lib/extensions/
 
 Miscellaneous helper extension methods for existing objects.
 
