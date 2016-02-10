@@ -114,6 +114,7 @@ class ActiveVideo {
             annotation.position = position
             annotation.time = batch.time
             annotation.author = self.user
+            annotation.createdTimestamp = NSDate()
             
             batch.annotations.append(annotation)
             return (annotation: annotation, wasCreated: true)

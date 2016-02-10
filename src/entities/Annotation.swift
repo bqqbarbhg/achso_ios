@@ -15,12 +15,14 @@ struct AnnotationBase {
     var text: String = ""
     var time: Double = 0.0
     var author: User
+    var createdTimestamp: NSDate
     
     init(annotation: Annotation) {
         self.position = annotation.position
         self.text = annotation.text
         self.time = annotation.time
         self.author = annotation.author
+        self.createdTimestamp = annotation.createdTimestamp
     }
 }
 
@@ -29,6 +31,7 @@ class Annotation {
     var text: String = ""
     var time: Double = 0.0
     var author: User = User()
+    var createdTimestamp: NSDate = NSDate(timeIntervalSince1970: 0)
     
     init() {
     }
@@ -44,6 +47,9 @@ class Annotation {
         self.time = Double(timeInMs) / 1000.0
         
         self.author = try User(manifest: manifest.castGet("author"))
+        
+        let timestamp = manifest["createdTimestamp"] as? String ?? ""
+        self.createdTimestamp = iso8601DateFormatter.dateFromString(timestamp) ?? NSDate()
     }
     
     init(annotationBase: AnnotationBase) {
@@ -51,6 +57,7 @@ class Annotation {
         self.text = annotationBase.text
         self.time = annotationBase.time
         self.author = annotationBase.author
+        self.createdTimestamp = annotationBase.createdTimestamp
     }
     
     func toManifest() -> JSONObject {
@@ -62,6 +69,7 @@ class Annotation {
             "text": text,
             "time": Int(time * 1000),
             "author": author.toManifest(),
+            "createdTimestamp": iso8601DateFormatter.stringFromDate(self.createdTimestamp),
         ]
     }
 }
