@@ -1136,7 +1136,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             if let video = self.chosenVideo {
                 do {
                     try playerViewController.setVideo(video)
-                    videoRepository.refreshVideo(video, callback: playerViewController.videoDidUpdate)
+                    videoRepository.refreshVideo(video, isView: true, callback: playerViewController.videoDidUpdate)
                 } catch {
                     // TODO: Cancel segue
                 }

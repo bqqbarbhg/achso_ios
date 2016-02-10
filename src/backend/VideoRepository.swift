@@ -336,7 +336,7 @@ class VideoRepository {
     
     // Checks if there has been changes to the video in the server and downloads them if necessary.
     // `callback` is called with a Video object if updated, nil if old.
-    func refreshVideo(video: Video, callback: Video? -> ()) {
+    func refreshVideo(video: Video, isView: Bool, callback: Video? -> ()) {
         guard let achRails = self.achRails else {
             callback(nil)
             return
@@ -352,7 +352,7 @@ class VideoRepository {
                 callback(tryVideo.success)
             }
         } else {
-            achRails.getVideo(video.id, ifNewerThanRevision: video.revision) { tryVideo in
+            achRails.getVideo(video.id, ifNewerThanRevision: video.revision, isView: isView) { tryVideo in
                 callback(tryVideo.success?.flatMap { $0 })
             }
         }

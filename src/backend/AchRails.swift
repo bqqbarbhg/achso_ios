@@ -60,9 +60,12 @@ class AchRails {
         }
     }
     
-    func getVideo(id: NSUUID, ifNewerThanRevision revision: Int, callback: Try<Video?> -> ()) {
+    func getVideo(id: NSUUID, ifNewerThanRevision revision: Int, isView: Bool, callback: Try<Video?> -> ()) {
         
-        let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json", parameters: ["newer_than_rev": String(revision)])
+        let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json", parameters: [
+            "newer_than_rev": String(revision),
+            "is_view": isView ? 1 : 0,  
+        ])
         http.authorizedRequestJSON(request, canRetry: true) { response in
             if response.response?.statusCode == 304 {
                 callback(.Success(nil))
