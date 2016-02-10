@@ -87,7 +87,6 @@ class Session {
             callback(self.http)
         }
         pendingHttpClientRequests.removeAll()
-
     }
 
     static func connectToPublicServers() {
@@ -266,6 +265,7 @@ class Session {
         
         if let http = self.http {
             http.authUser = data.user
+            setupApiWrappers()
         }
     }
 }
