@@ -159,10 +159,10 @@ class AnnotationEditHandler: PlayerHandler {
     
     func start(c: PlayerController) {
         c.player.pause()
+        c.seekBarPosition = c.time
     }
     
     func timeUpdate(c: PlayerController, time: Double, lastTime: Double) {
-        c.seekBarPosition = time
     }
     
     func userPlay(c: PlayerController) {
