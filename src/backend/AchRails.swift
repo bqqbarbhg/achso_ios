@@ -13,6 +13,7 @@ All communication to the Social Semantic Server is done through achrails.
 */
 
 import Foundation
+import Alamofire
 
 struct VideoRevision {
     let id: NSUUID
@@ -98,7 +99,31 @@ class AchRails {
                     callback(.Error(error))
                 }
             }
-            
+        }
+    }
+    
+    func deleteVideo(video: Video, callback: ErrorType? -> ()) {
+        
+        let request = http.authorizeRequest(endpoint.request(.DELETE, "videos/\(video.id.lowerUUIDString).json"))
+        
+        alamofireRequest(request)
+            .response { request, response, data, error in
+                if error != nil {
+                    callback(error)
+                    return
+                }
+                
+                guard let response = response else {
+                    callback(DebugError("no response found"))
+                    return
+                }
+                
+                if response.statusCode >= 400 {
+                    callback(DebugError("status code \(response.statusCode)"))
+                    return
+                }
+                
+                callback(nil)
         }
     }
     

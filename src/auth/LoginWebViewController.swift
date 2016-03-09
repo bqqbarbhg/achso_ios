@@ -26,6 +26,16 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
         self.loginUrl = url
         self.trapUrlPrefix = trapUrlPrefix
         self.trapCallback = callback
+        
+        Session.checkOIDCTokens() { maybeError in
+            guard let error = maybeError else {
+                return
+            }
+            
+            self.showErrorModal(error, title: NSLocalizedString("error_on_sign_in", comment: "Error title when signing in fails")) {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
     }
     
     override func viewWillAppear(animated: Bool) {

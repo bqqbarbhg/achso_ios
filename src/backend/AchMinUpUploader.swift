@@ -20,33 +20,34 @@ class AchMinUpUploader: VideoUploader, ThumbnailUploader {
     }
     
     func uploadFile(sourceUrl: NSURL, id: NSUUID, type: String, progressCallback: (Float -> ())?, doneCallback: NSURL? -> ()) {
-        let baseUrl = endpoint.URLByAppendingPathComponent("upload.php")
-        guard let components = NSURLComponents(URL: baseUrl, resolvingAgainstBaseURL: false) else {
-            doneCallback(nil)
-            return
-        }
-        components.queryItems = (components.queryItems ?? []) + [
-            NSURLQueryItem(name: "id", value: id.lowerUUIDString),
-            NSURLQueryItem(name: "type", value: type),
-        ]
         
-        Alamofire.upload(.POST, components, file: sourceUrl)
-        .progress { delta, total, expectedTotal in
-            progressCallback?(Float(total) / Float(expectedTotal))
-        }
-        .responseString { response in
+        Session.doAuthenticated() { result in
             
-            if let _ = response.result.error {
+            guard let http = result.http else {
                 doneCallback(nil)
                 return
             }
             
-            let urlString = response.result.value?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            if let url = urlString.flatMap({ NSURL(string: $0) }) {
-                doneCallback(url)
-            } else {
-                doneCallback(nil)
+            let request = http.authorizeRequest(self.endpoint.request(.POST, type))
+            Alamofire.upload(request.method, request.url, headers: request.headers, file: sourceUrl)
+                .progress { delta, total, expectedTotal in
+                    progressCallback?(Float(total) / Float(expectedTotal))
+                }
+                .responseString { response in
+                    
+                    if let _ = response.result.error {
+                        doneCallback(nil)
+                        return
+                    }
+                    
+                    let urlString = response.result.value?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    if let url = urlString.flatMap({ NSURL(string: $0) }) {
+                        doneCallback(url)
+                    } else {
+                        doneCallback(nil)
+                    }
             }
+  
         }
     }
     
@@ -56,8 +57,8 @@ class AchMinUpUploader: VideoUploader, ThumbnailUploader {
             return
         }
         
-        uploadFile(uri, id: video.id, type: "video", progressCallback: progressCallback, doneCallback: { url in
-            doneCallback(url.flatMap { VideoUploadResult($0, nil) })
+        uploadFile(uri, id: video.id, type: "videos", progressCallback: progressCallback, doneCallback: { url in
+            doneCallback(url.flatMap { VideoUploadResult($0, nil, nil) })
         })
     }
     
@@ -67,6 +68,6 @@ class AchMinUpUploader: VideoUploader, ThumbnailUploader {
             return
         }
         
-        uploadFile(uri, id: video.id, type: "thumbnail", progressCallback: progressCallback, doneCallback: doneCallback)
+        uploadFile(uri, id: video.id, type: "thumbnails", progressCallback: progressCallback, doneCallback: doneCallback)
     }
 }

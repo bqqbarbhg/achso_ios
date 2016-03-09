@@ -914,21 +914,23 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         var skipped = false
         
         func deleteVideos(action: UIAlertAction) {
+            
+            var remoteVideosToDelete = [Video]()
+            
             for video in videos {
-                // Hack: Skip remote videos
-                if !video.thumbnailUri.isLocal {
-                    skipped = true
-                    continue
-                }
-                
-                do {
-                    try fileManager.removeItemAtURL(video.thumbnailUri.realUrl.unwrap())
-                } catch {
-                }
-                
-                do {
-                    try fileManager.removeItemAtURL(video.videoUri.realUrl.unwrap())
-                } catch {
+
+                if video.thumbnailUri.isLocal {
+                    do {
+                        try fileManager.removeItemAtURL(video.thumbnailUri.realUrl.unwrap())
+                    } catch {
+                    }
+                    
+                    do {
+                        try fileManager.removeItemAtURL(video.videoUri.realUrl.unwrap())
+                    } catch {
+                    }
+                } else {
+                    remoteVideosToDelete.append(video)
                 }
                 
                 do {
@@ -937,14 +939,19 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 }
             }
             
-            if skipped {
-                let error = UserError.failedToDeleteRemoteVideo.withDebugError("not implemented")
-                showErrorModal(error, title: NSLocalizedString("error_on_video_delete", comment: "Error title when trying to delete video"))
-            }
-            
             appDelegate.saveContext()
-            
             videoRepository.refresh()
+            
+            if !remoteVideosToDelete.isEmpty {
+                videoRepository.deleteVideos(remoteVideosToDelete) { errors in
+                    videoRepository.refreshOnline()
+                    
+                    if let error = errors.first {
+                        self.showErrorModal(error, title: NSLocalizedString("error_on_video_delete", comment: "Error title when trying to delete video"))
+                    }
+                }
+            }
+
             self.endSelectMode()
         }
         
@@ -1059,7 +1066,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             try thumbnailsUrl.createDirectoryIfUnexisting()
             
             let user = videoRepository.user
-            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, location: location, author: user)
+            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, deleteUrl: nil, location: location, author: user)
             
             let realVideoUrl = try videoUrl.realUrl.unwrap()
             let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()

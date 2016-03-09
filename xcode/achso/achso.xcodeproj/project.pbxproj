@@ -52,6 +52,7 @@
 		A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99442B21BFB0EFF001C6FC9 /* AnnotationBatch.swift */; };
 		A9A18DB31C228662003DD0B6 /* QRScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A18DB21C228661003DD0B6 /* QRScanViewController.swift */; };
 		A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */; };
+		A9CA8DF81C739C3B000DFB88 /* GoViTraUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */; };
 		A9D668461C69DE430053A3E4 /* Alamotypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668451C69DE430053A3E4 /* Alamotypes.swift */; };
 		A9D668481C69DE9E0053A3E4 /* OAuth2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668471C69DE9E0053A3E4 /* OAuth2.swift */; };
 		A9D6684A1C69DF190053A3E4 /* AuthenticatedHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668491C69DF190053A3E4 /* AuthenticatedHTTP.swift */; };
@@ -142,6 +143,7 @@
 		A9CA352D1C46938B00B1D3C3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		A9CA352F1C46938D00B1D3C3 /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Main.strings; sourceTree = "<group>"; };
 		A9CA35311C46939000B1D3C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoViTraUploader.swift; sourceTree = "<group>"; };
 		A9D668451C69DE430053A3E4 /* Alamotypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamotypes.swift; path = lib/net/Alamotypes.swift; sourceTree = "<group>"; };
 		A9D668471C69DE9E0053A3E4 /* OAuth2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuth2.swift; path = lib/net/OAuth2.swift; sourceTree = "<group>"; };
 		A9D668491C69DF190053A3E4 /* AuthenticatedHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticatedHTTP.swift; path = lib/net/AuthenticatedHTTP.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				A91D672A1BFDF42A00B15A66 /* AchRails.swift */,
 				A95E99F81BFF4495001BF3E2 /* Uploader.swift */,
 				A95E99FA1BFF456C001BF3E2 /* AchMinUpUploader.swift */,
+				A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */,
 				A91D672E1BFE007C00B15A66 /* VideoRepository.swift */,
 			);
 			path = backend;
@@ -556,6 +559,7 @@
 				A9A18DB31C228662003DD0B6 /* QRScanViewController.swift in Sources */,
 				A9D6686C1C6A22BD0053A3E4 /* NSURLExtension.swift in Sources */,
 				A9D6684E1C6A0E3C0053A3E4 /* AuthUser.swift in Sources */,
+				A9CA8DF81C739C3B000DFB88 /* GoViTraUploader.swift in Sources */,
 				A9D6685F1C6A22AE0053A3E4 /* GradientHelper.swift in Sources */,
 				A9D668721C6A22BD0053A3E4 /* CGRectExtension.swift in Sources */,
 				A973BC991BF1022900D07B82 /* ActiveVideo.swift in Sources */,

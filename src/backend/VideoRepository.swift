@@ -358,6 +358,75 @@ class VideoRepository {
         }
     }
     
+    class DeleteVideosTask: RepoTask {
+        
+        let videos: [Video]
+        
+        init(_ ctx: RepoContext, videos: [Video]) {
+            self.videos = videos
+            super.init(ctx)
+        }
+        
+        override func run() {
+            
+            for video in videos {
+                let task = DeleteVideoTask(ctx, video: video)
+                self.addSubtask(task)
+                task.start()
+            }
+            
+            self.done()
+        }
+    }
+    
+    class DeleteVideoTask: RepoTask {
+        
+        let video: Video
+        
+        init(_ ctx: RepoContext, video: Video) {
+            self.video = video
+            super.init(ctx)
+        }
+        
+        override func run() {
+            ctx.achRails.deleteVideo(self.video) { error in
+                if let error = error {
+                    self.fail(error)
+                } else {
+                    self.done()
+                }
+            }
+        }
+    }
+
+    
+    // Deletes videos from the server
+    func deleteVideos(videos: [Video], doneCallback: [ErrorType] -> ()) {
+        Session.doAuthenticated() { status in
+            switch status {
+            case .Error(let error):
+                doneCallback([error])
+                return
+            default:
+                break
+            }
+            
+            guard let achRails = self.achRails else {
+                doneCallback([UserError.invalidLayersBoxUrl.withDebugError("achrails not initialized")])
+                return
+            }
+
+            let ctx = RepoContext(achRails: achRails, videoRepository: self)
+            let task = DeleteVideosTask(ctx, videos: videos)
+
+            task.completionHandler = {
+                doneCallback(task.errors)
+            }
+
+            task.start()
+        }
+    }
+    
     // Upload a video to servers.
     func uploadVideo(video: Video, progressCallback: (Float, animated: Bool) -> (), doneCallback: Try<Video> -> ()) {
         
@@ -372,6 +441,7 @@ class VideoRepository {
             
             var maybeVideoUrl: NSURL?
             var maybeThumbnailUrl: NSURL?
+            var maybeDeleteUrl: NSURL?
             
             var progressBase: Float = 0.0
             
@@ -390,6 +460,7 @@ class VideoRepository {
                         if let result = result {
                             maybeVideoUrl = result.video
                             maybeThumbnailUrl = result.thumbnail
+                            maybeDeleteUrl = result.deleteUrl
                         }
                         
                         // Continue in the background thread.
@@ -455,6 +526,7 @@ class VideoRepository {
             let newVideo = Video(copyFrom: video)
             newVideo.videoUri = videoUrl
             newVideo.thumbnailUri = thumbnailUrl
+            newVideo.deleteUrl = maybeDeleteUrl
             
             achRails.uploadVideo(newVideo) { tryUploadedVideo in
                 

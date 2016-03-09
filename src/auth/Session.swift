@@ -21,6 +21,7 @@ class Session {
     
     static private var achrailsUrl: NSURL? = nil
     static private var achminupUrl: NSURL? = nil
+    static private var govitraUrl: NSURL? = nil
     
     // Serialization
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
@@ -64,6 +65,7 @@ class Session {
     static func reset() {
         self.achrailsUrl = nil
         self.achminupUrl = nil
+        self.govitraUrl = nil
         
         videoRepository.achRails = nil
         videoRepository.videoUploaders = []
@@ -109,6 +111,7 @@ class Session {
         
         self.achrailsUrl = Secrets.getUrl("ACHRAILS_URL")
         self.achminupUrl = Secrets.getUrl("ACHMINUP_URL")
+        self.govitraUrl = nil
         
         self.layersBoxUrl = nil
         self.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
@@ -142,12 +145,37 @@ class Session {
         }
     }
     
+    static func checkOIDCTokens(callback: ErrorType? -> ()) {
+        guard let url = self.layersBoxUrl else {
+            return
+        }
+        
+        Alamofire.request(.GET, url.URLByAppendingPathComponent("/achrails/oidc_tokens"))
+            .responseJSON { result in
+                do {
+                    let json = try (result.result.value as? JSONObject).unwrap()
+                    let clientId: String = try json.castGet("client_id")
+                    let clientSecret: String = try json.castGet("client_secret")
+                    let oaClient = try (self.http?.oaClient).unwrap()
+                    
+                    if clientId != oaClient.clientId || clientSecret != oaClient.clientSecret {
+                        self.doConnectToPrivateLayersBox(url, clientId: clientId, clientSecret: clientSecret)
+                        throw DebugError("OIDC client has changed")
+                    }
+                } catch {
+                    callback(error)
+                }
+        }
+        
+    }
+    
     static func doConnectToPrivateLayersBox(url: NSURL, clientId: String, clientSecret: String) {
         self.layersBoxUrl = url
         
         let oidcEndpoint = url.URLByAppendingPathComponent("/o/oauth2", isDirectory: true)
         self.achrailsUrl = url.URLByAppendingPathComponent("/achrails", isDirectory: true)
         self.achminupUrl = url.URLByAppendingPathComponent("/achminup", isDirectory: true)
+        self.govitraUrl = url.URLByAppendingPathComponent("/govitra-api", isDirectory: true)
         self.setupOIDC(endPointUrl: oidcEndpoint, clientId: clientId, clientSecret: clientSecret)
     }
     
@@ -159,11 +187,23 @@ class Session {
             videoRepository.achRails = achrails
         }
         
+        var videoUploaders = [VideoUploader]()
+        var thumbnailUploaders = [ThumbnailUploader]()
+        
+        
+        if let govitraUrl = self.govitraUrl {
+            let govitra = GoViTraUploader(endpoint: govitraUrl)
+            videoUploaders.append(govitra)
+        }
+        
         if let achminupUrl = self.achminupUrl {
             let achminup = AchMinUpUploader(endpoint: achminupUrl)
-            videoRepository.videoUploaders = [achminup]
-            videoRepository.thumbnailUploaders = [achminup]
+            videoUploaders.append(achminup)
+            thumbnailUploaders.append(achminup)
         }
+        
+        videoRepository.videoUploaders = videoUploaders
+        videoRepository.thumbnailUploaders = thumbnailUploaders
     }
     
     static func withHttp(callback: AuthenticatedHTTP? -> ()) {

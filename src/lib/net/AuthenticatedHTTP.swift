@@ -9,8 +9,8 @@ Uses OAuth2.swift internally.
 import Alamofire
 
 enum AuthenticationResult {
-    case OldSession
-    case NewSession
+    case OldSession(AuthenticatedHTTP)
+    case NewSession(AuthenticatedHTTP)
     case Error(ErrorType)
     
     var isAuthenticated: Bool {
@@ -24,6 +24,14 @@ enum AuthenticationResult {
     var error: ErrorType? {
         switch self {
         case .Error(let error): return error
+        default: return nil
+        }
+    }
+    
+    var http: AuthenticatedHTTP? {
+        switch self {
+        case .OldSession(let http): return http
+        case .NewSession(let http): return http
         default: return nil
         }
     }
@@ -91,7 +99,7 @@ class AuthenticatedHTTP {
                 let authorizeUrl = self.oaClient.provider.authorizeUrl
                 self.authUser = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
                 
-                callback(.NewSession)
+                callback(.NewSession(self))
             } catch {
                 callback(.Error(error))
             }
@@ -102,7 +110,7 @@ class AuthenticatedHTTP {
         // If the access token is still valid no need to refresh
         let isValid = (self.tokens?.expires).map({ $0 < NSDate() }) ?? false
         if self.tokens?.access != nil && isValid {
-            callback(.OldSession)
+            callback(.OldSession(self))
             return
         }
         
@@ -135,20 +143,24 @@ class AuthenticatedHTTP {
         
     }
     
-    func shouldRetryResponse(response: AResponse) -> Bool {
-        guard let nsResponse = response.response else { return false }
-        
-        return [401, 403, 404, 500].contains(nsResponse.statusCode)
-    }
-    
     func authorizeRequest(request: HTTPRequest, tokens: TokenSet?) -> HTTPRequest {
         var headers = request.headers ?? [:]
         
         if let tokens = tokens {
             headers["Authorization"] = "Bearer \(tokens.access)"
         }
-            
+        
         return HTTPRequest(request.method, request.url, parameters: request.parameters, encoding: request.encoding, headers: headers)
+    }
+    
+    func authorizeRequest(request: HTTPRequest) -> HTTPRequest {
+        return authorizeRequest(request, tokens: self.tokens)
+    }
+    
+    func shouldRetryResponse(response: AResponse) -> Bool {
+        guard let nsResponse = response.response else { return false }
+        
+        return [401, 403, 404, 500].contains(nsResponse.statusCode)
     }
     
     func authorizedRequestJSON(request: HTTPRequest, canRetry: Bool, tokens: TokenSet?, callback: ACallback) {

@@ -8,7 +8,7 @@ Video upload can potentially result in also a thumbnail if the service supports 
 
 import Foundation
 
-typealias VideoUploadResult = (video: NSURL, thumbnail: NSURL?)
+typealias VideoUploadResult = (video: NSURL, thumbnail: NSURL?, deleteUrl: NSURL?)
 
 protocol VideoUploader {
     func uploadVideo(video: Video, progressCallback: Float -> (), doneCallback: VideoUploadResult? -> ())

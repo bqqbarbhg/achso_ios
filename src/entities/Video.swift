@@ -16,6 +16,7 @@ class Video {
     var annotations: [Annotation]
     var videoUri: NSURL
     var thumbnailUri: NSURL
+    var deleteUrl: NSURL?
     var id: NSUUID
     var revision: Int
     var formatVersion: Int
@@ -30,12 +31,13 @@ class Video {
     var hasLocalModifications: Bool
     var downloadedBy: String?
     
-    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, location: Location?, author: User) {
+    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, deleteUrl: NSURL?, location: Location?, author: User) {
         self.id = id
         self.title = title
         self.annotations = []
         self.videoUri = videoUri
         self.thumbnailUri = thumbnailUri
+        self.deleteUrl = deleteUrl
         self.revision = 0
         self.formatVersion = 1
         self.creationDate = NSDate()
@@ -54,6 +56,7 @@ class Video {
         self.annotations = video.annotations
         self.videoUri = video.videoUri
         self.thumbnailUri = video.thumbnailUri
+        self.deleteUrl = video.deleteUrl
         self.id = video.id
         self.revision = video.revision
         self.formatVersion = video.formatVersion
@@ -74,6 +77,7 @@ class Video {
             self.id = try NSUUID(UUIDString: try manifest.castGet("id")).unwrap()
             self.videoUri = try NSURL(string: try manifest.castGet("videoUri")).unwrap()
             self.thumbnailUri = try NSURL(string: try manifest.castGet("thumbUri")).unwrap()
+            self.deleteUrl = try? NSURL(string: manifest.castGet("deleteUri")).unwrap()
             self.revision = manifest["revision"] as? Int ?? 0
             self.formatVersion = manifest["formatVersion"] as? Int ?? 0
             self.creationDate = iso8601DateFormatter.dateFromString(try manifest.castGet("date")) ?? NSDate(timeIntervalSince1970: 0)
@@ -104,6 +108,7 @@ class Video {
             self.annotations = []
             self.videoUri = NSURL()
             self.thumbnailUri = NSURL()
+            self.deleteUrl = nil
             self.id = NSUUID(UUIDBytes: [UInt8](count: 16, repeatedValue: 0x00))
             self.revision = 0
             self.formatVersion = 0
@@ -143,6 +148,9 @@ class Video {
         ]
         if let tag = self.tag {
             base["tag"] = tag
+        }
+        if let deleteUrl = self.deleteUrl {
+            base["deleteUri"] = deleteUrl.absoluteString
         }
         return base
     }

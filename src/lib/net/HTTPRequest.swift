@@ -33,6 +33,21 @@ struct HTTPRequest {
 
 extension NSURL {
     // Create a HTTP request instance. NOTE: does not actually execute the request
+    func request(method: Method, _ path: String, query: [String: String], headers: [String: String]? = nil) -> HTTPRequest? {
+        let url = self.URLByAppendingPathComponent(path)
+        
+        guard let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + query.map { NSURLQueryItem(name: $0.0, value: $0.1) }
+        guard let urlWithQuery = components.URL else {
+            return nil
+        }
+        
+        return HTTPRequest(method, urlWithQuery, parameters: nil, encoding: .URL, headers: headers)
+    }
+    
+    // Create a HTTP request instance. NOTE: does not actually execute the request
     func request(method: Method, _ path: String, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil) -> HTTPRequest {
         let url = self.URLByAppendingPathComponent(path)
         return HTTPRequest(method, url, parameters: parameters, encoding: encoding, headers: headers)
@@ -52,4 +67,10 @@ extension NSURL {
     func request(method: Method, json: [String: AnyObject], headers: [String: String]? = nil) -> HTTPRequest {
         return request(method, parameters: json, encoding: .JSON, headers: headers)
     }
+
 }
+
+func alamofireRequest(r: HTTPRequest) -> Request {
+    return Alamofire.request(r.method, r.url, parameters: r.parameters, encoding: r.encoding, headers: r.headers)
+}
+
