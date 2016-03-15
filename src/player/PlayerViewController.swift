@@ -461,7 +461,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             }
             
             guard let videoPlayer = self.videoPlayer,
-                playerController = self.playerController else { return }
+                playerController = self.playerController else {
+                    self.video = video
+                    return
+            }
             
             if playerController.wasModified { return }
             
