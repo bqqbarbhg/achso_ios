@@ -39,7 +39,7 @@ class AchRails {
     
     func getVideos(callback: [VideoRevision]? -> ()) {
         
-        http.authorizedRequestJSON(endpoint.request(.GET, "videos.json")) { response in
+        http.authorizedRequestJSON(endpoint.request(.GET, "videos.json"), canRetry: true) { response in
             let videosJson = response.result.value?["videos"] as? JSONArray
             let videos = videosJson?.flatMap { try? VideoRevision(data: ($0 as? JSONObject).unwrap()) }
             callback(videos)
@@ -50,7 +50,7 @@ class AchRails {
     func getVideo(id: NSUUID, callback: Try<Video> -> ()) {
         
         let request = endpoint.request(.GET, "videos/\(id.lowerUUIDString).json")
-        http.authorizedRequestJSON(request) { response in
+        http.authorizedRequestJSON(request, canRetry: true) { response in
             let videoJson = response.result.value as? JSONObject
             do {
                 let video = try Video(manifest: videoJson.unwrap(), hasLocalModifications: false, downloadedBy: self.userId)
@@ -67,7 +67,7 @@ class AchRails {
             "newer_than_rev": String(revision),
             "is_view": isView ? 1 : 0,  
         ])
-        http.authorizedRequestJSON(request) { response in
+        http.authorizedRequestJSON(request, canRetry: true) { response in
             if response.response?.statusCode == 304 {
                 callback(.Success(nil))
                 return
@@ -87,7 +87,7 @@ class AchRails {
         
         let manifest = video.toManifest()
         let request = endpoint.request(.PUT, "videos/\(video.id.lowerUUIDString).json", json: manifest)
-        http.authorizedRequestJSON(request) { response in
+        http.authorizedRequestJSON(request, canRetry: true) { response in
             switch response.result {
             case .Failure(let error):
                 callback(.Error(error))
@@ -130,7 +130,7 @@ class AchRails {
     func getGroups(callback: Try<(groups: [Group], user: User)> -> ()) {
         
         let request = endpoint.request(.GET, "groups/own.json")
-        http.authorizedRequestJSON(request) { response in
+        http.authorizedRequestJSON(request, canRetry: true) { response in
             switch response.result {
             case .Failure(let error):
                 callback(.Error(error))

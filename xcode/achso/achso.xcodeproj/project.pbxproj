@@ -54,6 +54,7 @@
 		A9AE5C601C1F0B39002F7537 /* GradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AE5C5F1C1F0B39002F7537 /* GradientLayer.swift */; };
 		A9CA8DF81C739C3B000DFB88 /* GoViTraUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */; };
 		A9D668461C69DE430053A3E4 /* Alamotypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668451C69DE430053A3E4 /* Alamotypes.swift */; };
+		A9D668481C69DE9E0053A3E4 /* OAuth2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668471C69DE9E0053A3E4 /* OAuth2.swift */; };
 		A9D6684A1C69DF190053A3E4 /* AuthenticatedHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668491C69DF190053A3E4 /* AuthenticatedHTTP.swift */; };
 		A9D6684C1C69DF3E0053A3E4 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D6684B1C69DF3E0053A3E4 /* HTTPRequest.swift */; };
 		A9D6684E1C6A0E3C0053A3E4 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D6684D1C6A0E3C0053A3E4 /* AuthUser.swift */; };
@@ -81,6 +82,7 @@
 		A9D6687F1C6A23330053A3E4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D6687A1C6A23330053A3E4 /* Errors.swift */; };
 		A9D668831C6A4E9A0053A3E4 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D668821C6A4E9A0053A3E4 /* Session.swift */; };
 		A9FA26EF1C1729C90079B8F8 /* SharesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */; };
+		A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -143,6 +145,7 @@
 		A9CA35311C46939000B1D3C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoViTraUploader.swift; sourceTree = "<group>"; };
 		A9D668451C69DE430053A3E4 /* Alamotypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamotypes.swift; path = lib/net/Alamotypes.swift; sourceTree = "<group>"; };
+		A9D668471C69DE9E0053A3E4 /* OAuth2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuth2.swift; path = lib/net/OAuth2.swift; sourceTree = "<group>"; };
 		A9D668491C69DF190053A3E4 /* AuthenticatedHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticatedHTTP.swift; path = lib/net/AuthenticatedHTTP.swift; sourceTree = "<group>"; };
 		A9D6684B1C69DF3E0053A3E4 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequest.swift; path = lib/net/HTTPRequest.swift; sourceTree = "<group>"; };
 		A9D6684D1C6A0E3C0053A3E4 /* AuthUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthUser.swift; path = lib/net/AuthUser.swift; sourceTree = "<group>"; };
@@ -170,6 +173,7 @@
 		A9D6687A1C6A23330053A3E4 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Errors.swift; path = lib/misc/Errors.swift; sourceTree = "<group>"; };
 		A9D668821C6A4E9A0053A3E4 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		A9FA26EE1C1729C90079B8F8 /* SharesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharesViewController.swift; sourceTree = "<group>"; };
+		A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginWebViewController.swift; sourceTree = "<group>"; };
 		ABC9A50BCF0F09E8DF39B446 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -304,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				A9D668821C6A4E9A0053A3E4 /* Session.swift */,
+				A9FE30561BFCAA8100746686 /* LoginWebViewController.swift */,
 			);
 			path = auth;
 			sourceTree = "<group>";
@@ -341,6 +346,7 @@
 			children = (
 				A9D668451C69DE430053A3E4 /* Alamotypes.swift */,
 				A9D6684B1C69DF3E0053A3E4 /* HTTPRequest.swift */,
+				A9D668471C69DE9E0053A3E4 /* OAuth2.swift */,
 				A9D668491C69DF190053A3E4 /* AuthenticatedHTTP.swift */,
 				A9D6684D1C6A0E3C0053A3E4 /* AuthUser.swift */,
 			);
@@ -568,8 +574,10 @@
 				A9D6685E1C6A22AE0053A3E4 /* DateHelper.swift in Sources */,
 				A9167FC31BEBA6FF0018BEC4 /* Annotation.swift in Sources */,
 				A94B82B21BEA3DC00017874D /* AchSo.xcdatamodeld in Sources */,
+				A9D668481C69DE9E0053A3E4 /* OAuth2.swift in Sources */,
 				A93AE77E1C0CBD6B000C5D62 /* GroupList.swift in Sources */,
 				A9D6687C1C6A23330053A3E4 /* Secrets.swift in Sources */,
+				A9FE30571BFCAA8100746686 /* LoginWebViewController.swift in Sources */,
 				A9D6687F1C6A23330053A3E4 /* Errors.swift in Sources */,
 				A95E99FB1BFF456C001BF3E2 /* AchMinUpUploader.swift in Sources */,
 				A93AE77C1C0CB7EC000C5D62 /* Group.swift in Sources */,
