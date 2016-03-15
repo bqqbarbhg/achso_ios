@@ -66,7 +66,8 @@ class VideoViewCell: UICollectionViewCell {
         
         self.thumbnailImageView.alpha = 0.0
         if let url = video.thumbnailUri.realUrl {
-            thumbnailImageView.sd_setImageWithURL(url) { image, error, cacheType, url in
+            let options = SDWebImageOptions.RetryFailed
+            thumbnailImageView.sd_setImageWithURL(url, placeholderImage: nil, options: options) { image, error, cacheType, url in
                 
                 if cacheType == .Memory {
                     // Set the alpha immediately if the image was already in memory. This stops flickering on refresh.
