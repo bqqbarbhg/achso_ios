@@ -45,6 +45,13 @@ class LoginWebViewController: UIViewController, UIWebViewDelegate {
             return
         }
         
+        // Delete cookies to give a chance to authenticate with other credentials
+        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        for cookie in storage.cookies ?? [] {
+            storage.deleteCookie(cookie)
+        }
+        NSUserDefaults.standardUserDefaults().synchronize()
+
         let request = NSURLRequest(URL: loginUrl)
         self.webView.loadRequest(request)
     }
