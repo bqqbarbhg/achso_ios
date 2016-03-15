@@ -94,6 +94,21 @@ class UserError: ErrorType, PrintableError {
         return withInnerError(DebugError(description))
     }
     
+    static func signInFixCallback(viewController: UIViewController, callback: (() -> ())?) {
+        Session.authenticate(fromViewController: viewController, callback: { result in
+            if let error = result.error {
+                viewController.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
+                    comment: "Error title when trying to sign in"))
+            } else {
+                callback?()
+            }
+        })
+    }
+    
+    static let signInFix = Fix(title: NSLocalizedString("error_fix_sign_in",
+        comment: "Error fix button to sign the user in"),
+        action: UserError.signInFixCallback)
+    
     static var invalidLayersBoxUrl: UserError {
         func openSettings(viewController: UIViewController, callback: (() -> ())?) {
             if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
@@ -110,7 +125,8 @@ class UserError: ErrorType, PrintableError {
     
     static var failedToAuthenticate: UserError {
         return UserError(NSLocalizedString("error_failed_to_authenticate",
-            comment: "Error title when something stopped them from authenticating"))
+            comment: "Error title when something stopped them from authenticating"),
+            fix: signInFix)
     }
     
     static var failedToSaveVideo: UserError {
@@ -129,22 +145,10 @@ class UserError: ErrorType, PrintableError {
     }
     
     static var notSignedIn: UserError {
-        func signIn(viewController: UIViewController, callback: (() -> ())?) {
-            Session.authenticate(fromViewController: viewController, callback: { result in
-                if let error = result.error {
-                    viewController.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
-                        comment: "Error title when trying to sign in"))
-                } else {
-                    callback?()
-                }
-            })
-        }
-        
+
         return UserError(NSLocalizedString("error_not_signed_in",
                 comment: "Error title when the user is not signed in but would need to be"),
-            fix: Fix(title: NSLocalizedString("error_fix_sign_in",
-                comment: "Error fix button to sign the user in"),
-                action: signIn))
+            fix: signInFix)
     }
 }
 

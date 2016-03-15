@@ -45,9 +45,6 @@ class GoViTraUploader: VideoUploader {
                         doneCallback(nil)
                     }
                 }
-                .responseString { response in
-                    print(response.result.value)
-                }
         }
     }
 }

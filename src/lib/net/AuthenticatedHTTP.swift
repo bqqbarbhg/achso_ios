@@ -99,6 +99,8 @@ class AuthenticatedHTTP {
                 let authorizeUrl = self.oaClient.provider.authorizeUrl
                 self.authUser = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
                 
+                Session.save()
+                
                 callback(.NewSession(self))
             } catch {
                 callback(.Error(error))
@@ -108,7 +110,7 @@ class AuthenticatedHTTP {
     
     func refreshIfNecessary(callback: AuthenticationResult -> ()) {
         // If the access token is still valid no need to refresh
-        let isValid = (self.tokens?.expires).map({ $0 < NSDate() }) ?? false
+        let isValid = (self.tokens?.expires).map({ $0 > NSDate() }) ?? false
         if self.tokens?.access != nil && isValid {
             callback(.OldSession(self))
             return

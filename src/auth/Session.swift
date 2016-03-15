@@ -111,7 +111,7 @@ class Session {
         
         self.achrailsUrl = Secrets.getUrl("ACHRAILS_URL")
         self.achminupUrl = Secrets.getUrl("ACHMINUP_URL")
-        self.govitraUrl = nil
+        self.govitraUrl = Secrets.getUrl("GOVITRA_URL")
         
         self.layersBoxUrl = nil
         self.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
@@ -172,7 +172,7 @@ class Session {
     static func doConnectToPrivateLayersBox(url: NSURL, clientId: String, clientSecret: String) {
         self.layersBoxUrl = url
         
-        let oidcEndpoint = url.URLByAppendingPathComponent("/o/oauth2", isDirectory: true)
+        let oidcEndpoint = url.URLByAppendingPathComponent("/achrails/oidc", isDirectory: true)
         self.achrailsUrl = url.URLByAppendingPathComponent("/achrails", isDirectory: true)
         self.achminupUrl = url.URLByAppendingPathComponent("/achminup", isDirectory: true)
         self.govitraUrl = url.URLByAppendingPathComponent("/govitra-api", isDirectory: true)
@@ -189,13 +189,14 @@ class Session {
         
         var videoUploaders = [VideoUploader]()
         var thumbnailUploaders = [ThumbnailUploader]()
-        
-        
+
+        // Prefer GoViTra if it exists
         if let govitraUrl = self.govitraUrl {
             let govitra = GoViTraUploader(endpoint: govitraUrl)
             videoUploaders.append(govitra)
         }
         
+        // Fall back to AchMinUp
         if let achminupUrl = self.achminupUrl {
             let achminup = AchMinUpUploader(endpoint: achminupUrl)
             videoUploaders.append(achminup)

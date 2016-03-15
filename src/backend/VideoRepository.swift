@@ -480,7 +480,7 @@ class VideoRepository {
             progressBase = 0.7
             
             // Iterate through possible thumbnail uploaders if the video upload didn't also produce a thumbnail.
-            if maybeThumbnailUrl == nil {
+            if maybeThumbnailUrl == nil && maybeVideoUrl != nil {
                 for thumbnailUploader in self.thumbnailUploaders {
                     thumbnailUploader.uploadThumbnail(video,
                         progressCallback:  { value in
