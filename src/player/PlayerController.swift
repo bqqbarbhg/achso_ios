@@ -134,8 +134,6 @@ class ManualPauseHandler: PlayerHandler {
 class AnnotationPauseHandler: PlayerHandler {
     func start(c: PlayerController) {
         c.player.pause()
-        
-        // TODO: Timer
     }
     
     func timeUpdate(c: PlayerController, time: Double, lastTime: Double) {
