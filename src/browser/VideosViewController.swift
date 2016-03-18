@@ -1081,8 +1081,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     video.genre = genre
                     do {
                         try videoRepository.saveVideo(video)
-                        self.chosenVideo = video
-                        self.performSegueWithIdentifier("showPlayer", sender: self)
                     } catch {
                         self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
                             comment: "Error title when trying to save video"))
