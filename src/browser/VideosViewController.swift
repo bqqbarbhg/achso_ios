@@ -774,9 +774,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     // MARK: - Action buttons
     
     @IBAction func actionButtonPressed(sender: UIBarButtonItem) {
-        let genrePicker = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let actionPicker = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-        if let popover = genrePicker.popoverPresentationController {
+        if let popover = actionPicker.popoverPresentationController {
             popover.barButtonItem = sender
         }
 
@@ -784,44 +784,44 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             // Selected mode
             
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_tag_to_qr", comment: "Action for tagging video(s) to a QR code"),
+            actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_tag_to_qr", comment: "Action for tagging video(s) to a QR code"),
                 style: .Default, handler: self.actionTagToQrCode))
             
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_delete", comment: "Action for deleting video(s)"),
+            actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_delete", comment: "Action for deleting video(s)"),
                 style: .Destructive, handler: self.actionDelete))
             
         } else {
             
             // Normal mode
          
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_import_video", comment: "Action for import video"),
+            actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_import_video", comment: "Action for import video"),
                 style: .Default, handler: self.actionImportVideo))
             
-            genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_search_qr", comment: "Action for search QR code"),
+            actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_search_qr", comment: "Action for search QR code"),
                 style: .Default, handler: self.actionScanQR))
             
             switch self.collectionId {
             case .Group:
-                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_group_info", comment: "Action for group info"),
+                actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_group_info", comment: "Action for group info"),
                     style: .Default, handler: self.actionManageGroup))
             default:
                 break
             }
             
             if Session.user == nil {
-                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
+                actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
                     style: .Default, handler: self.actionSignIn))
             } else {
-                genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
+                actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
                     style: .Destructive, handler: self.actionSignOut))
             }
             
         }
         
-        genrePicker.addAction(UIAlertAction(title: NSLocalizedString("action_cancel", comment: "Action for cancel"),
+        actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_cancel", comment: "Action for cancel"),
                               style: .Cancel, handler: nil))
         
-        self.presentViewController(genrePicker, animated: true, completion: nil)
+        self.presentViewController(actionPicker, animated: true, completion: nil)
         
     }
     
