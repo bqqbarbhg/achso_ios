@@ -358,6 +358,39 @@ class VideoRepository {
         }
     }
     
+    func getVideo(id: NSUUID, callback: Try<Video> -> ()) {
+        if let _ = self.findVideoInfo(id) {
+            do {
+                let video = try AppDelegate.instance.getVideo(id).unwrap()
+                callback(.Success(video))
+            } catch {
+                callback(.Error(error))
+            }
+            return
+        }
+        
+        guard let achRails = self.achRails else {
+            callback(.Error(UserError.notSignedIn.withDebugError("achrails not initialized")))
+            return
+        }
+        
+        achRails.getVideo(id) { tryVideo in
+            switch tryVideo {
+            case .Success(let video):
+                do {
+                    try AppDelegate.instance.saveVideo(video)
+                    callback(.Success(video))
+                } catch {
+                    callback(.Error(error))
+                }
+            case .Error(let error):
+                callback(.Error(error))
+
+            }
+            
+        }
+    }
+    
     class DeleteVideosTask: RepoTask {
         
         let videos: [Video]

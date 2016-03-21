@@ -141,6 +141,7 @@ class Session {
                     
                 } catch {
                     self.reset()
+                    self.isRetrievingTokens = false
                 }
         }
     }

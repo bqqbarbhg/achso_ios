@@ -19,6 +19,11 @@ import MobileCoreServices
 import AssetsLibrary
 import CoreLocation
 
+enum PendingAction {
+    case RecordVideo
+    case ShowVideo(NSUUID)
+}
+
 class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchBarDelegate, VideoRepositoryListener {
     
     // MARK: - connections
@@ -79,6 +84,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     // Cached size of the thumbnail views.
     var itemSize: CGSize?
     
+    // Pending action to be launched
+    var pendingAction: PendingAction?
+    
     // MARK: - Setup
     
     override func viewDidLoad() {
@@ -107,6 +115,40 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     override func viewWillDisappear(animated: Bool) {
         videoRepository.removeListener(self)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        doPendingAction()
+    }
+    
+    func doPendingAction() {
+        if let action = self.pendingAction {
+            self.pendingAction = nil
+            
+            switch action {
+            case .RecordVideo:
+                self.recordVideo()
+                
+            case .ShowVideo(let id):
+                videoRepository.getVideo(id) { tryVideo in
+                    switch tryVideo {
+                    case .Success(let video):
+                        self.showVideo(video)
+                    
+                    case .Error(let error):
+                        let title = NSLocalizedString("error_on_video_play", comment: "Error title when the video fails to play")
+                        self.showErrorModal(error, title: title) {
+                            videoRepository.getVideo(id) { tryVideo in
+                                if let video = tryVideo.success {
+                                    self.showVideo(video)
+                                }
+                            }
+                        }
+                    }
+                }
+                break
+            }
+        }
     }
     
     // MARK: - Top progress bar
@@ -556,6 +598,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     // MARK: - Video selection
     
+    func showVideo(video: Video) {
+        self.chosenVideo = video
+        self.performSegueWithIdentifier("showPlayer", sender: self)
+    }
+    
     @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
         guard let collectionView = self.collectionView else { return }
         
@@ -576,9 +623,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         } else {
             
             if let video = videoForIndexPath(indexPath) {
-                
-                self.chosenVideo = video
-                self.performSegueWithIdentifier("showPlayer", sender: self)
+                self.showVideo(video)
             } else {
                 collectionView.deselectItemAtIndexPath(indexPath, animated: true)
             }
@@ -970,9 +1015,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     // MARK: - Video recording
     
     @IBAction func cameraButtonPressed(sender: UIBarButtonItem) {
-        
+        recordVideo()
+    }
+    
+    func recordVideo() {
         LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
-        
     }
     
     func startRecordingVideo() {

@@ -21,7 +21,26 @@ After that open the _workspace_ to work with CocoaPods.
 
 [cocoapods]: https://cocoapods.org
 
-#### Development:
+## URI scheme
+
+Ach so! for iOS supports an `achso://` URI-scheme for launching.
+
+The base format is `achso://$BOX_URL` where `$BOX_URL` is the host of the Layers Box,
+it can also be `public` to connect to the public servers.
+
+```
+# Open the app and show all videos
+achso://$BOX_URL
+achso://$BOX_URL/videos/
+
+# Show video with ID
+achso://$BOX_URL/videos/$ID
+
+# Record a new video
+achso://$BOX_URL/record
+```
+
+## Development:
 
 - Samuli Raivio (@bqqbarbhg)
 

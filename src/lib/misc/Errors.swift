@@ -100,6 +100,7 @@ class UserError: ErrorType, PrintableError {
                 viewController.showErrorModal(error, title: NSLocalizedString("error_on_sign_in",
                     comment: "Error title when trying to sign in"))
             } else {
+                videoRepository.refreshOnline()
                 callback?()
             }
         })

@@ -14,6 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    var browserViewController: BrowserViewController!
+    var categoriesViewController: CategoriesViewController!
+    var videosViewController: VideosViewController!
+    
     static var instance: AppDelegate {
         return UIApplication.sharedApplication().delegate as! AppDelegate
     }
@@ -21,13 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Connect the parts of the split view
-        let browserViewController = self.window!.rootViewController as! BrowserViewController
+        browserViewController = self.window!.rootViewController as! BrowserViewController
         
         let categoriesNavController = browserViewController.viewControllers[0] as! UINavigationController
         let videosNavController = browserViewController.viewControllers[1] as! UINavigationController
         
-        let categoriesViewController = categoriesNavController.topViewController as! CategoriesViewController
-        let videosViewController = videosNavController.topViewController as! VideosViewController
+        categoriesViewController = categoriesNavController.topViewController as! CategoriesViewController
+        videosViewController = videosNavController.topViewController as! VideosViewController
         
         categoriesViewController.videosViewController = videosViewController
         videosViewController.categoriesViewController = categoriesViewController
@@ -48,6 +52,69 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SDWebImageManager.sharedManager().delegate = ImageLoader.instance
         
         return true
+    }
+
+    func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+        
+        do {
+            let components = try NSURLComponents(URL: url, resolvingAgainstBaseURL: false).unwrap()
+            let layersbox = try components.host.unwrap()
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            
+            if layersbox != "public" {
+                userDefaults.setBool(false, forKey: "layers_public")
+                userDefaults.setValue("https://" + layersbox, forKey: "layers_api_url")
+            } else {
+                userDefaults.setBool(true, forKey: "layers_public")
+            }
+            
+            setupServerConnections()
+            
+            let path = components.path ?? ""
+            let parts = path.componentsSeparatedByString("/").filter({ !$0.isEmpty })
+            
+            var collectionToLoad: CollectionIdentifier = .AllVideos
+            
+            self.videosViewController.pendingAction = nil
+            
+            switch (parts[safe: 0] ?? "", parts[safe: 1] ?? "") {
+            case ("", ""):
+                // Index, do nothing
+                break
+                
+            case ("record", ""):
+                self.videosViewController.pendingAction = .RecordVideo
+            
+            case ("videos", ""):
+                collectionToLoad = .AllVideos
+                
+            case ("videos", let id):
+                self.videosViewController.pendingAction = .ShowVideo(try NSUUID(UUIDString: id).unwrap())
+                
+            default:
+                // Unknown URL
+                return false
+            }
+            
+            let root = try (self.window?.rootViewController).unwrap()
+            var viewController = root.presentedViewController
+            while let parent = viewController?.presentingViewController {
+                viewController = parent
+            }
+            viewController?.dismissViewControllerAnimated(true, completion: nil)
+            
+            self.browserViewController.preferredDisplayMode = .PrimaryHidden
+            self.videosViewController.showCollection(collectionToLoad)
+            if self.videosViewController.isViewLoaded() && self.videosViewController.view.window != nil {
+                self.videosViewController.doPendingAction()
+            } else {
+                self.browserViewController.showDetailViewController(self.videosViewController.navigationController!, sender: nil)
+            }
+            
+            return true
+        } catch {
+            return false
+        }
     }
     
     func settingsChanged(notification: NSNotification) {
