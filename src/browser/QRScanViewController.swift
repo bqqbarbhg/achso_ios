@@ -48,8 +48,15 @@ class QRScanViewController: UIViewController, AVCaptureMetadataOutputObjectsDele
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
+        authorizeCamera(self.startCapture)
+    }
+    
+    func startCapture(hasCamera: Bool) {
         do {
+            if !hasCamera {
+                throw UserError.permissionsMissing([.Camera])
+            }
+            
             let captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
             let input = try AVCaptureDeviceInput(device: captureDevice)
             let output = AVCaptureMetadataOutput()

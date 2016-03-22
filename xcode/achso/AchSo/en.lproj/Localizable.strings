@@ -37,6 +37,9 @@
 /* Error title when something stopped them from deleting a remote video */
 "error_failed_to_delete_remote_video" = "An error occurred while deleting the video.";
 
+/* Error title when the app needs permissions which the user has not approved */
+"error_permissions_missing" = "Missing required permissions:";
+
 /* Error fix button to sign the user in */
 "error_fix_sign_in" = "Sign in";
 
@@ -66,6 +69,12 @@
 
 /* Error title when the video fails to play */
 "error_on_video_play" = "Can't play video";
+
+/* Error title when trying to record video */
+"error_on_video_record" = "Can't record video";
+
+/* Error title when trying to import video */
+"error_on_video_import" = "Can't import video";
 
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Can't create group";
@@ -159,3 +168,9 @@
 
 /* Placeholder when a scanner QR code does not match any videos */
 "empty_videos_qr" = "The QR code does not have any videos tagged to it.";
+
+/* Name for the camera permission */
+"user_permission_camera" = "Camera";
+
+/* Name for the video library permission */
+"user_permission_video_library" = "Photos";

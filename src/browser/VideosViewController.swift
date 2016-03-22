@@ -24,7 +24,7 @@ enum PendingAction {
     case ShowVideo(NSUUID)
 }
 
-class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UISearchBarDelegate, VideoRepositoryListener {
+class VideosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, VideoRepositoryListener {
     
     // MARK: - connections
     
@@ -553,6 +553,18 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    func visibleCellForId(id: NSUUID) -> VideoViewCell? {
+        let visibleCells = self.collectionView?.visibleCells() ?? []
+        
+        let maybeIndex = visibleCells.indexOf() { cell in
+            guard let cell = cell as? VideoViewCell else { return false }
+            guard let videoInfo = cell.videoInfo else { return false }
+            return videoInfo.id == id
+        }
+
+        return maybeIndex.flatMap { visibleCells[$0] as? VideoViewCell }
+    }
+    
     // Sets the correct empty placeholder for the collection if necessary
     func updateEmptyPlaceholder() {
         
@@ -580,10 +592,10 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 case .AllVideos:
                     self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_all", comment: "Placeholder when there are no videos at all in the app.")
                     return self.generalEmptyView
-                case .Group(let id):
+                case .Group:
                     self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_group", comment: "Placeholder when the group does not contain any videos")
                     return self.generalEmptyView
-                case .QrSearch(let code):
+                case .QrSearch:
                     self.generalEmptyViewLabel.text = NSLocalizedString("empty_videos_qr", comment: "Placeholder when a scanner QR code does not match any videos")
                     return self.generalEmptyView
                 }
@@ -871,13 +883,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func actionImportVideo(action: UIAlertAction) {
-        let imagePicker = UIImagePickerController()
-        
-        imagePicker.mediaTypes = [String(kUTTypeMovie)]
-        imagePicker.sourceType = .PhotoLibrary
-
-        imagePicker.delegate = self
-        presentViewController(imagePicker, animated: true, completion: nil)
+        VideoRecorder.importVideo(viewController: self, callback: videoRecorded)
     }
     
     func actionScanQR(action: UIAlertAction) {
@@ -1019,159 +1025,73 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func recordVideo() {
-        LocationRetriever.instance.startRetrievingLocation(self.startRecordingVideo)
+        VideoRecorder.recordVideo(viewController: self, callback: videoRecorded)
     }
     
-    func startRecordingVideo() {
-        let imagePicker = UIImagePickerController()
-        imagePicker.mediaTypes = [String(kUTTypeMovie)]
+    func videoRecorded(tryVideo: Try<Video>, type: VideoRecordType) {
         
-        if UIImagePickerController.isSourceTypeAvailable(.Camera) {
-            
-            // Default to rear camera
-            imagePicker.sourceType = .Camera
-            imagePicker.cameraCaptureMode = .Video
-            imagePicker.cameraDevice = .Rear
-        } else {
-            
-            // Use image library when camera is not available (in emulator)
-            imagePicker.sourceType = .PhotoLibrary
-        }
-        imagePicker.delegate = self
-        presentViewController(imagePicker, animated: true, completion: nil)
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        
-        let temporaryUrl = info[UIImagePickerControllerMediaURL]! as! NSURL
-        
-        // Go to all videos so the new video is shown
-        self.collectionView.setContentOffset(CGPointZero, animated: false)
+        // Go to all videos and scroll to the top so the new video is shown
+        videoRepository.refresh()
         self.showCollection(.AllVideos)
-        
-        let date = NSDate()
-        
-        if let assetUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
-            let library = ALAssetsLibrary()
-            
-            library.assetForURL(assetUrl, resultBlock: { asset in
-                    let date = asset.valueForProperty(ALAssetPropertyDate) as? NSDate ?? date
-                    let location = asset.valueForProperty(ALAssetPropertyLocation) as? CLLocation
-                
-                    self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: location)
+        self.collectionView.setContentOffset(CGPointZero, animated: false)
 
-                }, failureBlock: { _ in
-                    self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: nil)
+        func viewDismissed() {
+            switch tryVideo {
+            case .Error(let error):
+                switch type {
+                case .Record:
+                    self.showErrorModal(error, title: NSLocalizedString("error_on_video_record", comment: "Error title when trying to record video"))
+                case .Import:
+                    self.showErrorModal(error, title: NSLocalizedString("error_on_video_import", comment: "Error title when trying to import video"))
                 }
-            )
-        } else {
-            
-            if let location = LocationRetriever.instance.finishRetrievingLocation() {
-                self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: location)
-            } else {
-                self.createVideo(sourceVideoUrl: temporaryUrl, date: date, location: nil)
+                
+                
+                
+            case .Success(let video):
+                self.showGenrePickerForVideo(video)
             }
         }
-
-    }
-
-    func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, date: NSDate, location: CLLocation?) {
-        let dateText = NSDateFormatter.localizedStringFromDate(date, dateStyle: NSDateFormatterStyle.ShortStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
         
-        if let location = location {
-            LocationRetriever.instance.reverseGeocodeLocation(location) { placemark in
-                if let street = placemark?.thoroughfare {
-                    let videoLocation = Video.Location(latitude: location.coordinate.latitude,
-                        longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy)
-                    
-                    self.createVideo(sourceVideoUrl: sourceVideoUrl, title: "\(street) \(dateText)", location: videoLocation)
-                } else {
-                    self.createVideo(sourceVideoUrl: sourceVideoUrl, title: dateText, location: nil)
-                }
-            }
+        if self.presentedViewController != nil {
+            self.dismissViewControllerAnimated(true, completion: viewDismissed)
         } else {
-            self.createVideo(sourceVideoUrl: sourceVideoUrl, title: dateText, location: nil)
+            viewDismissed()
         }
     }
 
-    func createVideo(sourceVideoUrl sourceVideoUrl: NSURL, title: String, location: Video.Location?) {
-        let id = NSUUID()
-        
-        let videoUrl = NSURLComponents(string: "iosdocuments://videos/\(id.lowerUUIDString).mp4")!.URL!
-        let thumbnailUrl = NSURLComponents(string: "iosdocuments://thumbnails/\(id.lowerUUIDString).jpg")!.URL!
-        
-        let fileManager = NSFileManager.defaultManager()
-        guard let documentsUrl = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[safe: 0] else {
-            return
-        }
-        
-        let videosUrl = documentsUrl.URLByAppendingPathComponent("videos", isDirectory: true)
-        let thumbnailsUrl = documentsUrl.URLByAppendingPathComponent("thumbnails", isDirectory: true)
-        
-        do {
-            try videosUrl.createDirectoryIfUnexisting()
-            try thumbnailsUrl.createDirectoryIfUnexisting()
-            
-            let user = videoRepository.user
-            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, deleteUrl: nil, location: location, author: user)
-            
-            let realVideoUrl = try videoUrl.realUrl.unwrap()
-            let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()
-            
-            try saveThumbnailFromVideo(sourceVideoUrl, outputUrl: realThumbnailUrl)
-            try fileManager.moveItemAtURL(sourceVideoUrl, toURL: realVideoUrl)
-            try videoRepository.saveVideo(video)
-            
-            dismissViewControllerAnimated(true) {
-                
-                func picked(genre: String) {
-                    video.genre = genre
-                    do {
-                        try videoRepository.saveVideo(video)
-                    } catch {
-                        self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
-                            comment: "Error title when trying to save video"))
-                    }
-                }
-                
-                let pickerTitle = NSLocalizedString("choose_genre_title", comment: "Title of the genre picker")
-                let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
-                let visibleCells = self.collectionView?.visibleCells() ?? []
-                let maybeIndex = visibleCells.indexOf() { cell in
-                    guard let cell = cell as? VideoViewCell else { return false }
-                    guard let videoInfo = cell.videoInfo else { return false }
-                    return videoInfo.id == id
-                }
-                
-                if let popover = genrePicker.popoverPresentationController {
-                    if let index = maybeIndex {
-                        let cell = visibleCells[index] as! VideoViewCell
-                        popover.sourceView = cell.genreLabel
-                        let rect = CGRect(x: cell.genreLabel.bounds.minX + 10.0, y: cell.genreLabel.bounds.maxY, width: 0, height: 0)
-                        popover.permittedArrowDirections = UIPopoverArrowDirection.Up
-                        popover.sourceRect = rect
-                    } else {
-                        popover.sourceView = self.view
-                    }
-                }
-                
-                for genre in Genre.genres {
-                    let button = UIAlertAction(title: genre.localizedName, style: .Default) { _ in
-                        picked(genre.id)
-                    }
-                    genrePicker.addAction(button)
-                }
-                
-                self.presentViewController(genrePicker, animated: true, completion: nil)
-                
-            }
-            
-        } catch {
-            dismissViewControllerAnimated(true) {
+    func showGenrePickerForVideo(video: Video) {
+        func picked(genre: String) {
+            video.genre = genre
+            do {
+                try videoRepository.saveVideo(video)
+                videoRepository.refresh()
+            } catch {
                 self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
                     comment: "Error title when trying to save video"))
             }
         }
+        
+        let pickerTitle = NSLocalizedString("choose_genre_title", comment: "Title of the genre picker")
+        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
+        for genre in Genre.genres {
+            let button = UIAlertAction(title: genre.localizedName, style: .Default) { _ in
+                picked(genre.id)
+            }
+            genrePicker.addAction(button)
+        }
+        
+        // Try to show the picker pointing up to the chosen video
+        if let popover = genrePicker.popoverPresentationController {
+            if let cell = self.visibleCellForId(video.id) {
+                popover.sourceView = cell.genreLabel
+                popover.permittedArrowDirections = UIPopoverArrowDirection.Up
+                popover.sourceRect = CGRect(x: cell.genreLabel.bounds.minX + 10.0, y: cell.genreLabel.bounds.maxY, width: 0, height: 0)
+            } else {
+                popover.sourceView = self.view
+            }
+        }
+        
+        self.presentViewController(genrePicker, animated: true, completion: nil)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

@@ -52,6 +52,20 @@ class DebugError: ErrorType, PrintableError {
     }
 }
 
+enum UserPermission {
+    case Camera
+    case VideoLibrary
+    
+    var localizedName: String {
+        switch self {
+        case .Camera:
+            return NSLocalizedString("user_permission_camera", comment: "Name for the camera permission")
+        case .VideoLibrary:
+            return NSLocalizedString("user_permission_video_library", comment: "Name for the camera permission")
+        }
+    }
+}
+
 class UserError: ErrorType, PrintableError {
     typealias FixAction = (UIViewController, (() -> ())?) -> ()
     typealias Fix = (title: String, action: FixAction)
@@ -106,22 +120,24 @@ class UserError: ErrorType, PrintableError {
         })
     }
     
+    static func openSettingsFixCallback(viewController: UIViewController, callback: (() -> ())?) {
+        if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+            UIApplication.sharedApplication().openURL(url)
+        }
+    }
+    
     static let signInFix = Fix(title: NSLocalizedString("error_fix_sign_in",
         comment: "Error fix button to sign the user in"),
         action: UserError.signInFixCallback)
     
+    static let openSettingsFix = Fix(title: NSLocalizedString("error_fix_settings",
+        comment: "Error fix that opens the settings"),
+        action: UserError.openSettingsFixCallback)
+    
     static var invalidLayersBoxUrl: UserError {
-        func openSettings(viewController: UIViewController, callback: (() -> ())?) {
-            if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
-                UIApplication.sharedApplication().openURL(url)
-            }
-        }
-        
         return UserError(NSLocalizedString("error_invalid_layers_box_url",
                 comment: "Error title when the Layers Box URL is misconfigured"),
-            fix: Fix(title: NSLocalizedString("error_fix_settings",
-                comment: "Error fix that opens the settings"),
-                action: openSettings))
+            fix: openSettingsFix)
     }
     
     static var failedToAuthenticate: UserError {
@@ -146,10 +162,17 @@ class UserError: ErrorType, PrintableError {
     }
     
     static var notSignedIn: UserError {
-
         return UserError(NSLocalizedString("error_not_signed_in",
                 comment: "Error title when the user is not signed in but would need to be"),
             fix: signInFix)
+    }
+    
+    static func permissionsMissing(permissions: [UserPermission]) -> UserError {
+        let titleBase = NSLocalizedString("error_permissions_missing", comment: "Error title when the app needs permissions which the user has not approved")
+        let permissions = permissions.map { $0.localizedName }.joinWithSeparator(", ")
+        
+        let title = "\(titleBase) \(permissions)"
+        return UserError(title, fix: openSettingsFix)
     }
 }
 

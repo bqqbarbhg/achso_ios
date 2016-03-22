@@ -37,6 +37,9 @@
 /* Error title when something stopped them from deleting a remote video */
 "error_failed_to_delete_remote_video" = "Virhe poistaessa videota palvelimelta.";
 
+/* Error title when the app needs permissions which the user has not approved */
+"error_permissions_missing" = "Puuttuvia oikeuksia:";
+
 /* Error fix button to sign the user in */
 "error_fix_sign_in" = "Kirjaudu";
 
@@ -66,6 +69,12 @@
 
 /* Error title when the video fails to play */
 "error_on_video_play" = "Videota ei voida toistaa";
+
+/* Error title when trying to record video */
+"error_on_video_record" = "Videota ei voida nauhottaa";
+
+/* Error title when trying to import video */
+"error_on_video_import" = "Videota ei voi tuoda";
 
 /* Error title shown when creating a group was interrupted */
 "error_on_create_group" = "Ryhmää ei voi luoda";
@@ -160,3 +169,8 @@
 /* Placeholder when a scanner QR code does not match any videos */
 "empty_videos_qr" = "QR koodilla ei löytynyt yhtään videota.";
 
+/* Name for the camera permission */
+"user_permission_camera" = "Kamera";
+
+/* Name for the video library permission */
+"user_permission_video_library" = "Kuvat";

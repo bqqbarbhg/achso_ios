@@ -103,7 +103,7 @@ class VideoDetailsViewController: XLFormViewController {
         if self.hasModifications {
             for video in self.videos {
                 video.hasLocalModifications = true
-                try? videoRepository.saveVideo(video)
+                let _ = try? videoRepository.saveVideo(video)
                 videoRepository.refreshOnline()
             }
         }
