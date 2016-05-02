@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="DQ9-a3-zHx">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -217,12 +217,6 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="$Genre$" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JxI-n0-WES">
-                                                    <rect key="frame" x="8" y="30" width="236" height="22"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkcircle_hollow" translatesAutoresizingMaskIntoConstraints="NO" id="fpB-S9-zdX">
                                                     <rect key="frame" x="8" y="122" width="30" height="30"/>
                                                 </imageView>
@@ -234,8 +228,6 @@
                                             <constraint firstItem="5Z5-O3-gBZ" firstAttribute="leading" secondItem="OBW-jF-CPY" secondAttribute="leading" id="3S9-K7-XD4"/>
                                             <constraint firstItem="5Z5-O3-gBZ" firstAttribute="top" secondItem="OBW-jF-CPY" secondAttribute="top" id="8CR-nJ-40D"/>
                                             <constraint firstAttribute="trailing" secondItem="rGh-c1-U3Q" secondAttribute="trailing" constant="16" id="Gxt-J1-yIG"/>
-                                            <constraint firstItem="JxI-n0-WES" firstAttribute="leading" secondItem="OBW-jF-CPY" secondAttribute="leadingMargin" id="Ld8-HD-dtZ"/>
-                                            <constraint firstItem="JxI-n0-WES" firstAttribute="trailing" secondItem="OBW-jF-CPY" secondAttribute="trailingMargin" id="M9v-gj-vEv"/>
                                             <constraint firstItem="4aM-RV-SCx" firstAttribute="leading" secondItem="OBW-jF-CPY" secondAttribute="leadingMargin" id="MfS-fr-VW9"/>
                                             <constraint firstItem="IqT-Fq-r19" firstAttribute="leading" secondItem="OBW-jF-CPY" secondAttribute="leadingMargin" constant="10" id="OM6-2S-oWK"/>
                                             <constraint firstAttribute="trailing" secondItem="5Z5-O3-gBZ" secondAttribute="trailing" id="Xha-GX-1vg"/>
@@ -243,14 +235,12 @@
                                             <constraint firstAttribute="bottom" secondItem="rGh-c1-U3Q" secondAttribute="bottom" constant="16" id="hG7-Y1-sKz"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="fpB-S9-zdX" secondAttribute="bottom" id="leV-PY-k6M"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="4aM-RV-SCx" secondAttribute="trailing" id="nBb-xM-eTs"/>
-                                            <constraint firstItem="JxI-n0-WES" firstAttribute="top" secondItem="4aM-RV-SCx" secondAttribute="bottom" id="nyW-9J-xeg"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="IqT-Fq-r19" secondAttribute="trailing" constant="10" id="oSZ-km-j1N"/>
                                             <constraint firstAttribute="bottom" secondItem="5Z5-O3-gBZ" secondAttribute="bottom" id="s2s-eg-Muw"/>
                                             <constraint firstItem="fpB-S9-zdX" firstAttribute="leading" secondItem="OBW-jF-CPY" secondAttribute="leadingMargin" id="uM0-6N-zJS"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="IqT-Fq-r19" secondAttribute="bottom" constant="16" id="ytp-b0-Gjv"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="genreLabel" destination="JxI-n0-WES" id="sCW-Y0-zWW"/>
                                             <outlet property="progressView" destination="IqT-Fq-r19" id="oNP-Ln-4Im"/>
                                             <outlet property="selectImage" destination="fpB-S9-zdX" id="EUp-Sf-Djs"/>
                                             <outlet property="sharedCloudImage" destination="rGh-c1-U3Q" id="uul-uZ-4n7"/>
