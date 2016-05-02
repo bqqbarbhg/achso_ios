@@ -141,21 +141,11 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BQ1-ja-YR3">
                                 <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                                 <subviews>
-                                    <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Filter" translatesAutoresizingMaskIntoConstraints="NO" id="ooS-nt-Pt4">
+                                    <searchBar contentMode="redraw" ambiguous="YES" misplaced="YES" searchBarStyle="minimal" placeholder="Filter" translatesAutoresizingMaskIntoConstraints="NO" id="ooS-nt-Pt4">
                                         <rect key="frame" x="146" y="0.0" width="174" height="44"/>
                                         <color key="barTintColor" red="0.87486190029999999" green="0.87486190029999999" blue="0.87486190029999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </searchBar>
-                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="74M-Qb-l8s">
-                                        <rect key="frame" x="8" y="8" width="138" height="28"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="138" id="jd2-zE-k5J"/>
-                                        </constraints>
-                                        <state key="normal" title="$Any genre$"/>
-                                        <connections>
-                                            <action selector="genreButtonPressed:" destination="7mS-Qs-HO7" eventType="touchUpInside" id="rCl-t6-Ehx"/>
-                                        </connections>
-                                    </button>
                                     <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="y6w-a6-tHo">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="2"/>
                                     </progressView>
@@ -168,12 +158,8 @@
                                     <constraint firstItem="y6w-a6-tHo" firstAttribute="top" secondItem="BQ1-ja-YR3" secondAttribute="top" id="F5d-0p-LXv"/>
                                     <constraint firstAttribute="trailing" secondItem="y6w-a6-tHo" secondAttribute="trailing" id="L6u-ze-7kY"/>
                                     <constraint firstAttribute="bottom" secondItem="ooS-nt-Pt4" secondAttribute="bottom" id="O1q-bN-Vgi"/>
-                                    <constraint firstItem="ooS-nt-Pt4" firstAttribute="leading" secondItem="74M-Qb-l8s" secondAttribute="trailing" id="PKC-1X-E0t"/>
-                                    <constraint firstItem="74M-Qb-l8s" firstAttribute="leading" secondItem="BQ1-ja-YR3" secondAttribute="leadingMargin" id="Z7k-dZ-gWj"/>
-                                    <constraint firstItem="74M-Qb-l8s" firstAttribute="top" secondItem="BQ1-ja-YR3" secondAttribute="topMargin" id="drB-Wl-Vcn"/>
                                     <constraint firstItem="ooS-nt-Pt4" firstAttribute="leading" secondItem="BQ1-ja-YR3" secondAttribute="leadingMargin" id="iNl-Xc-UtB"/>
                                     <constraint firstAttribute="trailing" secondItem="ooS-nt-Pt4" secondAttribute="trailing" id="iud-ZX-dWj"/>
-                                    <constraint firstAttribute="bottomMargin" secondItem="74M-Qb-l8s" secondAttribute="bottom" id="vbO-d7-T6U"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -308,11 +294,9 @@
                         <outlet property="editButton" destination="kk2-IL-MgQ" id="MeX-qH-hr6"/>
                         <outlet property="generalEmptyView" destination="t9P-2Z-UWX" id="chM-q3-zks"/>
                         <outlet property="generalEmptyViewLabel" destination="PK2-u3-MRu" id="oI5-kp-pcJ"/>
-                        <outlet property="genreButton" destination="74M-Qb-l8s" id="Pfy-GJ-Z4h"/>
                         <outlet property="loadingEmptyView" destination="b5x-Xt-etR" id="068-R9-emx"/>
                         <outlet property="progressBar" destination="y6w-a6-tHo" id="nka-Wt-mVq"/>
                         <outlet property="searchBar" destination="ooS-nt-Pt4" id="0RL-0b-P2X"/>
-                        <outlet property="searchBarToGenreButtonConstraint" destination="PKC-1X-E0t" id="hhd-Sv-FXb"/>
                         <outlet property="searchBarToParentConstraint" destination="iNl-Xc-UtB" id="Dpm-1Y-vDe"/>
                         <outlet property="selectButton" destination="36E-aZ-Ql7" id="64q-g2-TQA"/>
                         <outlet property="toolbarSpace" destination="1UI-Zd-G4S" id="5ax-EY-mAc"/>

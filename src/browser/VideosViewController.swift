@@ -8,7 +8,7 @@ It handles these:
 
 - Delegating to different view controllers
 - Displaying the video thumbnails using VideoCellView.swift
-- Filtering the videos based on genre and search query using Search.swift
+- Filtering the videos based on  search query using Search.swift
 - Changing the UI depending on the state (selecting or not)
 - Creates the video objects from recorded videos
 
@@ -35,7 +35,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet var selectButton: UIBarButtonItem!
     @IBOutlet var cancelSelectButton: UIBarButtonItem!
     
-    @IBOutlet var genreButton: UIButton!
     @IBOutlet var searchBar: UISearchBar!
     
     @IBOutlet var toolbarSpace: UIBarButtonItem!
@@ -44,7 +43,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
 
     @IBOutlet weak var progressBar: UIProgressView!
     
-    @IBOutlet var searchBarToGenreButtonConstraint: NSLayoutConstraint!
     @IBOutlet var searchBarToParentConstraint: NSLayoutConstraint!
     
     @IBOutlet var generalEmptyView: UIView!
@@ -75,7 +73,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     var isBuildingSearchIndex: Bool = false
     
     // Filters for the videos.
-    var genreFilter: String?
     var searchFilter: String?
     
     // Token for the task which has the control over the progress bar, the newest one is given the control of the bar.
@@ -250,11 +247,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         guard let collection = self.collection else { return }
         var videos = collection.videos
         
-        // Genre filter: Allow only videos with a matching genre
-        if let genreFilter = self.genreFilter {
-            videos = videos.filter({ $0.genre == genreFilter })
-        }
-        
         // Search filter: Allow only videos containing keywords
         if let searchFilter = self.searchFilter where !searchFilter.isEmpty {
             
@@ -326,11 +318,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
-    // Resets the filter options (genre and search query)
+    // Resets the filter options (search query)
     func resetFilter() {
-        self.genreFilter = nil
-        self.genreButton?.setTitle(NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), forState: .Normal)
-        
         self.searchFilter = nil
         self.searchBar?.text = nil
     }
@@ -345,34 +334,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     @IBAction func genreButtonPressed(sender: UIButton) {
-        
-        func picked(genre: String?, title: String?) {
-            self.genreButton.setTitle(title, forState: .Normal)
-            self.genreFilter = genre
-            self.filterCollection()
-        }
-        
-        let pickerTitle = NSLocalizedString("filter_genre_title", comment: "Title of the genre picker")
-        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
-        
-        if let popover = genrePicker.popoverPresentationController {
-            popover.sourceView = self.genreButton
-            popover.sourceRect = CGRect(x: self.genreButton.bounds.midX, y: self.genreButton.bounds.maxY, width: 0.0, height: 0.0)
-        }
-        
-        let button = UIAlertAction(title: NSLocalizedString("filter_any_genre", comment: "Any genre filter option"), style: .Default) { action in
-            picked(nil, title: action.title)
-        }
-        genrePicker.addAction(button)
-        
-        for genre in Genre.genres {
-            let button = UIAlertAction(title: genre.localizedName, style: .Default) { action in
-                picked(genre.id, title: action.title)
-            }
-            genrePicker.addAction(button)
-        }
-        
-        self.presentViewController(genrePicker, animated: true, completion: nil)
     }
     
     // MARK: - Search bar
@@ -423,20 +384,12 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func refreshSearchBarViewState(animated animated: Bool) {
-        
-        let compact = self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClass.Compact
-        let hideGenreButton = compact && searchBar.isFirstResponder()
-        
-        self.searchBarToGenreButtonConstraint.active = !hideGenreButton
-        self.searchBarToParentConstraint.active = hideGenreButton
+        self.searchBarToParentConstraint.active = true;
         
         if animated {
             UIView.animateWithDuration(0.2) {
                 self.searchBar.layoutIfNeeded()
-                self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
             }
-        } else {
-            self.genreButton.alpha = hideGenreButton ? 0.0 : 1.0
         }
     }
     
@@ -685,7 +638,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 self.uploadButton.title = NSLocalizedString("upload_button_share", comment: "Upload button text when it only shares previously uploaded videos")
             }
             
-            self.genreButton.enabled = false
             self.searchBar.userInteractionEnabled = false
             self.searchBar.alpha = 0.6
             
@@ -703,7 +655,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             self.setToolbarItems(toolbarItems, animated: animated)
             
         } else {
-            self.genreButton.enabled = true
             self.searchBar.userInteractionEnabled = true
             self.searchBar.alpha = 1.0
             
