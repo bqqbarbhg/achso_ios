@@ -15,7 +15,6 @@ import SDWebImage
 class VideoViewCell: UICollectionViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var genreLabel: UILabel!
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var sharedCloudImage: UIImageView!
@@ -52,7 +51,6 @@ class VideoViewCell: UICollectionViewCell {
         self.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         titleLabel?.text = video.title
-        genreLabel?.text = NSLocalizedString(video.genre, comment: "Genre")
         
         let imageName: String = {
             switch (video.isLocal, video.hasLocalModifications) {

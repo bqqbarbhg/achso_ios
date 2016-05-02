@@ -996,10 +996,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     self.showErrorModal(error, title: NSLocalizedString("error_on_video_import", comment: "Error title when trying to import video"))
                 }
                 
-                
-                
             case .Success(let video):
-                self.showGenrePickerForVideo(video)
+                self.saveVideoAndRefresh(video)
             }
         }
         
@@ -1009,42 +1007,17 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             viewDismissed()
         }
     }
-
-    func showGenrePickerForVideo(video: Video) {
-        func picked(genre: String) {
-            video.genre = genre
-            do {
-                try videoRepository.saveVideo(video)
-                videoRepository.refresh()
-            } catch {
-                self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
-                    comment: "Error title when trying to save video"))
-            }
-        }
-        
-        let pickerTitle = NSLocalizedString("choose_genre_title", comment: "Title of the genre picker")
-        let genrePicker = UIAlertController(title: pickerTitle, message: nil, preferredStyle: .ActionSheet)
-        for genre in Genre.genres {
-            let button = UIAlertAction(title: genre.localizedName, style: .Default) { _ in
-                picked(genre.id)
-            }
-            genrePicker.addAction(button)
-        }
-        
-        // Try to show the picker pointing up to the chosen video
-        if let popover = genrePicker.popoverPresentationController {
-            if let cell = self.visibleCellForId(video.id) {
-                popover.sourceView = cell.genreLabel
-                popover.permittedArrowDirections = UIPopoverArrowDirection.Up
-                popover.sourceRect = CGRect(x: cell.genreLabel.bounds.minX + 10.0, y: cell.genreLabel.bounds.maxY, width: 0, height: 0)
-            } else {
-                popover.sourceView = self.view
-            }
-        }
-        
-        self.presentViewController(genrePicker, animated: true, completion: nil)
-    }
     
+    func saveVideoAndRefresh(video: Video) {
+        do {
+            try videoRepository.saveVideo(video)
+            videoRepository.refresh()
+        } catch {
+            self.showErrorModal(error, title: NSLocalizedString("error_on_video_save",
+                comment: "Error title when trying to save video"))
+        }
+    }
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         func handleShowPlayer(viewController: UIViewController) {
