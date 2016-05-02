@@ -21,7 +21,6 @@ class Video {
     var revision: Int
     var formatVersion: Int
     var creationDate: NSDate
-    var genre: String
     var rotation: Int
     var location: Location?
     var author: User
@@ -41,7 +40,6 @@ class Video {
         self.revision = 0
         self.formatVersion = 1
         self.creationDate = NSDate()
-        self.genre = "good_work"
         self.rotation = 0
         self.location = location
         self.author = author
@@ -61,7 +59,6 @@ class Video {
         self.revision = video.revision
         self.formatVersion = video.formatVersion
         self.creationDate = video.creationDate
-        self.genre = video.genre
         self.rotation = video.rotation
         self.location = video.location
         self.author = video.author
@@ -81,7 +78,6 @@ class Video {
             self.revision = manifest["revision"] as? Int ?? 0
             self.formatVersion = manifest["formatVersion"] as? Int ?? 0
             self.creationDate = iso8601DateFormatter.dateFromString(try manifest.castGet("date")) ?? NSDate(timeIntervalSince1970: 0)
-            self.genre = "good_work"
             self.rotation = (manifest["rotation"] as? Int) ?? 0
             self.tag = manifest["tag"] as? String
             
@@ -109,7 +105,6 @@ class Video {
             self.videoUri = NSURL()
             self.thumbnailUri = NSURL()
             self.deleteUrl = nil
-            self.genre = ""
             self.id = NSUUID(UUIDBytes: [UInt8](count: 16, repeatedValue: 0x00))
             self.revision = 0
             self.formatVersion = 0
@@ -134,7 +129,6 @@ class Video {
             "id": self.id.lowerUUIDString,
             "date": iso8601DateFormatter.stringFromDate(self.creationDate),
             "revision": self.revision,
-            "genre": self.genre,
             "formatVersion": self.formatVersion,
             "rotation": self.rotation,
             "location": self.location.map {
