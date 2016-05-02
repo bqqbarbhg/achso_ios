@@ -47,26 +47,6 @@ class VideoDetailsViewController: XLFormViewController {
             section.addFormRow(title)
         }
 
-        let genreTitle = NSLocalizedString("details_genre", comment: "Genre field label shown in the video details form")
-        let genreOptions = Genre.genres.map { XLFormOptionsObject(value: $0.id, displayText: $0.localizedName) }
-        let genre = XLFormRowDescriptor(tag: "genre", rowType: XLFormRowDescriptorTypeSelectorPush, title: genreTitle)
-        
-        let genres = Set(videos.flatMap { video in genreOptions.indexOf { $0.valueData() as? String == video.genre } })
-        switch genres.count {
-        case 0:
-            genre.value = XLFormOptionsObject(value: "unknown", displayText: "")
-        case 1:
-            genre.value = genreOptions[genres.first!]
-        default:
-            let genreText = genres.map { genreOptions[$0].displayText() }.joinWithSeparator(", ")
-            genre.value = XLFormOptionsObject(value: "multiple", displayText: genreText)
-        }
-        
-        genre.selectorTitle = "Genre"
-        genre.selectorOptions = genreOptions
-
-        section.addFormRow(genre)
-        
         let readonly = XLFormSectionDescriptor.formSection()
         form.addFormSection(readonly)
         
@@ -89,7 +69,6 @@ class VideoDetailsViewController: XLFormViewController {
         for video in self.videos {
             switch tag {
             case "title": video.title = newValue as? String ?? ""
-            case "genre": video.genre = (newValue as! XLFormOptionsObject).valueData() as! String
             default: break
             }
         }
