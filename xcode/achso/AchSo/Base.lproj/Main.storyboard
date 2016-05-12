@@ -145,12 +145,20 @@
                                         <rect key="frame" x="146" y="0.0" width="174" height="44"/>
                                         <color key="barTintColor" red="0.87486190029999999" green="0.87486190029999999" blue="0.87486190029999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="searchField.textColor">
+                                                <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="searchField.placeholderLabel.textColor">
+                                                <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </searchBar>
                                     <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="y6w-a6-tHo">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="2"/>
                                     </progressView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.87486190025252519" green="0.87486190025252519" blue="0.87486190025252519" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.52549019607843139" blue="0.45882352941176469" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="6KH-Io-Fk9"/>
                                     <constraint firstItem="y6w-a6-tHo" firstAttribute="leading" secondItem="BQ1-ja-YR3" secondAttribute="leading" id="7Lt-uN-7wy"/>
