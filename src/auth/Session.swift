@@ -22,6 +22,7 @@ class Session {
     static private var achrailsUrl: NSURL? = nil
     static private var achminupUrl: NSURL? = nil
     static private var govitraUrl: NSURL? = nil
+    static private var exporterUrl: NSURL? = nil
     
     // Serialization
     static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
@@ -66,6 +67,7 @@ class Session {
         self.achrailsUrl = nil
         self.achminupUrl = nil
         self.govitraUrl = nil
+        self.exporterUrl = nil;
         
         videoRepository.achRails = nil
         videoRepository.videoUploaders = []
@@ -112,6 +114,7 @@ class Session {
         self.achrailsUrl = Secrets.getUrl("ACHRAILS_URL")
         self.achminupUrl = Secrets.getUrl("ACHMINUP_URL")
         self.govitraUrl = Secrets.getUrl("GOVITRA_URL")
+        self.exporterUrl = Secrets.getUrl("EXPORTER_URL")
         
         self.layersBoxUrl = nil
         self.setupOIDC(endPointUrl: endpoint, clientId: clientId, clientSecret: clientSecret)
