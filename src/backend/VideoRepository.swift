@@ -41,6 +41,7 @@ class VideoRepository {
     
     // APIs
     var achRails: AchRails?
+    var videoExporter: VideoExporter?
     var videoUploaders: [VideoUploader] = []
     var thumbnailUploaders: [ThumbnailUploader] = []
     
@@ -434,7 +435,7 @@ class VideoRepository {
 
     
     func exportVideos(videos: [Video], email: String, doneCallback: [ErrorType] -> ()) {
-    
+        self.videoExporter?.exportVideos(videos, email: email)
     }
     
     // Deletes videos from the server

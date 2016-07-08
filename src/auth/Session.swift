@@ -200,6 +200,11 @@ class Session {
             videoUploaders.append(govitra)
         }
         
+        if let exporterUrl = self.exporterUrl {
+            let exporter = VideoExporter(endpoint: exporterUrl)
+            videoRepository.videoExporter = exporter
+        }
+        
         // Fall back to AchMinUp
         if let achminupUrl = self.achminupUrl {
             let achminup = AchMinUpUploader(endpoint: achminupUrl)
@@ -209,6 +214,7 @@ class Session {
         
         videoRepository.videoUploaders = videoUploaders
         videoRepository.thumbnailUploaders = thumbnailUploaders
+        
     }
     
     static func withHttp(callback: AuthenticatedHTTP? -> ()) {

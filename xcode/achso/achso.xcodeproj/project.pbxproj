@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		605DB5051D2FE15F00FC9C55 /* Exporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605DB5041D2FE15F00FC9C55 /* Exporter.swift */; };
 		A9167FBB1BEB8B110018BEC4 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBA1BEB8B110018BEC4 /* VideoView.swift */; };
 		A9167FBD1BEB8BB20018BEC4 /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBC1BEB8BB20018BEC4 /* VideoPlayer.swift */; };
 		A9167FBF1BEB96CE0018BEC4 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBE1BEB96CE0018BEC4 /* AVPlayerView.swift */; };
@@ -89,6 +90,7 @@
 
 /* Begin PBXFileReference section */
 		4AE8803CC441BE9B3C8F48B3 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		605DB5041D2FE15F00FC9C55 /* Exporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exporter.swift; sourceTree = "<group>"; };
 		88528559C5CF013FE2D5D74C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A9167FBA1BEB8B110018BEC4 /* VideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		A9167FBC1BEB8BB20018BEC4 /* VideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayer.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				A95E99FA1BFF456C001BF3E2 /* AchMinUpUploader.swift */,
 				A9CA8DF71C739C3B000DFB88 /* GoViTraUploader.swift */,
 				A91D672E1BFE007C00B15A66 /* VideoRepository.swift */,
+				605DB5041D2FE15F00FC9C55 /* Exporter.swift */,
 			);
 			path = backend;
 			sourceTree = "<group>";
@@ -606,6 +609,7 @@
 				A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */,
 				A9D6685B1C6A22AE0053A3E4 /* JsonHelper.swift in Sources */,
 				A94B82E81BEA5EF70017874D /* Collection.swift in Sources */,
+				605DB5051D2FE15F00FC9C55 /* Exporter.swift in Sources */,
 				A94B82EA1BEA64D60017874D /* VideosViewController.swift in Sources */,
 				A9D668741C6A22BD0053A3E4 /* CGColorExtension.swift in Sources */,
 				A9D6684A1C69DF190053A3E4 /* AuthenticatedHTTP.swift in Sources */,
