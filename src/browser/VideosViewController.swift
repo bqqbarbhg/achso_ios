@@ -36,7 +36,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet var cancelSelectButton: UIBarButtonItem!
     
     @IBOutlet var searchBar: UISearchBar!
-    
+ 
     @IBOutlet var toolbarSpace: UIBarButtonItem!
     @IBOutlet var editButton: UIBarButtonItem!
     @IBOutlet var uploadButton: UIBarButtonItem!
@@ -795,6 +795,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_tag_to_qr", comment: "Action for tagging video(s) to a QR code"),
                 style: .Default, handler: self.actionTagToQrCode))
             
+            actionPicker.addAction(UIAlertAction(title: "Export videos",
+                style: .Default, handler: self.actionExport))
+            
             actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_delete", comment: "Action for deleting video(s)"),
                 style: .Destructive, handler: self.actionDelete))
             
@@ -905,6 +908,28 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.presentViewController(qrController, animated: true, completion: nil)
         self.endSelectMode()
+    }
+    
+    func actionExport(action: UIAlertAction) {
+        let videos = loadSelectedVideos()
+        var videosToExport = [Video]()
+        
+        for video in videos {
+            if video.thumbnailUri.isLocal == false {
+               videosToExport.append(video)
+            }
+        }
+        
+        if !videosToExport.isEmpty {
+            videoRepository.exportVideos(videosToExport, email: "matti.jokitulppo@aalto.fi"){ errors in
+                        videoRepository.refreshOnline()
+                        
+                        if let error = errors.first {
+                            self.showErrorModal(error, title: NSLocalizedString("error_on_video_delete", comment: "Error title when trying to delete video"))
+            }
+        }
+        self.endSelectMode()
+        }
     }
     
     func actionDelete(action: UIAlertAction) {

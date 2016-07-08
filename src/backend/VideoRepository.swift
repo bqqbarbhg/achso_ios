@@ -433,6 +433,10 @@ class VideoRepository {
     }
 
     
+    func exportVideos(videos: [Video], email: String, doneCallback: [ErrorType] -> ()) {
+    
+    }
+    
     // Deletes videos from the server
     func deleteVideos(videos: [Video], doneCallback: [ErrorType] -> ()) {
         Session.doAuthenticated() { status in
