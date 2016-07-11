@@ -795,8 +795,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_tag_to_qr", comment: "Action for tagging video(s) to a QR code"),
                 style: .Default, handler: self.actionTagToQrCode))
             
-            actionPicker.addAction(UIAlertAction(title: "Export videos",
-                style: .Default, handler: self.actionExport))
+            actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_export", comment: "Action for exporting videos"),
+                style: .Default, handler: self.showExportPrompt))
             
             actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_delete", comment: "Action for deleting video(s)"),
                 style: .Destructive, handler: self.actionDelete))
@@ -910,7 +910,33 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.endSelectMode()
     }
     
-    func actionExport(action: UIAlertAction) {
+    func showExportPrompt(action: UIAlertAction) {
+        let exportAlert = UIAlertController(title: NSLocalizedString("action_export", comment: "Action for exporting videos"), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
+        
+        exportAlert.addTextFieldWithConfigurationHandler({ (emailField) -> Void in
+            emailField.text = ""
+        })
+        
+        
+        exportAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {(action) -> Void in
+        
+        }))
+        
+        exportAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action) -> Void in
+            let field = exportAlert.textFields![0] as UITextField
+            let email = field.text
+            
+            if email != nil {
+                self.actionExport(email!)
+            }
+        }))
+        
+        self.presentViewController(exportAlert, animated: true, completion: nil)
+        
+    }
+    
+    func actionExport(email: String) {
+        
         let videos = loadSelectedVideos()
         var videosToExport = [Video]()
         
@@ -921,7 +947,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         if !videosToExport.isEmpty {
-            videoRepository.exportVideos(videosToExport, email: "matti.jokitulppo@aalto.fi", doneCallback: { tryMessage in
+            videoRepository.exportVideos(videosToExport, email: email, doneCallback: { tryMessage in
                 switch tryMessage {
                 case .Success(_): break
                 case .Error(let error):

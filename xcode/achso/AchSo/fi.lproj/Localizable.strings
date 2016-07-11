@@ -133,6 +133,12 @@
 /* Action for search QR code */
 "action_search_qr" = "Etsi QR-koodilla";
 
+/* Action for exporting videos */
+"action_export" = "Vie video ulos";
+
+/* Prompt for exporting videos */
+"action_export_desc" = "Kirjoita sähköpostiosoite johon haluat videoiden latauslinkin";
+
 /* Action for sign in */
 "action_sign_in" = "Kirjaudu sisään";
 

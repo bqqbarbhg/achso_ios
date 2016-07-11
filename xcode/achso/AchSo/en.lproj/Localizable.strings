@@ -133,6 +133,12 @@
 /* Action for search QR code */
 "action_search_qr" = "Search QR code";
 
+/* Action for exporting videos */
+"action_export" = "Export videos";
+
+/* Prompt for exporting videos */
+"action_export_desc" = "Please write the email address where you would like to receive your videos";
+
 /* Action for sign in */
 "action_sign_in" = "Sign in";
 
