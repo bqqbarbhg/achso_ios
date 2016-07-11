@@ -31,6 +31,9 @@
 /* Error title when exporting videos failed for whatever reason */
 "error_failed_to_export" = "Virhe viedessä videoita ulos palvelimelta";
 
+/* Error title for when user inputted email is incorrect*/
+"error_malformed_email" = "Antamasi sähköpostiosoite ei näytä oikealta!";
+
 /* Error title when something stopped them from saving a video */
 "error_failed_to_save_video" = "Virhe tallentaessa videota.";
 

@@ -31,6 +31,9 @@
 /* Error title when exporting videos failed for whatever reason */
 "error_failed_to_export" = "An error occurred while trying to export your videos";
 
+/* Error title for when user inputted email is incorrect*/
+"error_malformed_email" = "The email address you gave does not seem correct!";
+
 /* Error title when something stopped them from saving a video */
 "error_failed_to_save_video" = "An error occurred while saving the video.";
 

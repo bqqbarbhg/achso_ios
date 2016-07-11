@@ -946,6 +946,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     if email != nil {
                         if email!.isValidEmail {
                             self.actionExport(email!, videosToExport: videos)
+                        } else {
+                            self.showErrorModal(UserError.malFormedEmailAddress, title: email!)
                         }
                     }
                 }))
