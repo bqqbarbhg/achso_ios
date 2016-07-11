@@ -928,7 +928,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         let videos = getSelectedRemoteVideos()
         
         if !videos.isEmpty {
-                let exportAlert = UIAlertController(title: NSLocalizedString("action_export", comment: "Action for exporting videos"), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
+            let exportAlert = UIAlertController(title: String(format: NSLocalizedString("action_export_title", comment: "Action for exporting videos"), videos.count), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
             
                 exportAlert.addTextFieldWithConfigurationHandler({ (emailField) -> Void in
                     emailField.text = Session.user?.email

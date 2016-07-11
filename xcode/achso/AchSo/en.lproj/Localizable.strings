@@ -136,6 +136,9 @@
 /* Action for exporting videos */
 "action_export" = "Export videos";
 
+/* Title for exporting videos */
+"action_export_title" = "Export %d videos";
+
 /* Prompt for exporting videos */
 "action_export_desc" = "Please write the email address where you would like to receive your videos";
 

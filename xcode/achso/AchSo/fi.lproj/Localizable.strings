@@ -136,6 +136,9 @@
 /* Action for exporting videos */
 "action_export" = "Vie video ulos";
 
+/* Title for exporting videos */
+"action_export_title" = "Vie ulos %d videota";
+
 /* Prompt for exporting videos */
 "action_export_desc" = "Kirjoita sähköpostiosoite johon haluat videoiden latauslinkin";
 
