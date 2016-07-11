@@ -17,14 +17,16 @@ class AuthUser: NSObject, NSCoding {
     // User information.
     var id: String
     var name: String
+    var email: String
     
     // The URL base this user was authorized from
     var authorizeUrl: NSURL
     
-    init(tokens: TokenSet, id: String, name: String, authorizeUrl: NSURL) {
+    init(tokens: TokenSet, id: String, name: String, email: String, authorizeUrl: NSURL) {
         
         self.tokens = tokens
         self.id = id
+        self.email = email
         self.name = name
         self.authorizeUrl = authorizeUrl
         
@@ -40,9 +42,9 @@ class AuthUser: NSObject, NSCoding {
         
             let id = try (aCoder.decodeObjectForKey("id") as? String).unwrap()
             let name = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
+            let email = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
             let authorizeUrl = try (aCoder.decodeObjectForKey("authorizeUrl") as? NSURL).unwrap()
-         
-            self.init(tokens: tokens, id: id, name: name, authorizeUrl: authorizeUrl)
+            self.init(tokens: tokens, id: id, name: name, email: email, authorizeUrl: authorizeUrl)
         } catch {
             return nil
         }
@@ -55,6 +57,7 @@ class AuthUser: NSObject, NSCoding {
         
         aCoder.encodeObject(self.id, forKey: "id")
         aCoder.encodeObject(self.name, forKey: "name")
+        aCoder.encodeObject(self.email, forKey: "email")
         aCoder.encodeObject(self.authorizeUrl, forKey: "authorizeUrl")
     }
 }

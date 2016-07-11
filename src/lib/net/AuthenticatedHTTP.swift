@@ -95,9 +95,10 @@ class AuthenticatedHTTP {
                 let responseJson = try (response.result.value as? JSONObject).unwrap()
                 let sub: String = try responseJson.castGet("sub")
                 let name: String = try responseJson.castGet("name")
+                let email: String = try responseJson.castGet("email")
                 
                 let authorizeUrl = self.oaClient.provider.authorizeUrl
-                self.authUser = AuthUser(tokens: tokens, id: sub, name: name, authorizeUrl: authorizeUrl)
+                self.authUser = AuthUser(tokens: tokens, id: sub, name: name, email: email, authorizeUrl: authorizeUrl)
                 
                 Session.save()
                 
