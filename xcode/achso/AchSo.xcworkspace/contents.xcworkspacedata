@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../../src/lib/extensions/StringExtension.swift">
+   </FileRef>
+   <FileRef
       location = "group:AchSo.xcodeproj">
    </FileRef>
    <FileRef

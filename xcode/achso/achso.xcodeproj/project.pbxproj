@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		603748D11D33DEF900EB8585 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603748D01D33DEF900EB8585 /* StringExtension.swift */; };
 		605DB5051D2FE15F00FC9C55 /* Exporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605DB5041D2FE15F00FC9C55 /* Exporter.swift */; };
 		A9167FBB1BEB8B110018BEC4 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBA1BEB8B110018BEC4 /* VideoView.swift */; };
 		A9167FBD1BEB8BB20018BEC4 /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBC1BEB8BB20018BEC4 /* VideoPlayer.swift */; };
@@ -90,6 +91,7 @@
 
 /* Begin PBXFileReference section */
 		4AE8803CC441BE9B3C8F48B3 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		603748D01D33DEF900EB8585 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringExtension.swift; path = lib/extensions/StringExtension.swift; sourceTree = "<group>"; };
 		605DB5041D2FE15F00FC9C55 /* Exporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exporter.swift; sourceTree = "<group>"; };
 		88528559C5CF013FE2D5D74C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A9167FBA1BEB8B110018BEC4 /* VideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 		A9D668621C6A22B20053A3E4 /* extensions */ = {
 			isa = PBXGroup;
 			children = (
+				603748D01D33DEF900EB8585 /* StringExtension.swift */,
 				A9D668631C6A22BD0053A3E4 /* NSURLExtension.swift */,
 				A9D668641C6A22BD0053A3E4 /* UIViewControllerExtension.swift */,
 				A9D668651C6A22BD0053A3E4 /* OptionalExtension.swift */,
@@ -562,6 +565,7 @@
 				A91D672F1BFE007C00B15A66 /* VideoRepository.swift in Sources */,
 				A9743B851BFA26950061E645 /* AnnotationWaitBarView.swift in Sources */,
 				A9D668461C69DE430053A3E4 /* Alamotypes.swift in Sources */,
+				603748D11D33DEF900EB8585 /* StringExtension.swift in Sources */,
 				A91D672B1BFDF42A00B15A66 /* AchRails.swift in Sources */,
 				A9D6685D1C6A22AE0053A3E4 /* AVHelper.swift in Sources */,
 				A9D668611C6A22AE0053A3E4 /* Vector2.swift in Sources */,

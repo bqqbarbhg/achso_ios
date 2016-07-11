@@ -944,7 +944,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                     let email = field.text
                 
                     if email != nil {
-                        self.actionExport(email!, videosToExport: videos)
+                        if email!.isValidEmail {
+                            self.actionExport(email!, videosToExport: videos)
+                        }
                     }
                 }))
                 self.presentViewController(exportAlert, animated: true, completion: nil)
