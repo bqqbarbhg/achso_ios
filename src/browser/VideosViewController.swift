@@ -910,33 +910,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.endSelectMode()
     }
     
-    func showExportPrompt(action: UIAlertAction) {
-        let exportAlert = UIAlertController(title: NSLocalizedString("action_export", comment: "Action for exporting videos"), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
-        
-        exportAlert.addTextFieldWithConfigurationHandler({ (emailField) -> Void in
-            emailField.text = Session.user?.email
-        })
-        
-        
-        exportAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {(action) -> Void in
-        
-        }))
-        
-        exportAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action) -> Void in
-            let field = exportAlert.textFields![0] as UITextField
-            let email = field.text
-            
-            if email != nil {
-                self.actionExport(email!)
-            }
-        }))
-        
-        self.presentViewController(exportAlert, animated: true, completion: nil)
-        
-    }
-    
-    func actionExport(email: String) {
-        
+    func getSelectedRemoteVideos() -> [Video] {
         let videos = loadSelectedVideos()
         var videosToExport = [Video]()
         
@@ -945,6 +919,39 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                videosToExport.append(video)
             }
         }
+        
+        return videosToExport
+    }
+    
+    func showExportPrompt(action: UIAlertAction) {
+        
+        let videos = getSelectedRemoteVideos()
+        
+        if !videos.isEmpty {
+                let exportAlert = UIAlertController(title: NSLocalizedString("action_export", comment: "Action for exporting videos"), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
+            
+                exportAlert.addTextFieldWithConfigurationHandler({ (emailField) -> Void in
+                    emailField.text = Session.user?.email
+                })
+            
+            
+                exportAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {(action) -> Void in
+            
+                }))
+            
+                exportAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action) -> Void in
+                    let field = exportAlert.textFields![0] as UITextField
+                    let email = field.text
+                
+                    if email != nil {
+                        self.actionExport(email!, videosToExport: videos)
+                    }
+                }))
+                self.presentViewController(exportAlert, animated: true, completion: nil)
+        }
+    }
+    
+    func actionExport(email: String, videosToExport: [Video]) {
         
         if !videosToExport.isEmpty {
             videoRepository.exportVideos(videosToExport, email: email, doneCallback: { tryMessage in
