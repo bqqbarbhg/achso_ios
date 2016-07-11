@@ -28,6 +28,9 @@
 /* Error title when something stopped them from authenticating */
 "error_failed_to_authenticate" = "Virhe kirjautuessa sisään.";
 
+/* Error title when exporting videos failed for whatever reason */
+"error_failed_to_export" = "Virhe viedessä videoita ulos palvelimelta";
+
 /* Error title when something stopped them from saving a video */
 "error_failed_to_save_video" = "Virhe tallentaessa videota.";
 

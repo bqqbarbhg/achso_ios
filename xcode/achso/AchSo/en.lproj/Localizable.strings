@@ -28,6 +28,9 @@
 /* Error title when something stopped them from authenticating */
 "error_failed_to_authenticate" = "An error occurred while authenticating with the server.";
 
+/* Error title when exporting videos failed for whatever reason */
+"error_failed_to_export" = "An error occurred while trying to export your videos";
+
 /* Error title when something stopped them from saving a video */
 "error_failed_to_save_video" = "An error occurred while saving the video.";
 

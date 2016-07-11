@@ -434,8 +434,8 @@ class VideoRepository {
     }
 
     
-    func exportVideos(videos: [Video], email: String, doneCallback: [ErrorType] -> ()) {
-        self.videoExporter?.exportVideos(videos, email: email)
+    func exportVideos(videos: [Video], email: String, doneCallback: Try<String> -> ()) {
+        self.videoExporter?.exportVideos(videos, email: email, callback: doneCallback)
     }
     
     // Deletes videos from the server

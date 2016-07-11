@@ -921,17 +921,20 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         
         if !videosToExport.isEmpty {
-            videoRepository.exportVideos(videosToExport, email: "matti.jokitulppo@aalto.fi"){ errors in
-                        videoRepository.refreshOnline()
-                        
-                        if let error = errors.first {
-                            self.showErrorModal(error, title: NSLocalizedString("error_on_video_delete", comment: "Error title when trying to delete video"))
-            }
+            videoRepository.exportVideos(videosToExport, email: "matti.jokitulppo@aalto.fi", doneCallback: { tryMessage in
+                switch tryMessage {
+                case .Success(_): break
+                case .Error(let error):
+                    self.showErrorModal(error, title: NSLocalizedString("error_failed_to_export",
+                    comment: "Error title when exporting videos failed for whatever reason"))
+                }
+            
+            })
         }
+        
         self.endSelectMode()
-        }
     }
-    
+
     func actionDelete(action: UIAlertAction) {
         let videos = loadSelectedVideos()
 
