@@ -914,7 +914,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         let exportAlert = UIAlertController(title: NSLocalizedString("action_export", comment: "Action for exporting videos"), message: NSLocalizedString("action_export_desc", comment: "Prompt for exporting videos"), preferredStyle: .Alert)
         
         exportAlert.addTextFieldWithConfigurationHandler({ (emailField) -> Void in
-            emailField.text = ""
+            emailField.text = Session.user?.email
         })
         
         

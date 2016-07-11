@@ -42,7 +42,7 @@ class AuthUser: NSObject, NSCoding {
         
             let id = try (aCoder.decodeObjectForKey("id") as? String).unwrap()
             let name = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
-            let email = try (aCoder.decodeObjectForKey("name") as? String).unwrap()
+            let email = try (aCoder.decodeObjectForKey("email") as? String).unwrap()
             let authorizeUrl = try (aCoder.decodeObjectForKey("authorizeUrl") as? NSURL).unwrap()
             self.init(tokens: tokens, id: id, name: name, email: email, authorizeUrl: authorizeUrl)
         } catch {
