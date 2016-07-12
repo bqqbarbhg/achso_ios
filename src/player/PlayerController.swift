@@ -180,6 +180,7 @@ class AnnotationEditHandler: PlayerHandler {
             if c.batch == nil {
                 c.batch = activeVideo.findOrCreateBatch(c.time)
             }
+            
             guard let batch = c.batch else { return }
             
             let result = activeVideo.findOrCreateAnnotationAt(event.position, inBatch: batch)

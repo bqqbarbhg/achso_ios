@@ -159,6 +159,18 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         self.videoView.callback = { event in
+            if self.playerController?.activeVideo != nil && self.playerController?.batch != nil {
+                let temp = self.playerController?.activeVideo.findAnnotationAt(event.position, inBatch: (self.playerController?.batch)!)
+                let selected = self.playerController?.selectedAnnotation
+                
+                if temp != nil && selected != nil {
+                    if temp?.position.x == selected?.position.x && temp?.position.y == temp?.position.y && temp?.time == selected?.time {
+                        self.playerController?.annotationEdit(event)
+                        self.refreshView()
+                        return
+                    }
+                }
+            }
             if !self.isAnnotationInputVisible && event.state == .Begin {
                 self.isAnnotationInputVisible = true
                 self.playerController?.annotationEdit(event)
