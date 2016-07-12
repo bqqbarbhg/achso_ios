@@ -180,6 +180,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 self.annotationToolbar.hidden = true
                 self.isAnnotationInputVisible = false
                 self.playerController?.selectedAnnotation = nil
+                self.refreshView()
             }
         }
         
