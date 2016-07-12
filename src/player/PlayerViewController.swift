@@ -159,10 +159,14 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         self.videoView.callback = { event in
-            if !self.isAnnotationInputVisible {
+            if !self.isAnnotationInputVisible && event.state == .Begin {
                 self.isAnnotationInputVisible = true
                 self.playerController?.annotationEdit(event)
                 self.refreshView()
+            } else if event.state == .Begin {
+                self.annotationToolbar.hidden = true
+                self.isAnnotationInputVisible = false
+                self.playerController?.selectedAnnotation = nil
             }
         }
         
@@ -304,6 +308,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 self.annotationWaitToken += 1
                 
                 self.performSelector("annotationWaitDone:", withObject: self.annotationWaitToken, afterDelay: waitTime)
+ 
                 self.annotationWaitBar.animateProgress(waitTime)
                 
                 self.isWaiting = true
