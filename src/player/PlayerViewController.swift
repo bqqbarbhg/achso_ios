@@ -39,6 +39,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var activeSelectedAnnotation: Annotation?
     
     var isWaiting: Bool = false
+    var isAnnotationInputVisible: Bool = false
     
     var annotationWaitToken: Int = 0
     
@@ -158,8 +159,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         self.videoView.callback = { event in
-            self.playerController?.annotationEdit(event)
-            self.refreshView()
+            if !self.isAnnotationInputVisible {
+                self.isAnnotationInputVisible = true
+                self.playerController?.annotationEdit(event)
+                self.refreshView()
+            }
         }
         
         self.refreshView()
@@ -175,6 +179,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.activeVideo = nil
         self.activeSelectedAnnotation = nil
         self.keyboardVisible = false
+        self.isAnnotationInputVisible = false
         self.videoView.removePlayer()
     }
     
@@ -247,6 +252,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             }
         } else {
             self.annotationToolbar.hidden = true
+            self.isAnnotationInputVisible = false
             self.activeSelectedAnnotation = nil
             
             if self.keyboardVisible {
