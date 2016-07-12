@@ -1,6 +1,9 @@
+/*
 
+API wrapper for achso-video-exporter. See: https://github.com/melonmanchan/achso-video-exporter
+
+*/
 import Alamofire
-
 
 class VideoExporter {
     let endpoint: NSURL
