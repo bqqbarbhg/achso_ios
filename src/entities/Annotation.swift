@@ -60,6 +60,7 @@ class Annotation {
         self.createdTimestamp = annotationBase.createdTimestamp
     }
     
+    
     func toManifest() -> JSONObject {
         return [
             "position": [
@@ -72,4 +73,9 @@ class Annotation {
             "createdTimestamp": iso8601DateFormatter.stringFromDate(self.createdTimestamp),
         ]
     }
+    
+}
+
+func ==(a: Annotation, b: Annotation) -> Bool {
+    return a.position == b.position && a.time == b.time && a.text == b.text && a.createdTimestamp == b.createdTimestamp
 }
