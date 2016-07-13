@@ -177,7 +177,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
             } else if event.state == .Begin {
                 self.playerController?.deleteLatestAnnotationIfEmpty()
                 self.setAnnotationEditInputVisible(false)
-                self.playerController?.selectedAnnotation = nil
+                self.playerController?.unselectAnnotation()
             }
             
             self.refreshView()
