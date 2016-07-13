@@ -170,15 +170,16 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                     return
                 }
             }
+            
             if !self.isAnnotationInputVisible && event.state == .Begin {
                 self.isAnnotationInputVisible = true
                 self.playerController?.annotationEdit(event)
-                self.refreshView()
             } else if event.state == .Begin {
                 self.setAnnotationEditInputVisible(false)
                 self.playerController?.selectedAnnotation = nil
-                self.refreshView()
             }
+            
+            self.refreshView()
         }
         
         self.refreshView()
