@@ -175,6 +175,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 self.isAnnotationInputVisible = true
                 self.playerController?.annotationEdit(event)
             } else if event.state == .Begin {
+                self.playerController?.deleteLatestAnnotationIfEmpty()
                 self.setAnnotationEditInputVisible(false)
                 self.playerController?.selectedAnnotation = nil
             }

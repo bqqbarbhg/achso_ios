@@ -188,6 +188,7 @@ class AnnotationEditHandler: PlayerHandler {
             c.selectAnnotation(result.annotation, undoPoint: preUndoPoint)
             
             if result.wasCreated {
+                c.latestCreatedAnnotation = result.annotation
                 c.selectedAnnotationMutated()
             }
             
@@ -252,6 +253,8 @@ class PlayerController {
     
     var previousSelectedAnnotation: Annotation?
     var selectedAnnotation: Annotation?
+    var latestCreatedAnnotation: Annotation?
+    
     var annotationDeadZoneBroken: Bool = false
     var dragging: Bool = false
     var dragOffset: Vector2 = Vector2()
@@ -350,6 +353,18 @@ class PlayerController {
     
     func annotationEdit(event: AnnotationEditEvent) {
         self.currentHandler.annotationEdit(self, event: event)
+    }
+    
+    func deleteLatestAnnotationIfEmpty() {
+        guard let annotation = self.latestCreatedAnnotation else { return }
+        
+        if annotation.text.isEmpty {
+            self.activeVideo.deleteAnnotation(annotation)
+            self.latestCreatedAnnotation = nil
+            if !self.activeVideo.batches.contains({ $0 === self.batch }) {
+                self.batch = nil
+            }
+        }
     }
     
     func annotationDeleteButton() {
