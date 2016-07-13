@@ -164,12 +164,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 let selected = self.playerController?.selectedAnnotation
                 
                 // Allow annotation drag events to fall through
-                if annotationAtPosition != nil && selected != nil {
-                    if (annotationAtPosition! == selected!) {
-                        self.playerController?.annotationEdit(event)
-                        self.refreshView()
-                        return
-                    }
+                if annotationAtPosition != nil && selected != nil && annotationAtPosition! == selected! {
+                    self.playerController?.annotationEdit(event)
+                    self.refreshView()
+                    return
                 }
             }
             if !self.isAnnotationInputVisible && event.state == .Begin {
