@@ -177,8 +177,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 self.playerController?.annotationEdit(event)
                 self.refreshView()
             } else if event.state == .Begin {
-                self.annotationToolbar.hidden = true
-                self.isAnnotationInputVisible = false
+                self.setAnnotationEditInputVisible(false)
                 self.playerController?.selectedAnnotation = nil
                 self.refreshView()
             }
@@ -213,6 +212,11 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }()
         
         self.subtitlesLabel.font = self.subtitlesLabel.font.fontWithSize(fontSize)
+    }
+    
+    func setAnnotationEditInputVisible(isVisible: Bool) -> Void {
+        self.annotationToolbar.hidden = !isVisible
+        self.isAnnotationInputVisible = isVisible
     }
     
     func calculateAnnotationWaitTime(annotations: [Annotation]) -> Double {
@@ -269,8 +273,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
                 self.annotationTextField.text = selectedAnnotation.text
             }
         } else {
-            self.annotationToolbar.hidden = true
-            self.isAnnotationInputVisible = false
+            self.setAnnotationEditInputVisible(false)
             self.activeSelectedAnnotation = nil
             
             if self.keyboardVisible {
