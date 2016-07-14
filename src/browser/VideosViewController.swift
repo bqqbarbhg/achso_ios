@@ -822,9 +822,13 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             if Session.user == nil {
                 actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_in", comment: "Action for sign in"),
                     style: .Default, handler: self.actionSignIn))
+                
             } else {
                 actionPicker.addAction(UIAlertAction(title: NSLocalizedString("action_sign_out", comment: "Action for sign out"),
                     style: .Destructive, handler: self.actionSignOut))
+                
+                actionPicker.addAction(UIAlertAction(title: "\((Session.user?.name)!) (\((Session.user?.email)!))",
+                    style: .Default, handler: nil))
             }
             
         }
