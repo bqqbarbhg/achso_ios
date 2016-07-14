@@ -236,6 +236,33 @@ class VideoRepository {
         }
     }
     
+    class SearchVideosTask: RepoTask {
+        let search: String
+        
+        init(_ ctx: RepoContext, search: String) {
+            self.search = search
+            super.init(ctx)
+        }
+        
+        override func run() {
+            self.achRails.getVideosByQuery(self.search) { tryVideos in
+                
+                switch tryVideos {
+                case .Error(let error): self.fail(error)
+                case .Success(let videos):
+                    dispatch_async(dispatch_get_main_queue()) {
+                        do {
+                            NSLog(String(format: "%d", videos.count))
+                            self.done()
+                        } catch {
+                            self.fail(error)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     class UploadVideoTask: RepoTask {
         let videoRevision: VideoRevision
         
@@ -456,6 +483,32 @@ class VideoRepository {
 
             let ctx = RepoContext(achRails: achRails, videoRepository: self)
             let task = DeleteVideosTask(ctx, videos: videos)
+
+            task.completionHandler = {
+                doneCallback(task.errors)
+            }
+
+            task.start()
+        }
+    }
+    
+    func searchVideosByOnlineQuery(search: String, doneCallback: [ErrorType] -> ()) {
+        Session.doAuthenticated() { status in
+            switch status {
+            case .Error(let error):
+                doneCallback([error])
+                return
+            default:
+                break
+            }
+            
+            guard let achRails = self.achRails else {
+                doneCallback([UserError.invalidLayersBoxUrl.withDebugError("achrails not initialized")])
+                return
+            }
+
+            let ctx = RepoContext(achRails: achRails, videoRepository: self)
+            let task = SearchVideosTask(ctx, search: search)
 
             task.completionHandler = {
                 doneCallback(task.errors)
