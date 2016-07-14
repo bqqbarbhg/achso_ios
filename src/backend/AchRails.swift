@@ -128,12 +128,11 @@ class AchRails {
     }
     
     func getVideosByQuery(search: String, callback:Try<([Video])> -> ()) {
-        let request = endpoint.request(.GET, "videos/search?q=" + search.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+        let request = endpoint.request(.GET, "videos/search", parameters: [ "q": search ])
         http.authorizedRequestJSON(request, canRetry: true) { response in
             switch response.result {
             case .Failure(let error):
                 callback(.Error(error))
-                
             case .Success(let videosJson):
                 do {
                     let json = try (videosJson as? JSONObject).unwrap()

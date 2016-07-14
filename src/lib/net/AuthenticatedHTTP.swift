@@ -140,8 +140,14 @@ class AuthenticatedHTTP {
     }
     
     func unauthorizedRequestJSON(request: HTTPRequest, callback: ACallback) {
+        let old_headers = request.headers ?? [:]
+        var new_headers = ["Accept": "application/json"]
         
-        Alamofire.request(request.method, request.url, parameters: request.parameters, encoding: request.encoding, headers: request.headers)
+        for key in old_headers.keys {
+            new_headers[key] = request.headers![key]
+        }
+        
+        Alamofire.request(request.method, request.url, parameters: request.parameters, encoding: request.encoding, headers: new_headers)
             .responseJSON(completionHandler: callback)
         
     }

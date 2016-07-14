@@ -252,6 +252,9 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             if let searchIndex = self.searchIndex {
                 
+                videoRepository.searchVideosByOnlineQuery(searchFilter) { result in
+                    NSLog(String(format: "%d", result.count))
+                }
                 // If the search index exists query it and sort the results by score.
                 let results = searchIndex.search(searchFilter)
                 let uuids = results.sort({ $0.score > $1.score }).flatMap({ $0.object.tag as? NSUUID })
