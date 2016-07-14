@@ -252,7 +252,7 @@ class VideoRepository {
                 case .Success(let videos):
                     dispatch_async(dispatch_get_main_queue()) {
                         do {
-                            NSLog(String(format: "%d", videos.count))
+                            try AppDelegate.instance.refreshOnlineSearchVideos(videos)
                             self.done()
                         } catch {
                             self.fail(error)

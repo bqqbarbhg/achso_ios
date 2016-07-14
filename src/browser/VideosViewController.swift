@@ -255,6 +255,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 videoRepository.searchVideosByOnlineQuery(searchFilter) { result in
                     NSLog(String(format: "%d", result.count))
                 }
+                
                 // If the search index exists query it and sort the results by score.
                 let results = searchIndex.search(searchFilter)
                 let uuids = results.sort({ $0.score > $1.score }).flatMap({ $0.object.tag as? NSUUID })
@@ -275,6 +276,16 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         self.filteredVideos = videos
         self.updateEmptyPlaceholder()
+        self.collectionView.reloadData()
+    }
+    
+    func addOnlineVideoSearchResults(videos: [Video]) {
+        var videoinfos = [VideoInfo]()
+        for video in videos {
+            videoinfos.append(VideoInfo(video: video))
+        }
+        
+        self.filteredVideos = (self.filteredVideos ?? []) + videoinfos
         self.collectionView.reloadData()
     }
     

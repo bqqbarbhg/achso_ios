@@ -278,6 +278,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func refreshOnlineSearchVideos(videos: [Video]) {
+        self.videosViewController.addOnlineVideoSearchResults(videos)
+    }
+    
     enum AppDataError: ErrorType {
         case UnexpectedResultFormat
     }
