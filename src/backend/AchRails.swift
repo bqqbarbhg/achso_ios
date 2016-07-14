@@ -127,6 +127,33 @@ class AchRails {
         }
     }
     
+    func getVideosByQuery(search: String, callback:Try<([Video])> -> ()) {
+        let request = endpoint.request(.GET, "videos/search?q=" + search.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            switch response.result {
+            case .Failure(let error):
+                callback(.Error(error))
+                
+            case .Success(let videosJson):
+                do {
+                    let json = try (videosJson as? JSONObject).unwrap()
+                    let videosArray: JSONArray = try json.castGet("videos")
+                    
+                    let videos = videosArray.flatMap { any -> Video? in
+                        guard let videoJson = any as? JSONObject else { return nil }
+                        return try? Video(manifest: videoJson, hasLocalModifications: false, downloadedBy: self.userId)
+                    }
+                    
+                    callback(.Success(videos))
+                    
+                } catch {
+                    callback(.Error(error))
+                }
+            }
+        }
+        
+    }
+    
     func getGroups(callback: Try<(groups: [Group], user: User)> -> ()) {
         
         let request = endpoint.request(.GET, "groups/own.json")
