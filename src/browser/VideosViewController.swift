@@ -282,13 +282,18 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.collectionView.reloadData()
     }
     
-    func addOnlineVideoSearchResults(videos: [Video]) {
-        var videoinfos = [VideoInfo]()
+    func appendNewVideosToFiltered(videos: [Video]) {
         for video in videos {
-            videoinfos.append(VideoInfo(video: video))
-        }
+            let videoinfo = VideoInfo(video: video)
         
-        self.filteredVideos = (self.filteredVideos ?? []) + videoinfos
+           if !self.filteredVideos.contains(videoinfo) {
+                filteredVideos.append(videoinfo)
+            }
+        }
+    }
+    
+    func addOnlineVideoSearchResults(videos: [Video]) {
+        appendNewVideosToFiltered(videos)
         self.collectionView.reloadData()
     }
     

@@ -11,7 +11,7 @@ Serializable to Core Data for quick loading and storing.
 import Foundation
 import CoreData
 
-class VideoInfo {
+class VideoInfo: Equatable {
     var id: NSUUID
     var revision: Int
     var title: String
@@ -76,4 +76,8 @@ class VideoInfo {
         object.setValue(self.downloadedBy, forKey: "downloadedBy")
         object.setValue(self.tag, forKey: "tag")
     }
+}
+
+func ==(first: VideoInfo, second: VideoInfo) -> Bool {
+    return first.id == second.id
 }
