@@ -253,7 +253,10 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             if let searchIndex = self.searchIndex {
                 
                 videoRepository.searchVideosByOnlineQuery(searchFilter) { result in
-                    NSLog(String(format: "%d", result.count))
+                    if !result.isEmpty {
+                        self.showErrorModal(UserError.searchVideosFailed, title: NSLocalizedString("error_failed_to_search",
+                            comment: "Error title when searching for online videos failed"))
+                    }
                 }
                 
                 // If the search index exists query it and sort the results by score.

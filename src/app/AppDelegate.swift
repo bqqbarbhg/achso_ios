@@ -278,7 +278,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func refreshOnlineSearchVideos(videos: [Video]) {
+    func refreshOnlineSearchVideos(videos: [Video]) throws {
+        for video in videos {
+            try saveVideo(video, saveToDisk: false)
+        }
+        
         self.videosViewController.addOnlineVideoSearchResults(videos)
     }
     

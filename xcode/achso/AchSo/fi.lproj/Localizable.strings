@@ -40,6 +40,9 @@
 /* Error title when something stopped them from uploading a video */
 "error_failed_to_upload_video" = "Virhe lähettäessä videota palvelimelle.";
 
+/* Error title when searching for online videos failed */
+"error_failed_to_search_online" = "Virhe online-videoita hakieassa";
+
 /* Error title when something stopped them from deleting a remote video */
 "error_failed_to_delete_remote_video" = "Virhe poistaessa videota palvelimelta.";
 

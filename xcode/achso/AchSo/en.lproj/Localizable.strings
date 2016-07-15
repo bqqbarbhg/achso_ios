@@ -40,6 +40,9 @@
 /* Error title when something stopped them from uploading a video */
 "error_failed_to_upload_video" = "An error occurred while uploading the video.";
 
+/* Error title when searching for online videos failed */
+"error_failed_to_search_online" = "An error occurred while trying to search for online videos";
+
 /* Error title when something stopped them from deleting a remote video */
 "error_failed_to_delete_remote_video" = "An error occurred while deleting the video.";
 

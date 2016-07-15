@@ -151,6 +151,11 @@ class UserError: ErrorType, PrintableError {
             comment: "Error title when something stopped them from saving a video"))
     }
     
+    static var searchVideosFailed: UserError {
+        return UserError(NSLocalizedString("error_failed_to_search_online",
+            comment: "Error title when searching for online videos failed"))
+    }
+    
     static var malFormedEmailAddress: UserError {
         return UserError(NSLocalizedString("error_malformed_email",
             comment: "Error title for when user inputted email is incorrect"))
