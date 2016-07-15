@@ -28,9 +28,10 @@ class Video {
     
     // Local data
     var hasLocalModifications: Bool
+    var isTemporary: Bool
     var downloadedBy: String?
     
-    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, deleteUrl: NSURL?, location: Location?, author: User) {
+    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, deleteUrl: NSURL?, location: Location?, author: User, isTemporary: Bool = false) {
         self.id = id
         self.title = title
         self.annotations = []
@@ -47,6 +48,7 @@ class Video {
         
         self.hasLocalModifications = true
         self.downloadedBy = nil
+        self.isTemporary = isTemporary
     }
     
     init(copyFrom video: Video) {
@@ -66,9 +68,10 @@ class Video {
         
         self.hasLocalModifications = video.hasLocalModifications
         self.downloadedBy = video.downloadedBy
+        self.isTemporary = video.isTemporary
     }
     
-    init(manifest: JSONObject, hasLocalModifications: Bool, downloadedBy: String?) throws {
+    init(manifest: JSONObject, hasLocalModifications: Bool, downloadedBy: String?, isTemporary: Bool = false) throws {
         do {
             self.title = try manifest.castGet("title")
             self.id = try NSUUID(UUIDString: try manifest.castGet("id")).unwrap()
@@ -79,6 +82,7 @@ class Video {
             self.formatVersion = manifest["formatVersion"] as? Int ?? 0
             self.creationDate = iso8601DateFormatter.dateFromString(try manifest.castGet("date")) ?? NSDate(timeIntervalSince1970: 0)
             self.rotation = (manifest["rotation"] as? Int) ?? 0
+            self.isTemporary = isTemporary
             self.tag = manifest["tag"] as? String
             
             if let location = manifest["location"] as? JSONObject {
@@ -114,6 +118,7 @@ class Video {
             self.tag = nil
             
             self.hasLocalModifications = false
+            self.isTemporary = false
             self.downloadedBy = nil
             
             throw error
