@@ -252,13 +252,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             if let searchIndex = self.searchIndex {
                 
-                videoRepository.searchVideosByOnlineQuery(searchFilter) { result in
-                    if !result.isEmpty {
-                        self.showErrorModal(UserError.searchVideosFailed, title: NSLocalizedString("error_failed_to_search",
-                            comment: "Error title when searching for online videos failed"))
-                    }
-                }
-                
                 // If the search index exists query it and sort the results by score.
                 let results = searchIndex.search(searchFilter)
                 let uuids = results.sort({ $0.score > $1.score }).flatMap({ $0.object.tag as? NSUUID })
@@ -373,6 +366,13 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        videoRepository.searchVideosByOnlineQuery(self.searchFilter!) { result in
+            if !result.isEmpty {
+                self.showErrorModal(UserError.searchVideosFailed, title: NSLocalizedString("error_failed_to_search",
+                    comment: "Error title when searching for online videos failed"))
+            }
+        }
+        
         searchBar.setShowsCancelButton(false, animated: true)
         
         self.refreshSearchBarViewState(animated: true)
