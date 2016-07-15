@@ -20,7 +20,6 @@ class VideoInfo {
     var tag: String?
     
     var isLocal: Bool
-    var isTemporary: Bool
     var hasLocalModifications: Bool
     var downloadedBy: String?
     
@@ -35,7 +34,6 @@ class VideoInfo {
         
         self.hasLocalModifications = video.hasLocalModifications
         self.downloadedBy = video.downloadedBy
-        self.isTemporary = video.isTemporary
     }
     
     init(object: NSManagedObject) throws {
@@ -49,7 +47,6 @@ class VideoInfo {
             
             self.isLocal = try (object.valueForKey("isLocal") as? Bool).unwrap()
             self.hasLocalModifications = try (object.valueForKey("hasLocalModifications") as? Bool).unwrap()
-            self.isTemporary = try (object.valueForKey("isTemporary") as? Bool).unwrap()
             self.downloadedBy = object.valueForKey("downloadedBy") as? String
         } catch {
             // Swift-bug: Classes need to be initialized even if thrown
@@ -63,7 +60,6 @@ class VideoInfo {
             self.isLocal = false
             self.hasLocalModifications = false
             self.downloadedBy = nil
-            self.isTemporary = false
             
             throw error
         }
@@ -77,7 +73,6 @@ class VideoInfo {
         object.setValue(self.isLocal, forKey: "isLocal")
         object.setValue(self.creationDate, forKey: "creationDate")
         object.setValue(self.hasLocalModifications, forKey: "hasLocalModifications")
-        object.setValue(self.isTemporary, forKey: "isTemporary")
         object.setValue(self.downloadedBy, forKey: "downloadedBy")
         object.setValue(self.tag, forKey: "tag")
     }

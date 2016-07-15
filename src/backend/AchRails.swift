@@ -140,7 +140,7 @@ class AchRails {
                     
                     let videos = videosArray.flatMap { any -> Video? in
                         guard let videoJson = any as? JSONObject else { return nil }
-                        return try? Video(manifest: videoJson, hasLocalModifications: false, downloadedBy: self.userId, isTemporary: true)
+                        return try? Video(manifest: videoJson, hasLocalModifications: false, downloadedBy: self.userId)
                     }
                     
                     callback(.Success(videos))
