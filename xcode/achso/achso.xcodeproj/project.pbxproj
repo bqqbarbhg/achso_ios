@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		603748D11D33DEF900EB8585 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603748D01D33DEF900EB8585 /* StringExtension.swift */; };
+		60410CF91D673FE80097B2C0 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60410CF81D673FE80097B2C0 /* UIColorExtension.swift */; };
 		605DB5051D2FE15F00FC9C55 /* Exporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605DB5041D2FE15F00FC9C55 /* Exporter.swift */; };
 		A9167FBB1BEB8B110018BEC4 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBA1BEB8B110018BEC4 /* VideoView.swift */; };
 		A9167FBD1BEB8BB20018BEC4 /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9167FBC1BEB8BB20018BEC4 /* VideoPlayer.swift */; };
@@ -92,6 +93,7 @@
 /* Begin PBXFileReference section */
 		4AE8803CC441BE9B3C8F48B3 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		603748D01D33DEF900EB8585 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringExtension.swift; path = lib/extensions/StringExtension.swift; sourceTree = "<group>"; };
+		60410CF81D673FE80097B2C0 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIColorExtension.swift; path = lib/extensions/UIColorExtension.swift; sourceTree = "<group>"; };
 		605DB5041D2FE15F00FC9C55 /* Exporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exporter.swift; sourceTree = "<group>"; };
 		88528559C5CF013FE2D5D74C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A9167FBA1BEB8B110018BEC4 /* VideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 		A9D668621C6A22B20053A3E4 /* extensions */ = {
 			isa = PBXGroup;
 			children = (
+				60410CF81D673FE80097B2C0 /* UIColorExtension.swift */,
 				603748D01D33DEF900EB8585 /* StringExtension.swift */,
 				A9D668631C6A22BD0053A3E4 /* NSURLExtension.swift */,
 				A9D668641C6A22BD0053A3E4 /* UIViewControllerExtension.swift */,
@@ -609,6 +612,7 @@
 				A9D6687B1C6A23330053A3E4 /* Tasks.swift in Sources */,
 				A98D82711BEB510800BB7263 /* VideoCellView.swift in Sources */,
 				A9D668601C6A22AE0053A3E4 /* MathHelper.swift in Sources */,
+				60410CF91D673FE80097B2C0 /* UIColorExtension.swift in Sources */,
 				A9CDED571CA15D450005FF3E /* Permissions.swift in Sources */,
 				A99442B31BFB0EFF001C6FC9 /* AnnotationBatch.swift in Sources */,
 				A9D6685B1C6A22AE0053A3E4 /* JsonHelper.swift in Sources */,

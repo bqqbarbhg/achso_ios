@@ -136,6 +136,7 @@ class VideoView: UIView {
         
         for (layer, annotation) in self.boundLayers {
             let image = annotation === self.selectedAnnotation ? selectedImage : normalImage
+            debugPrint(annotation.calculateMarkerColor())
             
             if layer.contents !== image {
                 layer.contents = image
