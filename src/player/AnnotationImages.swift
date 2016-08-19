@@ -3,7 +3,7 @@
 Manages the annotation ring graphics.
 
 Request an image by parameters with `getAnnotationImage`.
-It renders a new image using gradients or returns a cached copy.
+It renders a new image using gradients.
 
 */
 
@@ -12,14 +12,16 @@ import UIKit
 struct AnnotationParameters: Equatable, Hashable {
     var size: CGFloat
     var isSelected: Bool
+    var outerRingColor: UInt32
     
     var hashValue: Int {
         return size.hashValue ^ isSelected.hashValue
     }
     
-    init(size: CGFloat, isSelected: Bool) {
+    init(size: CGFloat, outerRingColor: UInt32,  isSelected: Bool) {
         self.size = size
         self.isSelected = isSelected
+        self.outerRingColor = outerRingColor
     }
 }
 
@@ -28,8 +30,6 @@ func ==(lhs: AnnotationParameters, rhs: AnnotationParameters) -> Bool {
 }
 
 class AnnotationImage {
-    
-    static var cachedImage: CGImage?
     
     static func createAnnotationImage(params: AnnotationParameters) -> CGImage {
         
@@ -58,9 +58,9 @@ class AnnotationImage {
         
         let outerRingColor: CGColor = {
             if params.isSelected {
-                return hexCgColor(0xFFFFFF, alpha: 1.0)
+                return hexCgColor(params.outerRingColor, alpha: 1.0)
             } else {
-                return hexCgColor(0x559999, alpha: 0.8)
+                return hexCgColor(params.outerRingColor, alpha: 0.8)
             }
         }()
         
@@ -90,10 +90,6 @@ class AnnotationImage {
     static var annotationImageMap = [AnnotationParameters: CGImage]()
     
     static func getAnnotationImage(params: AnnotationParameters) -> CGImage {
-        if let cachedImage = annotationImageMap[params] {
-            return cachedImage
-        }
-        
         let image = createAnnotationImage(params)
         annotationImageMap[params] = image
         

@@ -34,7 +34,7 @@ class Annotation {
     var time: Double = 0.0
     var author: User = User()
     var createdTimestamp: NSDate = NSDate(timeIntervalSince1970: 0)
-    let  materialDesignPalette: [Int] = [
+    let  materialDesignPalette: [UInt32] = [
                 0xF44336,
                 0xE91E63,
                 0x9C27B0,
@@ -99,7 +99,7 @@ class Annotation {
         return hash;
     }
     
-    func calculateMarkerColor() -> UIColor {
+    func calculateMarkerColor() -> UInt32 {
         let hash = self.nameFowlerNollVo()
         let hashSigned = Int32(truncatingBitPattern: hash)
         var index = hashSigned % Int32((self.materialDesignPalette.count - 1))
@@ -108,11 +108,11 @@ class Annotation {
             index = index * -1
         }
         
-        guard let colorNumber : Int = materialDesignPalette[Int(index)] else {
-            return UIColor.blackColor()
+        guard let colorNumber : UInt32 = materialDesignPalette[Int(index)] else {
+            return 0xFFFFFF
         }
         
-        return UIColor(hex: colorNumber)
+        return colorNumber
     }
     
     func toManifest() -> JSONObject {

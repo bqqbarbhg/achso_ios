@@ -131,12 +131,15 @@ class VideoView: UIView {
             }
         }()
         
-        let normalImage = AnnotationImage.getAnnotationImage(AnnotationParameters(size: annotationSize, isSelected: false))
-        let selectedImage = AnnotationImage.getAnnotationImage(AnnotationParameters(size: annotationSize, isSelected: true))
+        let selectedImage = AnnotationImage.getAnnotationImage(AnnotationParameters(size: annotationSize, outerRingColor: 0xFFFFFF, isSelected: true))
         
         for (layer, annotation) in self.boundLayers {
-            let image = annotation === self.selectedAnnotation ? selectedImage : normalImage
-            debugPrint(annotation.calculateMarkerColor())
+            let outerRingColor: UInt32 = annotation.calculateMarkerColor()
+            let image = annotation === self.selectedAnnotation ? selectedImage : AnnotationImage.getAnnotationImage(AnnotationParameters(
+                size: annotationSize,
+                outerRingColor: outerRingColor,
+                isSelected: false))
+            
             
             if layer.contents !== image {
                 layer.contents = image
