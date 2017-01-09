@@ -68,8 +68,9 @@ class VideoDetailsViewController: XLFormViewController {
         let groupsSection = XLFormSectionDescriptor.formSection()
         let groupsList = AppDelegate.instance.loadGroups()
         
-        for group in (groupsList?.groups)! {
-            let groupRow = XLFormRowDescriptor(tag: "grouprow", rowType: XLFormRowDescriptorTypeInfo, title: group.name)
+        for (index, group) in (groupsList?.groups)!.enumerate() {
+            let groupRow = XLFormRowDescriptor(tag: "group-\(index)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
+            
             groupsSection.addFormRow(groupRow)
         }
         
