@@ -67,6 +67,19 @@ class VideoDetailsViewController: XLFormViewController {
         self.form = form
     }
     
+    override func didSelectFormRow(formRow: XLFormRowDescriptor!) {
+        guard let tag = formRow.tag else { return }
+        
+        if tag.hasPrefix("annotation") {
+            if let index = Int(tag.componentsSeparatedByString("-")[1]) {
+                let annotation : Annotation = self.video!.annotations[index]
+                
+                NSLog("\(annotation.time)")
+                self.showVideo()
+            }
+        }
+    }
+    
     override func formRowDescriptorValueHasChanged(formRow: XLFormRowDescriptor!, oldValue: AnyObject!, newValue: AnyObject!) {
         guard let tag = formRow.tag else { return }
         
@@ -78,6 +91,40 @@ class VideoDetailsViewController: XLFormViewController {
         }
     }
     
+    func showVideo() {
+        self.performSegueWithIdentifier("showPlayerFromTime", sender: self)
+    }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        func handleShowPlayer(viewController: UIViewController) {
+            guard let navigationController = viewController as? UINavigationController else {
+                return
+            }
+            
+            guard let playerViewController = navigationController.topViewController as? PlayerViewController else {
+                return
+            }
+
+            if let video = self.video {
+                do {
+                    try playerViewController.setVideo(video)
+                    videoRepository.refreshVideo(video, isView: true, callback: playerViewController.videoDidUpdate)
+                } catch {
+                    // TODO: Cancel segue
+                }
+            }
+        }
+        
+        let handlers = [
+            "showPlayerFromTime": handleShowPlayer,
+        ]
+        
+        guard let identifier = segue.identifier else { return }
+        guard let handler = handlers[identifier] else { return }
+        
+        handler(segue.destinationViewController)
+    }
     @IBAction func cancelButtonPressed(sender: UIBarButtonItem) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
