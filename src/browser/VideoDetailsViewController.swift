@@ -13,6 +13,7 @@ import XLForm
 class VideoDetailsViewController: XLFormViewController {
     
     var video: Video? = nil
+    var startTime : Double = 0.0
     var hasModifications = false
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
@@ -74,8 +75,7 @@ class VideoDetailsViewController: XLFormViewController {
             if let index = Int(tag.componentsSeparatedByString("-")[1]) {
                 let annotation : Annotation = self.video!.annotations[index]
                 
-                NSLog("\(annotation.time)")
-                self.showVideo()
+                self.showVideoAtTime(annotation.time)
             }
         }
     }
@@ -91,7 +91,8 @@ class VideoDetailsViewController: XLFormViewController {
         }
     }
     
-    func showVideo() {
+    func showVideoAtTime(time : Double) {
+        self.startTime = time
         self.performSegueWithIdentifier("showPlayerFromTime", sender: self)
     }
 
@@ -109,6 +110,7 @@ class VideoDetailsViewController: XLFormViewController {
             if let video = self.video {
                 do {
                     try playerViewController.setVideo(video)
+                    playerViewController.setStartTime(self.startTime)
                     videoRepository.refreshVideo(video, isView: true, callback: playerViewController.videoDidUpdate)
                 } catch {
                     // TODO: Cancel segue

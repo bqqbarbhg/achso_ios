@@ -29,6 +29,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
     var videoPlayer: VideoPlayer?
     var playerController: PlayerController?
     
+    var startTime: Double?
     var video: Video?
     var activeVideo: ActiveVideo?
     var keyboardVisible: Bool = false
@@ -434,6 +435,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.video = video
     }
     
+    func setStartTime(time: Double) {
+        self.startTime = time
+    }
+    
     func videoLoaded() {
         self.view.setNeedsLayout()
         self.videoView.setNeedsLayout()
@@ -444,14 +449,12 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         UIView.transitionWithView(self.videoView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut, animations: {
             self.videoView.alpha = 1.0
         }, completion: { _ in
-            self.videoPlayer?.play()
+            if (self.startTime == nil) {
+                self.videoPlayer?.play()
+            }
         })
         
         guard let videoPlayer = self.videoPlayer, video = self.video else { return  }
-        
-        if self.playerController?.state == .Some(.Playing) {
-            videoPlayer.play()
-        }
         
         let playerController = PlayerController(player: videoPlayer)
         
@@ -460,6 +463,7 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         if let duration = videoPlayer.videoDuration {
             activeVideo.duration = duration
         }
+        
         if let videoSize = videoPlayer.videoSize {
             let size = Vector2.init(cgSize: videoSize)
             let relative = size / min(size.x, size.y)
@@ -469,8 +473,15 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.activeVideo = activeVideo
         playerController.activeVideo = activeVideo
         
-        
         self.playerController = playerController
+        
+        if (self.startTime != nil) {
+            self.playerController!.doSeek(self.startTime!)
+        } else {
+            if self.playerController?.state == .Some(.Playing) {
+                videoPlayer.play()
+            }
+        }
     }
     
     func videoFailedToLoad() {

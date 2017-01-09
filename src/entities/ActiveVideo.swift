@@ -14,6 +14,7 @@ import Foundation
 class ActiveVideo {
     
     var video: Video
+    var startSkipTime : Double = 0.0
     var duration: Double = 0.0
     var batches: [AnnotationBatch] = []
     var resolution: Vector2 = Vector2()

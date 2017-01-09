@@ -447,6 +447,7 @@ class PlayerController {
     func commitUndo() -> Bool {
         return self.restoreStateFrom(&self.undoStream, andSaveCurrentTo: &self.redoStream)
     }
+    
     func commitRedo() -> Bool {
         return self.restoreStateFrom(&self.redoStream, andSaveCurrentTo: &self.undoStream)
     }
@@ -454,6 +455,7 @@ class PlayerController {
     var canUndo: Bool {
         return !self.undoStream.isEmpty
     }
+    
     var canRedo: Bool {
         return !self.redoStream.isEmpty
     }
@@ -463,6 +465,7 @@ class PlayerController {
             self.postUndoRedo()
         }
     }
+    
     func doRedo() {
         if self.commitRedo() {
             self.postUndoRedo()
