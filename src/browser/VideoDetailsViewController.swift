@@ -52,6 +52,18 @@ class VideoDetailsViewController: XLFormViewController {
         creator.value = creatorName
         readonly.addFormRow(creator)
         
+        let annotationsSection = XLFormSectionDescriptor.formSection()
+        annotationsSection.title = "Annotations"
+        
+        for (index, annotation) in self.video!.annotations.enumerate() {
+            let annotationRow = XLFormRowDescriptor(tag: "annotation-\(index)", rowType: XLFormRowDescriptorTypeInfo, title: annotation.author.name)
+            
+            annotationRow.value = annotation.text
+            annotationsSection.addFormRow(annotationRow)
+        }
+        
+        form.addFormSection(annotationsSection)
+        
         self.form = form
     }
     
