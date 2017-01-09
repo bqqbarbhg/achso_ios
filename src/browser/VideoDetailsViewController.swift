@@ -41,7 +41,7 @@ class VideoDetailsViewController: XLFormViewController {
         
         title.value = self.video!.title
         section.addFormRow(title)
-
+        
         let readonly = XLFormSectionDescriptor.formSection()
         
         form.addFormSection(readonly)
@@ -65,6 +65,18 @@ class VideoDetailsViewController: XLFormViewController {
         
         form.addFormSection(annotationsSection)
         
+        let groupsSection = XLFormSectionDescriptor.formSection()
+        let groupsList = AppDelegate.instance.loadGroups()
+        
+        for group in (groupsList?.groups)! {
+            let groupRow = XLFormRowDescriptor(tag: "grouprow", rowType: XLFormRowDescriptorTypeInfo, title: group.name)
+            groupsSection.addFormRow(groupRow)
+        }
+        
+        groupsSection.title = "Groups"
+        
+        form.addFormSection(groupsSection)
+        
         self.form = form
     }
     
@@ -72,12 +84,19 @@ class VideoDetailsViewController: XLFormViewController {
         guard let tag = formRow.tag else { return }
         
         if tag.hasPrefix("annotation") {
-            if let index = Int(tag.componentsSeparatedByString("-")[1]) {
-                let annotation : Annotation = self.video!.annotations[index]
-                
-                self.showVideoAtTime(annotation.time)
-            }
+            parseAnnotationTag(tag)
         }
+    }
+    
+    func parseAnnotationTag(tag: String) {
+        if let index = Int(tag.componentsSeparatedByString("-")[1]) {
+            self.handleAnnotationItemTap(index)
+        }
+    }
+    
+    func handleAnnotationItemTap(index: Int) {
+        let annotation : Annotation = self.video!.annotations[index]
+        self.showVideoAtTime(annotation.time)
     }
     
     override func formRowDescriptorValueHasChanged(formRow: XLFormRowDescriptor!, oldValue: AnyObject!, newValue: AnyObject!) {
