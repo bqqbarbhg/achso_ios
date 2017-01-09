@@ -794,7 +794,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         let detailsNav = self.storyboard!.instantiateViewControllerWithIdentifier("VideoDetailsViewController") as! UINavigationController
         let detailsController = detailsNav.topViewController as! VideoDetailsViewController
-        detailsController.initializeForm(videos)
+        detailsController.initializeForm(videos[0])
         
         self.endSelectMode()
         
