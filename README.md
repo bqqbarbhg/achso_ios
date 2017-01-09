@@ -40,9 +40,15 @@ achso://$BOX_URL/videos/$ID
 achso://$BOX_URL/record
 ```
 
+## Release naming convention
+Each release should be named after the Wikipedia list of spacecraft in the Culture series.
+
+https://en.wikipedia.org/wiki/List_of_spacecraft_in_the_Culture_series
+
 ## Development:
 
 - Samuli Raivio (@bqqbarbhg)
+- Matti Jokitulppo (@melonmanchan)
 
 based on [learning-layers/AchSo](https://github.com/learning-layers/achso), see readme.md there for original authors and design. 
 

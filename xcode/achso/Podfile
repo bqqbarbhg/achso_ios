@@ -2,7 +2,8 @@
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'Alamofire', '~> 3.0'
+target 'AchSo' do
+pod 'Alamofire', '~> 3.5.0'
 pod 'SDWebImage', '~> 3.7'
 pod 'XLForm', '~> 3.0'
-
+end
