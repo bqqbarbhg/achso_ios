@@ -68,8 +68,8 @@ class VideoDetailsViewController: XLFormViewController {
         let groupsSection = XLFormSectionDescriptor.formSection()
         let groupsList = AppDelegate.instance.loadGroups()
         
-        for (index, group) in (groupsList?.groups)!.enumerate() {
-            let groupRow = XLFormRowDescriptor(tag: "group-\(index)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
+        for group in (groupsList?.groups)! {
+            let groupRow = XLFormRowDescriptor(tag: "group-\(group.id)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
             
             groupsSection.addFormRow(groupRow)
         }
@@ -85,14 +85,22 @@ class VideoDetailsViewController: XLFormViewController {
         guard let tag = formRow.tag else { return }
         
         if tag.hasPrefix("annotation") {
-            parseAnnotationTag(tag)
+            let index = self.parseIntFromTagSeparator(tag)
+            self.showVideoAtTime((self.video?.annotations[index].time)!)
         }
     }
     
-    func parseAnnotationTag(tag: String) {
+    func parseIntFromTagSeparator(tag: String) -> Int {
         if let index = Int(tag.componentsSeparatedByString("-")[1]) {
-            self.handleAnnotationItemTap(index)
+            return index
         }
+        
+        return -1
+    }
+    
+    
+    func setShareStatus(groupId: Int, isShared: Bool) {
+        NSLog("\(groupId): \(isShared)")
     }
     
     func handleAnnotationItemTap(index: Int) {
@@ -100,8 +108,14 @@ class VideoDetailsViewController: XLFormViewController {
         self.showVideoAtTime(annotation.time)
     }
     
+    
     override func formRowDescriptorValueHasChanged(formRow: XLFormRowDescriptor!, oldValue: AnyObject!, newValue: AnyObject!) {
         guard let tag = formRow.tag else { return }
+        
+        if  tag.hasPrefix("group"), let asBool = newValue as? Bool {
+            let id = self.parseIntFromTagSeparator(tag)
+            setShareStatus(id, isShared: asBool)
+        }
         
         self.hasModifications = true
         
