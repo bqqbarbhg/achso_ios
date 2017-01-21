@@ -69,8 +69,11 @@ class VideoDetailsViewController: XLFormViewController {
         let groupsList = AppDelegate.instance.loadGroups()
         
         for group in (groupsList?.groups)! {
+            let isShared = group.videos.contains(video.id)
+            
             let groupRow = XLFormRowDescriptor(tag: "group-\(group.id)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
             
+            groupRow.value = isShared
             groupsSection.addFormRow(groupRow)
         }
         
