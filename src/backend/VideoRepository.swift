@@ -324,6 +324,73 @@ class VideoRepository {
         
     }
     
+    class SetVideoShareTask: RepoTask {
+        let videoId: NSUUID
+        let groupId: Int
+        let isShared: Bool
+        
+        init(_ ctx: RepoContext, videoId: NSUUID, groupId: Int, isShared: Bool) {
+            self.videoId = videoId
+            self.groupId = groupId
+            self.isShared = isShared
+            super.init(ctx)
+        }
+        
+        override func run() {
+            
+            if isShared {
+                achRails.shareVideoToGroup(videoId, groupId: groupId) { err in
+                    if (err != nil) {
+                       self.fail(err!)
+                    } else {
+                       self.done()
+                    }
+                }
+            } else {
+                achRails.unshareVideoToGroup(videoId, groupId: groupId) { err in
+                    if (err != nil) {
+                       self.fail(err!)
+                    } else {
+                       self.done()
+                    }
+                }
+            }
+        }
+    }
+    
+    func shareVideoToGroup(video: Video, groupId : Int) {
+        let ctx = RepoContext(achRails: self.achRails!, videoRepository: self)
+        let task = SetVideoShareTask(ctx, videoId: video.id, groupId: groupId, isShared: true)
+        
+        task.completionHandler = {
+            for group in self.groups {
+                if group.id == String(groupId) {
+                    group.videos.append(video.id)
+                    break
+                }
+            }
+            
+        }
+        
+        task.start()
+    }
+    
+    func unshareVideoToGroup(video: Video, groupId : Int) {
+        let ctx = RepoContext(achRails: self.achRails!, videoRepository: self)
+        let task = SetVideoShareTask(ctx, videoId: video.id, groupId: groupId, isShared: true)
+        
+        task.completionHandler = {
+            for group in self.groups {
+                if group.id == String(groupId) {
+                    group.videos = group.videos.filter { $0 != video.id }
+                    break
+                }
+            }
+        }
+        
+        task.start()
+    }
+    
     // Download and persist new entities from the server.
     func refreshOnline() -> Bool {
         guard let achRails = self.achRails else { return false }

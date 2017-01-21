@@ -103,7 +103,13 @@ class VideoDetailsViewController: XLFormViewController {
     
     
     func setShareStatus(groupId: Int, isShared: Bool) {
-        NSLog("\(groupId): \(isShared)")
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        if (isShared) {
+            appDelegate.shareVideoToGroup(self.video!, groupId: groupId)
+        } else {
+            appDelegate.unshareVideoToGroup(self.video!, groupId: groupId)
+        }
     }
     
     func handleAnnotationItemTap(index: Int) {
