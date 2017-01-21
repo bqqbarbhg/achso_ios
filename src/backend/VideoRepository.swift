@@ -377,7 +377,7 @@ class VideoRepository {
     
     func unshareVideoToGroup(video: Video, groupId : Int) {
         let ctx = RepoContext(achRails: self.achRails!, videoRepository: self)
-        let task = SetVideoShareTask(ctx, videoId: video.id, groupId: groupId, isShared: true)
+        let task = SetVideoShareTask(ctx, videoId: video.id, groupId: groupId, isShared: false)
         
         task.completionHandler = {
             for group in self.groups {
