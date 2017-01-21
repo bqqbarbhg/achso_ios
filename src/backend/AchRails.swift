@@ -127,6 +127,37 @@ class AchRails {
         }
     }
     
+    func unshareVideoToGroup(video: Video, group: Group, callback: ErrorType? ->()) {
+        let videoId = video.id.lowerUUIDString
+        let groupId = group.id
+        
+        let request = endpoint.request(.DELETE, "/videos/\(videoId)/shares/\(groupId)")
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            switch response.result {
+            case .Failure(let error):
+                callback(error)
+            case .Success(_):
+                callback(nil)
+            }
+        }
+    }
+    
+    func shareVideoToGroup(video: Video, group: Group, callback: ErrorType? ->()) {
+        let videoId = video.id.lowerUUIDString
+        let groupId = group.id
+        let payload = ["group" : groupId]
+        
+        let request = endpoint.request(.POST, "/videos/\(videoId)/shares", json: payload)
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            switch response.result {
+            case .Failure(let error):
+                callback(error)
+            case .Success(_):
+                callback(nil)
+            }
+        }
+    }
+    
     func getVideosByQuery(search: String, callback:Try<([Video])> -> ()) {
         let request = endpoint.request(.GET, "videos/search", parameters: [ "q": search ])
         http.authorizedRequestJSON(request, canRetry: true) { response in
