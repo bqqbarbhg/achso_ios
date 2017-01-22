@@ -154,6 +154,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return groupList
     }
     
+    func makeVideoPublic(video: Video) {
+        videoRepository.makeVideoPublic(video)
+    }
+    
+    func makeVideoPrivate(video: Video) {
+        videoRepository.makeVideoPrivate(video)
+    }
+    
     func shareVideoToGroup(video: Video, groupId : Int) {
         videoRepository.shareVideoToGroup(video, groupId: groupId)
     }

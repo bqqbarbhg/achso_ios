@@ -324,6 +324,59 @@ class VideoRepository {
         
     }
     
+    class SetVideoPublicityTask: RepoTask {
+        let videoId: NSUUID
+        let isPublic: Bool
+        
+        init(_ ctx: RepoContext, videoId: NSUUID, isPublic: Bool) {
+            self.videoId = videoId
+            self.isPublic = isPublic
+            super.init(ctx)
+        }
+        
+        override func run() {
+            if isPublic {
+                achRails.makeVideoPublic(videoId){ err in
+                    if (err != nil) {
+                       self.fail(err!)
+                    } else {
+                       self.done()
+                    }
+                }
+            } else {
+                achRails.makeVideoPrivate(videoId){ err in
+                    if (err != nil) {
+                       self.fail(err!)
+                    } else {
+                       self.done()
+                    }
+                }
+                
+            }
+        }
+        
+    }
+    
+    func makeVideoPublic(video: Video) {
+        self.setVideoPublicity(video.id, isPublic: true) {
+            // TODO: Set video as public
+        }
+    }
+    
+    func makeVideoPrivate(video: Video) {
+        self.setVideoPublicity(video.id, isPublic: false) {
+            // TODO: Set video as private
+        }
+    }
+    
+    func setVideoPublicity(videoId: NSUUID, isPublic: Bool, callback: () -> ()) {
+        let ctx = RepoContext(achRails: self.achRails!, videoRepository: self)
+        let task = SetVideoPublicityTask(ctx, videoId: videoId, isPublic: isPublic)
+        task.completionHandler = callback
+        
+        task.start()
+    }
+    
     class SetVideoShareTask: RepoTask {
         let videoId: NSUUID
         let groupId: Int

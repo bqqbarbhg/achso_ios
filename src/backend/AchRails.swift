@@ -127,6 +127,28 @@ class AchRails {
         }
     }
     
+    func makeVideoPublic(videoId: NSUUID, callback: ErrorType? -> ()) {
+        self.setVideoPublicity(videoId, isPublic: true, callback: callback)
+    }
+    
+    func makeVideoPrivate(videoId: NSUUID, callback: ErrorType? -> ()) {
+        self.setVideoPublicity(videoId, isPublic: false, callback: callback)
+    }
+    
+    func setVideoPublicity(videoId: NSUUID, isPublic: Bool, callback: ErrorType? ->()) {
+        let payload = ["isPublic" : isPublic]
+        
+        let request = endpoint.request(.PUT, "/videos/\(videoId.lowerUUIDString)/shares/set_publicity", json:payload)
+        http.authorizedRequestJSON(request, canRetry: true) { response in
+            switch response.result {
+            case .Failure(let error):
+                callback(error)
+            case .Success(_):
+                callback(nil)
+            }
+        }
+    }
+    
     func unshareVideoToGroup(videoId: NSUUID, groupId: Int, callback: ErrorType? ->()) {
         
         let request = endpoint.request(.DELETE, "/videos/\(videoId.lowerUUIDString)/shares/\(groupId)")
