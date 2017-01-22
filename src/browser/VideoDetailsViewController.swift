@@ -113,26 +113,40 @@ class VideoDetailsViewController: XLFormViewController {
         }
     }
     
+    func setPublicity(isPublic: Bool) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        if isPublic {
+            appDelegate.makeVideoPublic(self.video!)
+        } else {
+            appDelegate.makeVideoPrivate(self.video!)
+        }
+    }
+    
     func handleAnnotationItemTap(index: Int) {
         let annotation : Annotation = self.video!.annotations[index]
         self.showVideoAtTime(annotation.time)
     }
     
-    
     override func formRowDescriptorValueHasChanged(formRow: XLFormRowDescriptor!, oldValue: AnyObject!, newValue: AnyObject!) {
         guard let tag = formRow.tag else { return }
         
-        if  tag.hasPrefix("group"), let asBool = newValue as? Bool {
+        if tag.hasPrefix("group"), let asBool = newValue as? Bool {
             let id = self.parseIntFromTagSeparator(tag)
             setShareStatus(id, isShared: asBool)
         }
         
-        self.hasModifications = true
-        
         switch tag {
-            case "title": self.video!.title = newValue as? String ?? ""
+            case "title":
+                self.video!.title = newValue as? String ?? ""
+                break
+            case "isPublic":
+                self.setPublicity((newValue as? Bool)!)
+                break
             default: break
         }
+        
+        self.hasModifications = true
     }
     
     func showVideoAtTime(time : Double) {
