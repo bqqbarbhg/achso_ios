@@ -25,12 +25,13 @@ class Video {
     var location: Location?
     var author: User
     var tag: String?
+    var isPublic: Bool
     
     // Local data
     var hasLocalModifications: Bool
     var downloadedBy: String?
     
-    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, deleteUrl: NSURL?, location: Location?, author: User) {
+    init(id: NSUUID, title: String, videoUri: NSURL, thumbnailUri: NSURL, deleteUrl: NSURL?, location: Location?, author: User, isPublic: Bool) {
         self.id = id
         self.title = title
         self.annotations = []
@@ -43,6 +44,7 @@ class Video {
         self.rotation = 0
         self.location = location
         self.author = author
+        self.isPublic = isPublic
         self.tag = nil
         
         self.hasLocalModifications = true
@@ -63,6 +65,7 @@ class Video {
         self.location = video.location
         self.author = video.author
         self.tag = video.tag
+        self.isPublic = video.isPublic
         
         self.hasLocalModifications = video.hasLocalModifications
         self.downloadedBy = video.downloadedBy
@@ -80,6 +83,7 @@ class Video {
             self.creationDate = iso8601DateFormatter.dateFromString(try manifest.castGet("date")) ?? NSDate(timeIntervalSince1970: 0)
             self.rotation = (manifest["rotation"] as? Int) ?? 0
             self.tag = manifest["tag"] as? String
+            self.isPublic = (manifest["isPublic"] as? Bool) ?? false
             
             if let location = manifest["location"] as? JSONObject {
                 self.location = try? Location(
@@ -112,6 +116,7 @@ class Video {
             self.rotation = 0
             self.author = User()
             self.tag = nil
+            self.isPublic = false
             
             self.hasLocalModifications = false
             self.downloadedBy = nil
@@ -130,6 +135,7 @@ class Video {
             "date": iso8601DateFormatter.stringFromDate(self.creationDate),
             "revision": self.revision,
             "formatVersion": self.formatVersion,
+            "isPublic": self.isPublic,
             "rotation": self.rotation,
             "location": self.location.map {
                 [

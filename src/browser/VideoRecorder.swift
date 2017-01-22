@@ -189,7 +189,7 @@ class VideoRecorder: NSObject, UINavigationControllerDelegate, UIImagePickerCont
             let realVideoUrl = try videoUrl.realUrl.unwrap()
             let realThumbnailUrl = try thumbnailUrl.realUrl.unwrap()
             
-            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, deleteUrl: nil, location: location, author: user)
+            let video = Video(id: id, title: title, videoUri: videoUrl, thumbnailUri: thumbnailUrl, deleteUrl: nil, location: location, author: user, isPublic: false)
             
             // Note: The video object is saved last so that if something fails before it it won't be stored
             try saveThumbnailFromVideo(sourceVideoUrl, outputUrl: realThumbnailUrl)

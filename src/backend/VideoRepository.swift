@@ -359,13 +359,13 @@ class VideoRepository {
     
     func makeVideoPublic(video: Video) {
         self.setVideoPublicity(video.id, isPublic: true) {
-            // TODO: Set video as public
+            video.isPublic = true
         }
     }
     
     func makeVideoPrivate(video: Video) {
         self.setVideoPublicity(video.id, isPublic: false) {
-            // TODO: Set video as private
+            video.isPublic = false
         }
     }
     
