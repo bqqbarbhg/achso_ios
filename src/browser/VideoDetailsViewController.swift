@@ -33,25 +33,26 @@ class VideoDetailsViewController: XLFormViewController {
         let form = XLFormDescriptor(title: formTitle)
         form.delegate = self
         
-        let section = XLFormSectionDescriptor.formSection()
-        form.addFormSection(section)
+        let generalSection = XLFormSectionDescriptor.formSectionWithTitle("General settings")
         
-            let titleTitle = NSLocalizedString("details_title", comment: "Title field label shown in the video details form")
-            let title = XLFormRowDescriptor(tag: "title", rowType: XLFormRowDescriptorTypeText, title: titleTitle)
-        
+        let titleTitle = NSLocalizedString("details_title", comment: "Title field label shown in the video details form")
+        let title = XLFormRowDescriptor(tag: "title", rowType: XLFormRowDescriptorTypeText, title: titleTitle)
+    
         title.value = self.video!.title
-        section.addFormRow(title)
-        
-        let readonly = XLFormSectionDescriptor.formSection()
-        
-        form.addFormSection(readonly)
         
         let creatorTitle = NSLocalizedString("details_creator", comment: "Genre label shown in the video details form")
-        let creator = XLFormRowDescriptor(tag: "creator", rowType: XLFormRowDescriptorTypeInfo, title: creatorTitle)
+        let creatorRow = XLFormRowDescriptor(tag: "creator", rowType: XLFormRowDescriptorTypeInfo, title: creatorTitle)
         
         let creatorName = video.author.name
-        creator.value = creatorName
-        readonly.addFormRow(creator)
+        creatorRow.value = creatorName
+        
+        let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: "Is video public?")
+        
+        generalSection.addFormRow(title)
+        generalSection.addFormRow(creatorRow)
+        generalSection.addFormRow(isPublicRow)
+        
+        form.addFormSection(generalSection)
         
         let annotationsSection = XLFormSectionDescriptor.formSection()
         annotationsSection.title = "Annotations"
@@ -77,7 +78,7 @@ class VideoDetailsViewController: XLFormViewController {
             groupsSection.addFormRow(groupRow)
         }
         
-        groupsSection.title = "Groups"
+        groupsSection.title = "Share to groups"
         
         form.addFormSection(groupsSection)
         
