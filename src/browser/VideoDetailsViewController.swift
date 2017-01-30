@@ -46,7 +46,7 @@ class VideoDetailsViewController: XLFormViewController {
         let creatorName = video.author.name
         creatorRow.value = creatorName
         
-        let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: "Is video public?")
+        let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: "Is video searchable?")
         
         isPublicRow.value = video.isPublic
         generalSection.addFormRow(title)

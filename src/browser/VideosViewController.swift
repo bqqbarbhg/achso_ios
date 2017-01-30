@@ -8,7 +8,7 @@ It handles these:
 
 - Delegating to different view controllers
 - Displaying the video thumbnails using VideoCellView.swift
-- Filtering the videos based on  search query using Search.swift
+- Filtering the videos based on search query using Search.swift
 - Changing the UI depending on the state (selecting or not)
 - Creates the video objects from recorded videos
 
@@ -64,6 +64,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     // List of currently visible videos
     var filteredVideos: [VideoInfo] = []
+    
+    var selectedVideos: [NSUUID] = []
     
     // Used to pass the video from selection to the segue callback
     var chosenVideo: Video?
@@ -434,7 +436,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         if let video = self.filteredVideos[safe: indexPath.item] {
             cell.update(video)
-            cell.setSelectable(collectionView.allowsMultipleSelection)
+            cell.setSelectable(true)
         }
         
         return cell
@@ -590,6 +592,51 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.performSegueWithIdentifier("showPlayer", sender: self)
     }
     
+    
+    func isVideoAtPathSelected(path: NSIndexPath) -> Bool {
+        let currentVideo = self.videoForIndexPath(path)
+        return selectedVideos.contains({$0 == currentVideo?.id })
+    }
+    
+    func selectVideoAtPath(path: NSIndexPath) {
+        let currentVideo = self.videoForIndexPath(path)
+        selectedVideos.append((currentVideo?.id)!)
+        
+        if selectedVideos.count != 0 {
+            self.toggleSelectionMode(true)
+        }
+        
+        refreshSelectedViewState(animated: true)
+    }
+    
+    func deselectVideoAtPath(path: NSIndexPath)  {
+        let currentVideo = self.videoForIndexPath(path)
+        self.selectedVideos = selectedVideos.filter{return $0 == currentVideo?.id}
+        
+        if selectedVideos.count == 0 {
+            self.toggleSelectionMode(false)
+        }
+        
+        refreshSelectedViewState(animated: true)
+    }
+    
+    func toggleSelectionMode(isMultiple: Bool) {
+        
+        if isMultiple {
+            guard let collectionView = self.collectionView else { return }
+            
+            if collectionView.allowsMultipleSelection {
+                self.endSelectMode()
+            } else {
+                collectionView.allowsMultipleSelection = true
+            }
+            
+            refreshSelectedViewState(animated: true)
+        } else {
+            endSelectMode()
+        }
+    }
+    
     @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
         guard let collectionView = self.collectionView else { return }
         
@@ -603,24 +650,35 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if collectionView.allowsMultipleSelection {
-
-            refreshSelectedViewState(animated: true)
-            
+        
+        let previouslySelected = isVideoAtPathSelected(indexPath)
+        
+        if !previouslySelected {
+            self.selectVideoAtPath(indexPath)
         } else {
-            
+            let video = self.videoForIndexPath(indexPath)
+            selectedVideos = []
+            self.showVideo(video!)
+        }
+        
+        /*if collectionView.allowsMultipleSelection {
+            refreshSelectedViewState(animated: true)
+        } else {
             if let video = videoForIndexPath(indexPath) {
                 self.showVideo(video)
             } else {
                 collectionView.deselectItemAtIndexPath(indexPath, animated: true)
             }
-        }
+        }*/
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        if collectionView.allowsMultipleSelection {
-            refreshSelectedViewState(animated: true)
-        }
+        
+        deselectVideoAtPath(indexPath)
+        
+       // if collectionView.allowsMultipleSelection {
+            //refreshSelectedViewState(animated: true)
+        //}
     }
     
     func endSelectMode() {
