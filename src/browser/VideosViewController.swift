@@ -440,7 +440,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         if let video = self.filteredVideos[safe: indexPath.item] {
             cell.update(video)
-            cell.setSelectable(true)
         }
         
         return cell
