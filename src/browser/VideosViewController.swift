@@ -385,7 +385,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         if searchText.isEmpty && !searchBar.isFirstResponder() {
             // Hack: if the text is empty and the search bar is not the first responder the user tapped the clear button.
             // Dismiss the keyboard after the first responder has propagated to the search bar.
-            self.performSelector("searchBarCancelButtonClicked:", withObject: searchBar, afterDelay: 0)
+            self.performSelector("searchBarCancelButtonClicked", withObject: searchBar, afterDelay: 0)
             return
         }
 
