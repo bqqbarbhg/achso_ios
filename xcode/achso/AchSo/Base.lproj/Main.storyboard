@@ -272,18 +272,11 @@
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="y6C-Xq-kFI">
-                        <rightBarButtonItems>
-                            <barButtonItem title="Select" id="36E-aZ-Ql7">
-                                <connections>
-                                    <action selector="selectButtonPressed:" destination="7mS-Qs-HO7" id="bB7-RZ-OjI"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Cancel" id="ZKM-1O-c4n">
-                                <connections>
-                                    <action selector="selectButtonPressed:" destination="7mS-Qs-HO7" id="p5g-GC-4ue"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="ZKM-1O-c4n">
+                            <connections>
+                                <action selector="selectButtonPressed:" destination="7mS-Qs-HO7" id="p5g-GC-4ue"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -298,7 +291,6 @@
                         <outlet property="progressBar" destination="y6w-a6-tHo" id="nka-Wt-mVq"/>
                         <outlet property="searchBar" destination="ooS-nt-Pt4" id="0RL-0b-P2X"/>
                         <outlet property="searchBarToParentConstraint" destination="iNl-Xc-UtB" id="Dpm-1Y-vDe"/>
-                        <outlet property="selectButton" destination="36E-aZ-Ql7" id="64q-g2-TQA"/>
                         <outlet property="toolbarSpace" destination="1UI-Zd-G4S" id="5ax-EY-mAc"/>
                         <outlet property="uploadButton" destination="Qt1-aa-4Mu" id="Rm2-1f-AkU"/>
                         <segue destination="D0G-uJ-xVA" kind="presentation" identifier="showPlayer" id="qKB-CJ-Qn9"/>

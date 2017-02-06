@@ -32,7 +32,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     @IBOutlet var actionButton: UIBarButtonItem!
     @IBOutlet var cameraButton: UIBarButtonItem!
-    @IBOutlet var selectButton: UIBarButtonItem!
     @IBOutlet var cancelSelectButton: UIBarButtonItem!
     
     @IBOutlet var searchBar: UISearchBar!
@@ -350,6 +349,11 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         self.updateEmptyPlaceholder()
     }
     
+    @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
+        self.endSelectMode()
+        refreshSelectedViewState(animated: true)
+    }
+
     @IBAction func genreButtonPressed(sender: UIButton) {
     }
     
@@ -385,7 +389,7 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         if searchText.isEmpty && !searchBar.isFirstResponder() {
             // Hack: if the text is empty and the search bar is not the first responder the user tapped the clear button.
             // Dismiss the keyboard after the first responder has propagated to the search bar.
-            self.performSelector("searchBarCancelButtonClicked", withObject: searchBar, afterDelay: 0)
+            self.performSelector("searchBarCancelButtonClicked:", withObject: searchBar, afterDelay: 0)
             return
         }
 
@@ -637,17 +641,6 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
-    @IBAction func selectButtonPressed(sender: UIBarButtonItem) {
-        guard let collectionView = self.collectionView else { return }
-        
-        if collectionView.allowsMultipleSelection {
-            self.endSelectMode()
-        } else {
-            collectionView.allowsMultipleSelection = true
-        }
-        
-        refreshSelectedViewState(animated: true)
-    }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
@@ -737,7 +730,8 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             let items = [self.cancelSelectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
-            
+            self.navigationItem.rightBarButtonItem?.enabled = true
+
             self.navigationItem.leftBarButtonItem = nil
             self.splitViewController?.presentsWithGesture = false
             self.navigationItem.hidesBackButton = true
@@ -751,10 +745,13 @@ class VideosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             self.navigationItem.setHidesBackButton(false, animated: animated)
             self.cameraButton.enabled = true
-            
-            let items = [self.selectButton!]
+            let items = [self.cancelSelectButton!]
             self.navigationItem.setRightBarButtonItems(items, animated: animated)
+
             
+            //let items = [self.selectButton!]
+            //self.navigationItem.setRightBarButtonItems(items, animated: animated)
+            self.navigationItem.rightBarButtonItem?.enabled = false
             self.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
             self.splitViewController?.presentsWithGesture = true
             self.navigationItem.hidesBackButton = false
