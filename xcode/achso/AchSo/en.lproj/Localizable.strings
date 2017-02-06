@@ -192,3 +192,15 @@
 
 /* Name for the video library permission */
 "user_permission_video_library" = "Photos";
+
+/* Heading for the miscalleneous options in Details view */
+"general_settings" = "General settings";
+
+/* Tag for checkbox for toggling video searchability */
+"is_video_searchable" = "Is searchable?";
+
+/* Title for sharing video with groups */
+"share_to_groups" = "Share with groups";
+
+/* Heading in video details view */
+"list_of_annotations" = "List of annotations";

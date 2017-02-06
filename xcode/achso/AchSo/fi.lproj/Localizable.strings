@@ -192,3 +192,16 @@
 
 /* Name for the video library permission */
 "user_permission_video_library" = "Kuvat";
+
+/* Heading for the miscalleneous options in Details view */
+"general_settings" = "Yleiset asetukset";
+
+/* Tag for checkbox for toggling video searchability */
+"is_video_searchable" = "Näkyykö haussa?";
+
+/* Title for sharing video with groups */
+"share_to_groups" = "Jaa ryhmiin";
+
+/* Heading in video details view */
+"list_of_annotations" = "Merkintälista";
+

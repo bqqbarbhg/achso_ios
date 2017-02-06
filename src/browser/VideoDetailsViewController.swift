@@ -33,7 +33,8 @@ class VideoDetailsViewController: XLFormViewController {
         let form = XLFormDescriptor(title: formTitle)
         form.delegate = self
         
-        let generalSection = XLFormSectionDescriptor.formSectionWithTitle("General settings")
+        let generalSectionTitle = NSLocalizedString("general_settings", comment: "Heading for the miscalleneous options in Details view")
+        let generalSection = XLFormSectionDescriptor.formSectionWithTitle(generalSectionTitle)
         
         let titleTitle = NSLocalizedString("details_title", comment: "Title field label shown in the video details form")
         let title = XLFormRowDescriptor(tag: "title", rowType: XLFormRowDescriptorTypeText, title: titleTitle)
@@ -45,8 +46,10 @@ class VideoDetailsViewController: XLFormViewController {
         
         let creatorName = video.author.name
         creatorRow.value = creatorName
+
+        let isPublicTitle = NSLocalizedString("is_video_searchable", comment: "Is  searchable?")
         
-        let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: "Is video searchable?")
+        let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: isPublicTitle)
         
         isPublicRow.value = video.isPublic
         generalSection.addFormRow(title)
@@ -56,7 +59,8 @@ class VideoDetailsViewController: XLFormViewController {
         form.addFormSection(generalSection)
         
         let annotationsSection = XLFormSectionDescriptor.formSection()
-        annotationsSection.title = "Annotations"
+        let annotationsSectionTitle = NSLocalizedString("list_of_annotations", comment: "List of annotations")
+        annotationsSection.title = annotationsSectionTitle
         
         for (index, annotation) in self.video!.annotations.enumerate() {
             let annotationRow = XLFormRowDescriptor(tag: "annotation-\(index)", rowType: XLFormRowDescriptorTypeInfo, title: annotation.author.name)
@@ -79,7 +83,8 @@ class VideoDetailsViewController: XLFormViewController {
             groupsSection.addFormRow(groupRow)
         }
         
-        groupsSection.title = "Share to groups"
+        let groupsSectionTitle = NSLocalizedString("share_to_groups", comment: "Share with groups")
+        groupsSection.title = groupsSectionTitle
         
         form.addFormSection(groupsSection)
         
