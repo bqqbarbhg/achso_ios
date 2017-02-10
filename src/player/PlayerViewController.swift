@@ -444,17 +444,15 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         self.videoView.setNeedsLayout()
         self.videoView.doLayoutSubviews(animated: false)
         self.refreshView()
-        
-        
-        UIView.transitionWithView(self.videoView, duration: 0.2, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-            self.videoView.alpha = 1.0
-        }, completion: { _ in
-            if (self.startTime == nil) {
-                self.videoPlayer?.play()
-            }
-        })
-        
         guard let videoPlayer = self.videoPlayer, video = self.video else { return  }
+        
+        self.videoView.alpha = 1.0
+        
+        if (self.startTime == nil) {
+            self.videoPlayer?.play()
+        } else {
+            self.videoPlayer?.seekTo(self.startTime!)
+        }
         
         let playerController = PlayerController(player: videoPlayer)
         
@@ -474,14 +472,6 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         playerController.activeVideo = activeVideo
         
         self.playerController = playerController
-        
-        if (self.startTime != nil) {
-            self.playerController!.doSeek(self.startTime!)
-        } else {
-            if self.playerController?.state == .Some(.Playing) {
-                videoPlayer.play()
-            }
-        }
     }
     
     func videoFailedToLoad() {
