@@ -62,6 +62,10 @@ class VideoRepository {
     // State
     var isOnlineRefreshing: Bool = false
     
+    func canUserShareVideo(video: Video) -> Bool {
+        return video.author == user || video.author == User.localUser
+    }
+    
     // Load the persisted entities.
     func refresh() {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

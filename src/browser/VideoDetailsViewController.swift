@@ -15,6 +15,7 @@ class VideoDetailsViewController: XLFormViewController {
     var video: Video? = nil
     var startTime : Double = 0.0
     var hasModifications = false
+    var canUserShare = false
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -27,6 +28,7 @@ class VideoDetailsViewController: XLFormViewController {
     func initializeForm(video: Video) {
         self.video = video
         self.hasModifications = false
+        self.canUserShare = videoRepository.canUserShareVideo(video)
         
         let formTitle = NSLocalizedString("details_form_title", comment: "Title shown in the video details form")
         
@@ -47,14 +49,17 @@ class VideoDetailsViewController: XLFormViewController {
         let creatorName = video.author.name
         creatorRow.value = creatorName
 
-        let isPublicTitle = NSLocalizedString("is_video_searchable", comment: "Is  searchable?")
+        let isPublicTitle = NSLocalizedString("is_video_searchable", comment: "Is searchable?")
         
         let isPublicRow = XLFormRowDescriptor(tag: "isPublic", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: isPublicTitle)
         
         isPublicRow.value = video.isPublic
         generalSection.addFormRow(title)
         generalSection.addFormRow(creatorRow)
-        generalSection.addFormRow(isPublicRow)
+        
+        if self.canUserShare {
+            generalSection.addFormRow(isPublicRow)
+        }
         
         form.addFormSection(generalSection)
         
@@ -70,23 +75,27 @@ class VideoDetailsViewController: XLFormViewController {
         }
         
         form.addFormSection(annotationsSection)
-        
-        let groupsSection = XLFormSectionDescriptor.formSection()
         let groupsList = AppDelegate.instance.loadGroups()
         
-        for group in (groupsList?.groups)! {
-            let isShared = group.videos.contains(video.id)
+        if groupsList != nil && self.canUserShare {
+            let groupsSection = XLFormSectionDescriptor.formSection()
+
+            for group in (groupsList?.groups)! {
+                let isShared = group.videos.contains(video.id)
+                
+                let groupRow = XLFormRowDescriptor(tag: "group-\(group.id)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
+                
+                groupRow.value = isShared
+                groupsSection.addFormRow(groupRow)
+            }
             
-            let groupRow = XLFormRowDescriptor(tag: "group-\(group.id)", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: group.name)
+            let groupsSectionTitle = NSLocalizedString("share_to_groups", comment: "Share with groups")
+            groupsSection.title = groupsSectionTitle
             
-            groupRow.value = isShared
-            groupsSection.addFormRow(groupRow)
+            if self.canUserShare {
+                form.addFormSection(groupsSection)
+            }
         }
-        
-        let groupsSectionTitle = NSLocalizedString("share_to_groups", comment: "Share with groups")
-        groupsSection.title = groupsSectionTitle
-        
-        form.addFormSection(groupsSection)
         
         self.form = form
     }

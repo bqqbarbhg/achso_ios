@@ -63,3 +63,7 @@ class User: NSObject, NSCoding {
         aCoder.encodeObject(self.uri, forKey: "uri")
     }
 }
+
+func ==(a: User, b: User) -> Bool {
+    return a.id == b.id && a.name == b.name && a.uri == b.uri
+}
