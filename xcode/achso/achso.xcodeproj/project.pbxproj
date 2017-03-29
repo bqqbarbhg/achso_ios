@@ -456,7 +456,7 @@
 				TargetAttributes = {
 					A94B82A51BEA3DC00017874D = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 79VBNSRJ3V;
+						DevelopmentTeam = JYV3R5X7JQ;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -465,7 +465,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A94B82A11BEA3DC00017874D /* Build configuration list for PBXProject "AchSo" */;
+			buildConfigurationList = A94B82A11BEA3DC00017874D /* Build configuration list for PBXProject "achso" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -797,7 +797,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A94B82A11BEA3DC00017874D /* Build configuration list for PBXProject "AchSo" */ = {
+		A94B82A11BEA3DC00017874D /* Build configuration list for PBXProject "achso" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A94B82B91BEA3DC00017874D /* Debug */,

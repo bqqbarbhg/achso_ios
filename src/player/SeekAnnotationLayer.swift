@@ -10,16 +10,18 @@ import UIKit
 
 class SeekAnnotationLayer: CALayer {
     
-    private var prevAnnotationTimes: [Double] = []
+    private var prevSeekBarAnnotations: [Annotation] = []
     
-    var annotationTimes: [Double] = [] {
+    var videoLength: Double = 1.0
+    
+    var seekBarAnnotations: [Annotation] = [] {
         didSet {
             // If all the elements are roughly the same no need to redraw
             var allSame = true
-            if self.prevAnnotationTimes.count == self.annotationTimes.count {
+            if self.prevSeekBarAnnotations.count == self.seekBarAnnotations.count {
                 let epsilon = 0.001
-                for (prev, new) in zip(self.prevAnnotationTimes.sort(), self.annotationTimes.sort()) {
-                    if abs(prev - new) > epsilon {
+                for (prev, new) in zip(self.prevSeekBarAnnotations.sort{$0.0.time < $0.1.time}, self.seekBarAnnotations.sort{$0.0.time < $0.1.time}) {
+                    if abs(prev.time - new.time) > epsilon {
                         allSame = false
                         break
                     }
@@ -32,22 +34,19 @@ class SeekAnnotationLayer: CALayer {
                 // Do nothing, don't update prevAnnotationTimes so it can't slide without redraw
             } else {
                 self.setNeedsDisplay()
-                self.prevAnnotationTimes = self.annotationTimes
+                self.prevSeekBarAnnotations = self.seekBarAnnotations
             }
         }
     }
     
     // Visual measures
     var markerDiamater: CGFloat = 7.0
-    var markerThickness: CGFloat = 1.0
+    var markerThickness: CGFloat = 2.0
     var sidePadding: CGFloat = 0.0
     
     var requiredSidePadding: CGFloat {
         return self.markerDiamater + self.markerThickness
     }
-    
-    // Visual colors
-    var color: CGColor = hexCgColor(0xFF3333, alpha: 1.0)
     
     override func drawInContext(ctx: CGContext) {
         // Fit the bar so that the ball has enough space on both sides without clipping
@@ -57,12 +56,13 @@ class SeekAnnotationLayer: CALayer {
         
         let middle = bounds.midY
         
-        for time in annotationTimes {
-            let pos = bounds.minX + bounds.width * CGFloat(time)
+        for annotation in seekBarAnnotations {
+            let pos = bounds.minX + bounds.width * CGFloat(annotation.time / videoLength)
+            let color = hexCgColor(annotation.calculateMarkerColor(), alpha: 1.0)
             
             CGContextBeginPath(ctx)
             CGContextAddArc(ctx, pos, middle, self.markerDiamater / 2.0, 0.0, CGFloat(M_PI * 2.0), 1)
-            CGContextSetStrokeColorWithColor(ctx, self.color)
+            CGContextSetStrokeColorWithColor(ctx, color)
             CGContextSetLineWidth(ctx, self.markerThickness)
             CGContextStrokePath(ctx)
         }

@@ -71,13 +71,21 @@ class SeekBarView: UIControl {
             seekBarLayer.seekBarPositionRelative = CGFloat(newValue)
         }
     }
-
-    var annotationTimes: [Double] {
+    var videoLength: Double {
         get {
-            return seekAnnotationLayer.annotationTimes
+            return seekAnnotationLayer.videoLength
         }
         set {
-            seekAnnotationLayer.annotationTimes = newValue
+            seekAnnotationLayer.videoLength = newValue
+        }
+    }
+
+    var seekBarAnnotations: [Annotation] {
+        get {
+            return seekAnnotationLayer.seekBarAnnotations
+        }
+        set {
+            seekAnnotationLayer.seekBarAnnotations = newValue
         }
     }
     

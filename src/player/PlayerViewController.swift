@@ -283,9 +283,10 @@ class PlayerViewController: UIViewController, VideoPlayerDelegate {
         }
         
         if let activeVideo = self.activeVideo {
-            self.seekBar.annotationTimes = activeVideo.batches.map { batch in
-                batch.time / activeVideo.duration
-            }
+            var flatAnnotations = activeVideo.batches.flatMap{$0.annotations}
+            
+            self.seekBar.videoLength = activeVideo.duration
+            self.seekBar.seekBarAnnotations = flatAnnotations
         }
         
         if let duration = videoPlayer.videoDuration {
